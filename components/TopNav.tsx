@@ -53,6 +53,31 @@ export default function TopNav() {
       </Link>
 
       <div className="flex items-center gap-4">
+        <Link
+          href="/spreadsheets"
+          className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+            pathname.startsWith('/spreadsheets')
+              ? 'text-blue-600'
+              : 'text-gray-500 hover:text-gray-900'
+          }`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3 10h18M3 14h18M10 3v18M14 3v18M3 6a3 3 0 013-3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6z"
+            />
+          </svg>
+          Planilhas
+        </Link>
+
         {user?.admin && (
           <Link
             href="/admin/users"
