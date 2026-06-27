@@ -111,3 +111,14 @@ export function clearTokens(): void {
   deleteCookie('accessToken');
   deleteCookie('refreshToken');
 }
+
+export function getUserIdFromToken(): string | null {
+  const token = getAccessToken();
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.sub ? String(payload.sub) : null;
+  } catch {
+    return null;
+  }
+}

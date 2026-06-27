@@ -4,12 +4,18 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { clearTokens } from '@/lib/auth';
+import { getMe, type User } from '@/lib/users';
 
 export default function TopNav() {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    getMe().then(setUser).catch(() => null);
+  }, []);
 
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
@@ -26,6 +32,15 @@ export default function TopNav() {
     router.push('/login');
   }
 
+  function getInitials(name: string) {
+    return name
+      .split(' ')
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase();
+  }
+
   const isOnDashboard = pathname === '/dashboard';
 
   return (
@@ -38,6 +53,33 @@ export default function TopNav() {
       </Link>
 
       <div className="flex items-center gap-4">
+        {user?.admin && (
+          <Link
+            href="/admin/users"
+            className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
+              pathname.startsWith('/admin')
+                ? 'text-blue-600'
+                : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-4 h-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+              />
+            </svg>
+            Administração
+          </Link>
+        )}
+
         {!isOnDashboard && (
           <Link
             href="/dashboard"
@@ -65,14 +107,26 @@ export default function TopNav() {
             aria-expanded={open}
           >
             <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold select-none">
-              U
+              {user ? getInitials(user.name) : '…'}
             </div>
           </button>
 
           {open && (
-            <div className="absolute right-0 mt-2 w-52 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+            <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+              {user && (
+                <div className="px-4 py-3 border-b border-gray-100">
+                  <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
+                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                  {user.admin && (
+                    <span className="inline-block mt-1 text-xs font-medium bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">
+                      Admin
+                    </span>
+                  )}
+                </div>
+              )}
+
               <Link
-                href="/dashboard/profile"
+                href="/profile"
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
                 onClick={() => setOpen(false)}
               >
@@ -92,6 +146,30 @@ export default function TopNav() {
                 </svg>
                 Meu Perfil
               </Link>
+
+              {user?.admin && (
+                <Link
+                  href="/admin/users"
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  onClick={() => setOpen(false)}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-4 h-4 text-gray-400"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
+                    />
+                  </svg>
+                  Gerenciar Usuários
+                </Link>
+              )}
 
               <hr className="my-1 border-gray-100" />
 
