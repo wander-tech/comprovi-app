@@ -1,6 +1,6 @@
-import { getAccessToken } from './auth';
+import { getAccessToken } from "./auth";
 
-const API_URL = 'http://localhost:3000';
+const API_URL = "http://localhost:3001";
 
 export interface User {
   idUser: number;
@@ -41,14 +41,16 @@ async function authFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     ...init,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
       ...init?.headers,
     },
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    const message = Array.isArray(body.message) ? body.message[0] : body.message || 'Erro inesperado';
+    const message = Array.isArray(body.message)
+      ? body.message[0]
+      : body.message || "Erro inesperado";
     throw new Error(message);
   }
   if (res.status === 204) return undefined as T;
@@ -57,21 +59,21 @@ async function authFetch<T>(path: string, init?: RequestInit): Promise<T> {
 
 export async function getUsers(filters?: UserFilters): Promise<User[]> {
   const params = new URLSearchParams();
-  if (filters?.name) params.set('name', filters.name);
-  if (filters?.email) params.set('email', filters.email);
-  if (filters?.cpf) params.set('cpf', filters.cpf);
-  if (filters?.phone) params.set('phone', filters.phone);
+  if (filters?.name) params.set("name", filters.name);
+  if (filters?.email) params.set("email", filters.email);
+  if (filters?.cpf) params.set("cpf", filters.cpf);
+  if (filters?.phone) params.set("phone", filters.phone);
   const qs = params.toString();
-  return authFetch<User[]>(`/users${qs ? `?${qs}` : ''}`);
+  return authFetch<User[]>(`/users${qs ? `?${qs}` : ""}`);
 }
 
 export async function getMe(): Promise<User> {
-  return authFetch<User>('/users/me');
+  return authFetch<User>("/users/me");
 }
 
 export async function createUser(data: CreateUserPayload): Promise<User> {
-  return authFetch<User>('/users', {
-    method: 'POST',
+  return authFetch<User>("/users", {
+    method: "POST",
     body: JSON.stringify(data),
   });
 }
@@ -80,13 +82,16 @@ export async function getUser(id: string): Promise<User> {
   return authFetch<User>(`/users/${id}`);
 }
 
-export async function updateUser(id: string, data: UpdateUserPayload): Promise<User> {
+export async function updateUser(
+  id: string,
+  data: UpdateUserPayload,
+): Promise<User> {
   return authFetch<User>(`/users/${id}`, {
-    method: 'PATCH',
+    method: "PATCH",
     body: JSON.stringify(data),
   });
 }
 
 export async function deleteUser(id: string): Promise<void> {
-  return authFetch<void>(`/users/${id}`, { method: 'DELETE' });
+  return authFetch<void>(`/users/${id}`, { method: "DELETE" });
 }

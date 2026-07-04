@@ -1,6 +1,6 @@
-import { getAccessToken } from './auth';
+import { getAccessToken } from "./auth";
 
-const API_URL = 'http://localhost:3000';
+const API_URL = "http://localhost:3001";
 
 export interface SpreadsheetStatus {
   idSpreadsheetStatus: number;
@@ -36,14 +36,16 @@ async function authFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${API_URL}${path}`, {
     ...init,
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
       ...init?.headers,
     },
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
-    const message = Array.isArray(body.message) ? body.message[0] : body.message || 'Erro inesperado';
+    const message = Array.isArray(body.message)
+      ? body.message[0]
+      : body.message || "Erro inesperado";
     throw new Error(message);
   }
   if (res.status === 204) return undefined as T;
@@ -51,27 +53,36 @@ async function authFetch<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export async function getSpreadsheets(): Promise<Spreadsheet[]> {
-  return authFetch<Spreadsheet[]>('/spreadsheets');
+  return authFetch<Spreadsheet[]>("/spreadsheets");
 }
 
-export async function createSpreadsheet(data: CreateSpreadsheetPayload): Promise<Spreadsheet> {
-  return authFetch<Spreadsheet>('/spreadsheets', {
-    method: 'POST',
+export async function getSpreadsheet(id: number): Promise<Spreadsheet> {
+  return authFetch<Spreadsheet>(`/spreadsheets/${id}`);
+}
+
+export async function createSpreadsheet(
+  data: CreateSpreadsheetPayload,
+): Promise<Spreadsheet> {
+  return authFetch<Spreadsheet>("/spreadsheets", {
+    method: "POST",
     body: JSON.stringify(data),
   });
 }
 
-export async function updateSpreadsheet(id: number, data: UpdateSpreadsheetPayload): Promise<Spreadsheet> {
+export async function updateSpreadsheet(
+  id: number,
+  data: UpdateSpreadsheetPayload,
+): Promise<Spreadsheet> {
   return authFetch<Spreadsheet>(`/spreadsheets/${id}`, {
-    method: 'PATCH',
+    method: "PATCH",
     body: JSON.stringify(data),
   });
 }
 
 export async function deleteSpreadsheet(id: number): Promise<void> {
-  return authFetch<void>(`/spreadsheets/${id}`, { method: 'DELETE' });
+  return authFetch<void>(`/spreadsheets/${id}`, { method: "DELETE" });
 }
 
 export async function getSpreadsheetStatuses(): Promise<SpreadsheetStatus[]> {
-  return authFetch<SpreadsheetStatus[]>('/spreadsheet-statuses');
+  return authFetch<SpreadsheetStatus[]>("/spreadsheet-statuses");
 }

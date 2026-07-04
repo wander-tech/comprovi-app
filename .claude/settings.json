@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s http://localhost:3001/api-json)",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); paths=d.get\\('paths',{}\\); [print\\(k, list\\(v.keys\\(\\)\\)\\) for k,v in paths.items\\(\\) if 'dashboard' in k.lower\\(\\)]\")"
+    ]
+  }
+}

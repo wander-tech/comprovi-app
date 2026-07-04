@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
+import Link from 'next/link';
 import {
   getSpreadsheets,
   createSpreadsheet,
@@ -225,6 +226,12 @@ export default function SpreadsheetsPage() {
                           </div>
                         ) : (
                           <div className="flex items-center justify-end gap-2">
+                            <Link
+                              href={`/spreadsheets/${s.idSpreadsheet}`}
+                              className="text-xs font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors"
+                            >
+                              Visualizar
+                            </Link>
                             <button
                               onClick={() => openEdit(s)}
                               className="text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
