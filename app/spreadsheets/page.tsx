@@ -150,14 +150,14 @@ export default function SpreadsheetsPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Planilhas</h1>
           <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Gerencie suas planilhas financeiras</p>
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors whitespace-nowrap"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -199,7 +199,7 @@ export default function SpreadsheetsPage() {
                 <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                   {paged.map((s) => (
                     <tr key={s.idSpreadsheet} className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-800">
-                      <td className="px-5 py-4 font-medium text-gray-900 dark:text-gray-100">{s.name}</td>
+                      <td className="px-5 py-4 font-medium text-gray-900 dark:text-gray-100 max-w-[220px] truncate">{s.name}</td>
                       <td className="px-5 py-4">
                         {s.status ? (
                           <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full ${statusColor(s.status.cdChave)}`}>
@@ -259,11 +259,11 @@ export default function SpreadsheetsPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between px-5 py-3.5 border-t border-gray-100 dark:border-gray-800">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5 py-3.5 border-t border-gray-100 dark:border-gray-800">
               <span className="text-xs text-gray-400 dark:text-gray-500">
                 {spreadsheets.length} {spreadsheets.length === 1 ? 'planilha' : 'planilhas'} — página {page} de {totalPages}
               </span>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center flex-wrap gap-1">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}

@@ -121,7 +121,7 @@ function MetricCard({
   return (
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-gray-800 dark:bg-gray-900">
       <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1 dark:text-gray-500">{label}</p>
-      <p className={`text-2xl font-bold ${color} leading-tight`}>{value}</p>
+      <p className={`text-xl sm:text-2xl font-bold ${color} leading-tight break-words`}>{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-1 dark:text-gray-500">{sub}</p>}
     </div>
   );
@@ -398,14 +398,14 @@ function ExpensesTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex items-center justify-between px-5 py-3.5 border-t border-gray-100 dark:border-gray-800">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5 py-3.5 border-t border-gray-100 dark:border-gray-800">
         <span className="text-xs text-gray-400 dark:text-gray-500">
           {filtered.length} {filtered.length === 1 ? 'lançamento' : 'lançamentos'}
           {filtered.length !== expenses.length && ` de ${expenses.length}`}
           {totalPages > 1 && ` — página ${page} de ${totalPages}`}
         </span>
         {totalPages > 1 && (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center flex-wrap gap-1">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
@@ -565,7 +565,7 @@ export default function DashboardPage() {
       ) : (
         <>
           {/* ── 6 metric cards ── */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             <MetricCard
               label="Total de Despesas"
               value={fmt(totalExpenses)}

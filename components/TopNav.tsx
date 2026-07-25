@@ -11,8 +11,10 @@ export default function TopNav() {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
+  const mobileNavRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getMe().then(setUser).catch(() => null);
@@ -22,6 +24,9 @@ export default function TopNav() {
     function handleOutsideClick(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
+      }
+      if (mobileNavRef.current && !mobileNavRef.current.contains(e.target as Node)) {
+        setMobileNavOpen(false);
       }
     }
     document.addEventListener('mousedown', handleOutsideClick);
@@ -44,27 +49,46 @@ export default function TopNav() {
 
   const isOnDashboard = pathname === '/dashboard';
 
-  return (
-    <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center px-6 justify-between shrink-0">
+  const navLinkClass = (active: boolean) =>
+    `flex items-center gap-2 text-sm font-medium transition-colors rounded-lg px-2.5 py-2 sm:px-0 sm:py-0 ${
+      active
+        ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 sm:bg-transparent sm:dark:bg-transparent'
+        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-gray-800 sm:hover:bg-transparent sm:dark:hover:bg-transparent'
+    }`;
+
+  const navLinks = (
+    <>
       <Link
-        href="/dashboard"
-        className="text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        href="/spreadsheets"
+        onClick={() => setMobileNavOpen(false)}
+        className={navLinkClass(pathname.startsWith('/spreadsheets'))}
       >
-        Comprovi
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-4 h-4 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 10h18M3 14h18M10 3v18M14 3v18M3 6a3 3 0 013-3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6z"
+          />
+        </svg>
+        Planilhas
       </Link>
 
-      <div className="flex items-center gap-4">
+      {user?.admin && (
         <Link
-          href="/spreadsheets"
-          className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
-            pathname.startsWith('/spreadsheets')
-              ? 'text-blue-600 dark:text-blue-400'
-              : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-          }`}
+          href="/admin/users"
+          onClick={() => setMobileNavOpen(false)}
+          className={navLinkClass(pathname.startsWith('/admin'))}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            className="w-4 h-4"
+            className="w-4 h-4 shrink-0"
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
@@ -73,57 +97,71 @@ export default function TopNav() {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              d="M3 10h18M3 14h18M10 3v18M14 3v18M3 6a3 3 0 013-3h12a3 3 0 013 3v12a3 3 0 01-3 3H6a3 3 0 01-3-3V6z"
+              d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
             />
           </svg>
-          Planilhas
+          Administração
         </Link>
+      )}
 
-        {user?.admin && (
-          <Link
-            href="/admin/users"
-            className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
-              pathname.startsWith('/admin')
-                ? 'text-blue-600 dark:text-blue-400'
-                : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
-            }`}
+      {!isOnDashboard && (
+        <Link
+          href="/dashboard"
+          onClick={() => setMobileNavOpen(false)}
+          className={navLinkClass(false)}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-4 h-4 shrink-0"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"
-              />
-            </svg>
-            Administração
-          </Link>
-        )}
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Dashboard
+        </Link>
+      )}
+    </>
+  );
 
-        {!isOnDashboard && (
-          <Link
-            href="/dashboard"
-            className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
+  return (
+    <header className="relative h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center px-4 sm:px-6 justify-between shrink-0">
+      <Link
+        href="/dashboard"
+        className="text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+      >
+        Comprovi
+      </Link>
+
+      <div className="flex items-center gap-2 sm:gap-4">
+        <nav className="hidden sm:flex items-center gap-4">{navLinks}</nav>
+
+        <div className="relative sm:hidden" ref={mobileNavRef}>
+          <button
+            onClick={() => setMobileNavOpen((prev) => !prev)}
+            className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-gray-400 dark:hover:text-gray-100 dark:hover:bg-gray-800 transition-colors"
+            aria-label="Menu de navegação"
+            aria-expanded={mobileNavOpen}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-4 h-4"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Dashboard
-          </Link>
-        )}
+            {mobileNavOpen ? (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
+
+          {mobileNavOpen && (
+            <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 py-2 z-50 flex flex-col gap-1 px-2">
+              {navLinks}
+            </div>
+          )}
+        </div>
 
         <ThemeToggle />
 
