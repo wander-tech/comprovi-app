@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
+import SearchableSelect from '@/components/SearchableSelect';
 import {
   getSpreadsheets,
   createSpreadsheet,
@@ -24,12 +25,12 @@ interface ModalState {
 }
 
 const STATUS_COLORS: Record<string, string> = {
-  active: 'bg-green-100 text-green-700',
-  closed: 'bg-gray-100 text-gray-600',
+  active: 'bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-400',
+  closed: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
 };
 
 function statusColor(cdChave: string) {
-  return STATUS_COLORS[cdChave] ?? 'bg-blue-100 text-blue-700';
+  return STATUS_COLORS[cdChave] ?? 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-400';
 }
 
 export default function SpreadsheetsPage() {
@@ -86,8 +87,12 @@ export default function SpreadsheetsPage() {
   }
 
   function updateField(field: keyof typeof EMPTY_FORM) {
-    return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    return (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setModal((prev) => prev ? { ...prev, form: { ...prev.form, [field]: e.target.value } } : prev);
+  }
+
+  function updateStatus(value: string) {
+    setModal((prev) => (prev ? { ...prev, form: { ...prev.form, idSpreadsheetStatus: value } } : prev));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -140,15 +145,15 @@ export default function SpreadsheetsPage() {
   }
 
   const inputClass =
-    'w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent';
+    'w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500';
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Planilhas</h1>
-          <p className="text-sm text-gray-500 mt-1">Gerencie suas planilhas financeiras</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Planilhas</h1>
+          <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Gerencie suas planilhas financeiras</p>
         </div>
         <button
           onClick={openCreate}
@@ -162,19 +167,19 @@ export default function SpreadsheetsPage() {
       </div>
 
       {error && (
-        <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
           {error}
         </div>
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-800 dark:bg-gray-900">
         {loading ? (
-          <div className="flex items-center justify-center h-48 text-gray-400 text-sm">Carregando...</div>
+          <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-gray-500">Carregando...</div>
         ) : spreadsheets.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-48 gap-2">
-            <p className="text-gray-400 text-sm">Nenhuma planilha encontrada.</p>
-            <button onClick={openCreate} className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            <p className="text-gray-400 text-sm dark:text-gray-500">Nenhuma planilha encontrada.</p>
+            <button onClick={openCreate} className="text-sm text-blue-600 hover:text-blue-700 font-medium dark:hover:text-blue-300 dark:text-blue-400">
               Criar primeira planilha
             </button>
           </div>
@@ -183,33 +188,33 @@ export default function SpreadsheetsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50">
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Nome</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Observação</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Criado em</th>
-                    <th className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">Ações</th>
+                  <tr className="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800">
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Nome</th>
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Status</th>
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Observação</th>
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Criado em</th>
+                    <th className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50">
+                <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                   {paged.map((s) => (
-                    <tr key={s.idSpreadsheet} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-5 py-4 font-medium text-gray-900">{s.name}</td>
+                    <tr key={s.idSpreadsheet} className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-800">
+                      <td className="px-5 py-4 font-medium text-gray-900 dark:text-gray-100">{s.name}</td>
                       <td className="px-5 py-4">
                         {s.status ? (
                           <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full ${statusColor(s.status.cdChave)}`}>
                             {s.status.name}
                           </span>
                         ) : (
-                          <span className="text-gray-400 text-xs">—</span>
+                          <span className="text-gray-400 text-xs dark:text-gray-500">—</span>
                         )}
                       </td>
-                      <td className="px-5 py-4 text-gray-500 max-w-xs truncate">{s.observation || '—'}</td>
-                      <td className="px-5 py-4 text-gray-500 whitespace-nowrap">{formatDate(s.createdAt)}</td>
+                      <td className="px-5 py-4 text-gray-500 max-w-xs truncate dark:text-gray-400">{s.observation || '—'}</td>
+                      <td className="px-5 py-4 text-gray-500 whitespace-nowrap dark:text-gray-400">{formatDate(s.createdAt)}</td>
                       <td className="px-5 py-4">
                         {confirmDelete === s.idSpreadsheet ? (
                           <div className="flex items-center justify-end gap-2">
-                            <span className="text-xs text-gray-500">Confirmar exclusão?</span>
+                            <span className="text-xs text-gray-500 dark:text-gray-400">Confirmar exclusão?</span>
                             <button
                               onClick={() => handleDelete(s.idSpreadsheet)}
                               disabled={deleting === s.idSpreadsheet}
@@ -219,7 +224,7 @@ export default function SpreadsheetsPage() {
                             </button>
                             <button
                               onClick={() => setConfirmDelete(null)}
-                              className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors"
+                              className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors dark:hover:bg-gray-700 dark:text-gray-400 dark:bg-gray-800"
                             >
                               Não
                             </button>
@@ -228,19 +233,19 @@ export default function SpreadsheetsPage() {
                           <div className="flex items-center justify-end gap-2">
                             <Link
                               href={`/spreadsheets/${s.idSpreadsheet}`}
-                              className="text-xs font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors"
+                              className="text-xs font-medium text-green-600 hover:text-green-800 bg-green-50 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-green-300 dark:hover:bg-green-900/50 dark:text-green-400 dark:bg-green-950/40"
                             >
                               Visualizar
                             </Link>
                             <button
                               onClick={() => openEdit(s)}
-                              className="text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+                              className="text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-blue-300 dark:hover:bg-blue-900/50 dark:text-blue-400 dark:bg-blue-950/40"
                             >
                               Editar
                             </button>
                             <button
                               onClick={() => setConfirmDelete(s.idSpreadsheet)}
-                              className="text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
+                              className="text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-red-300 dark:hover:bg-red-900/50 dark:text-red-400 dark:bg-red-950/40"
                             >
                               Excluir
                             </button>
@@ -254,15 +259,15 @@ export default function SpreadsheetsPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex items-center justify-between px-5 py-3.5 border-t border-gray-100">
-              <span className="text-xs text-gray-400">
+            <div className="flex items-center justify-between px-5 py-3.5 border-t border-gray-100 dark:border-gray-800">
+              <span className="text-xs text-gray-400 dark:text-gray-500">
                 {spreadsheets.length} {spreadsheets.length === 1 ? 'planilha' : 'planilhas'} — página {page} de {totalPages}
               </span>
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
                 >
                   Anterior
                 </button>
@@ -273,7 +278,7 @@ export default function SpreadsheetsPage() {
                     className={`w-8 h-8 text-xs font-medium rounded-lg transition-colors ${
                       p === page
                         ? 'bg-blue-600 text-white'
-                        : 'border border-gray-200 text-gray-600 hover:bg-gray-50'
+                        : 'border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'
                     }`}
                   >
                     {p}
@@ -282,7 +287,7 @@ export default function SpreadsheetsPage() {
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
                 >
                   Próxima
                 </button>
@@ -296,12 +301,12 @@ export default function SpreadsheetsPage() {
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setModal(null)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 dark:bg-gray-900">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
                 {modal.mode === 'create' ? 'Nova planilha' : 'Editar planilha'}
               </h2>
-              <button onClick={() => setModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors" aria-label="Fechar">
+              <button onClick={() => setModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-gray-300 dark:text-gray-500" aria-label="Fechar">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -309,14 +314,14 @@ export default function SpreadsheetsPage() {
             </div>
 
             {modal.error && (
-              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
                 {modal.error}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                   Nome <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -330,23 +335,20 @@ export default function SpreadsheetsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Status</label>
-                <select
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">Status</label>
+                <SearchableSelect
                   value={modal.form.idSpreadsheetStatus}
-                  onChange={updateField('idSpreadsheetStatus')}
+                  onChange={updateStatus}
+                  options={statuses.map((st) => ({ value: String(st.idSpreadsheetStatus), label: st.name }))}
+                  emptyOptionLabel="Sem status"
+                  placeholder="Sem status"
+                  searchPlaceholder="Buscar status..."
                   className={inputClass}
-                >
-                  <option value="">Sem status</option>
-                  {statuses.map((st) => (
-                    <option key={st.idSpreadsheetStatus} value={st.idSpreadsheetStatus}>
-                      {st.name}
-                    </option>
-                  ))}
-                </select>
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Observação</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">Observação</label>
                 <textarea
                   value={modal.form.observation}
                   onChange={updateField('observation')}
@@ -369,7 +371,7 @@ export default function SpreadsheetsPage() {
                 <button
                   type="button"
                   onClick={() => setModal(null)}
-                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-900"
                 >
                   Cancelar
                 </button>

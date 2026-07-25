@@ -2,7 +2,33 @@
   "permissions": {
     "allow": [
       "Bash(curl -s http://localhost:3001/api-json)",
-      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); paths=d.get\\('paths',{}\\); [print\\(k, list\\(v.keys\\(\\)\\)\\) for k,v in paths.items\\(\\) if 'dashboard' in k.lower\\(\\)]\")"
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); paths=d.get\\('paths',{}\\); [print\\(k, list\\(v.keys\\(\\)\\)\\) for k,v in paths.items\\(\\) if 'dashboard' in k.lower\\(\\)]\")",
+      "Bash(grep -iE \"components|app$\")",
+      "Bash(python3 /tmp/claude-1000/-var-www-html-comprovi-comprovi-app/83a64719-ed8c-49c3-a988-ce6598a7286d/scratchpad/darkmode1.py app/login/page.tsx app/register/page.tsx app/forgot-password/page.tsx app/reset-password/page.tsx app/profile/page.tsx)",
+      "Bash(grep -ohE 'className=\\\\{?`?\"[^`]*?\"' app/dashboard/page.tsx app/admin/users/page.tsx app/spreadsheets/page.tsx \"app/spreadsheets/[id]/page.tsx\")",
+      "Bash(grep -n 'className={`' app/dashboard/page.tsx app/admin/users/page.tsx app/spreadsheets/page.tsx \"app/spreadsheets/[id]/page.tsx\")",
+      "Bash(python3 /tmp/claude-1000/-var-www-html-comprovi-comprovi-app/83a64719-ed8c-49c3-a988-ce6598a7286d/scratchpad/darkmode2.py app/dashboard/page.tsx app/admin/users/page.tsx app/spreadsheets/page.tsx \"app/spreadsheets/[id]/page.tsx\")",
+      "Bash(grep -n -A3 \"className={\\\\`w-8 h-8\" app/dashboard/page.tsx app/spreadsheets/page.tsx \"app/spreadsheets/[id]/page.tsx\")",
+      "Bash(command -v chromium-cli)",
+      "Read(//usr/local/bin/**)",
+      "Bash(node -e \"require.resolve\\('playwright'\\)\")",
+      "Bash(npx --no-install playwright --version)",
+      "Bash(curl -s \"http://localhost:3000/_next/static/chunks/%5Broot-of-the-server%5D__0cbk-n2._.css\" -o /tmp/claude-1000/-var-www-html-comprovi-comprovi-app/83a64719-ed8c-49c3-a988-ce6598a7286d/scratchpad/bundle.css)",
+      "Bash(xargs -I{} sh -c 'echo {}; stat -c \"%y\" {}')",
+      "Bash(timeout 120 npx playwright install chromium)",
+      "Bash(node /tmp/claude-1000/-var-www-html-comprovi-comprovi-app/83a64719-ed8c-49c3-a988-ce6598a7286d/scratchpad/verify.js)",
+      "Bash(sudo -n true)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/login)",
+      "Bash(ldconfig -p)",
+      "Bash(dpkg -l)",
+      "Bash(apt list *)",
+      "Bash(lsof -ti:3000 -sTCP:LISTEN)",
+      "Bash(xargs -r kill)",
+      "Bash(npm uninstall *)",
+      "Bash(rm -rf /tmp/orig-dashboard-check *)"
+    ],
+    "additionalDirectories": [
+      "/tmp/orig-dashboard-check"
     ]
   }
 }

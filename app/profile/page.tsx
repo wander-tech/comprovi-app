@@ -98,7 +98,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400 text-sm">
+      <div className="flex items-center justify-center h-64 text-gray-400 dark:text-gray-500 text-sm">
         Carregando...
       </div>
     );
@@ -112,10 +112,10 @@ export default function ProfilePage() {
           {user ? getInitials(user.name) : 'U'}
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900">{user?.name}</h1>
-          <p className="text-sm text-gray-500">{user?.email}</p>
+          <h1 className="text-xl font-bold text-gray-900 dark:text-gray-100">{user?.name}</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{user?.email}</p>
           {user?.admin && (
-            <span className="inline-block mt-1 text-xs font-medium bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">
+            <span className="inline-block mt-1 text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-400 px-2 py-0.5 rounded-full">
               Admin
             </span>
           )}
@@ -123,13 +123,13 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200">
+      <div className="flex gap-1 mb-6 border-b border-gray-200 dark:border-gray-800">
         <button
           onClick={() => { setSection('info'); setError(''); setSuccess(''); }}
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
             section === 'info'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
           }`}
         >
           Dados pessoais
@@ -138,8 +138,8 @@ export default function ProfilePage() {
           onClick={() => { setSection('password'); setError(''); setSuccess(''); }}
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
             section === 'password'
-              ? 'border-blue-600 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-blue-600 text-blue-600 dark:text-blue-400'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
           }`}
         >
           Alterar senha
@@ -148,21 +148,21 @@ export default function ProfilePage() {
 
       {/* Feedback */}
       {success && (
-        <div className="mb-5 px-4 py-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm">
+        <div className="mb-5 px-4 py-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm dark:bg-green-950/40 dark:border-green-900 dark:text-green-400">
           {success}
         </div>
       )}
       {error && (
-        <div className="mb-5 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mb-5 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:bg-red-950/40 dark:border-red-900 dark:text-red-400">
           {error}
         </div>
       )}
 
       {/* Personal info form */}
       {section === 'info' && (
-        <form onSubmit={handleSaveInfo} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+        <form onSubmit={handleSaveInfo} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 dark:bg-gray-900 dark:border-gray-800">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
               Nome completo
             </label>
             <input
@@ -170,12 +170,12 @@ export default function ProfilePage() {
               value={form.name}
               onChange={updateField('name')}
               required
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
               E-mail
             </label>
             <input
@@ -183,13 +183,13 @@ export default function ProfilePage() {
               value={form.email}
               onChange={updateField('email')}
               required
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                 Telefone
               </label>
               <input
@@ -197,11 +197,11 @@ export default function ProfilePage() {
                 value={form.phone}
                 onChange={updateField('phone')}
                 placeholder="+5511987654321"
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                 CPF
               </label>
               <input
@@ -210,7 +210,7 @@ export default function ProfilePage() {
                 onChange={updateField('cpf')}
                 placeholder="12345678901"
                 maxLength={11}
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
               />
             </div>
           </div>
@@ -229,9 +229,9 @@ export default function ProfilePage() {
 
       {/* Password form */}
       {section === 'password' && (
-        <form onSubmit={handleSavePassword} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5">
+        <form onSubmit={handleSavePassword} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 dark:bg-gray-900 dark:border-gray-800">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
               Nova senha
             </label>
             <input
@@ -240,12 +240,12 @@ export default function ProfilePage() {
               onChange={updatePassword('password')}
               required
               placeholder="Mínimo 6 caracteres"
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
               Confirmar nova senha
             </label>
             <input
@@ -254,7 +254,7 @@ export default function ProfilePage() {
               onChange={updatePassword('confirm')}
               required
               placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow"
+              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
             />
           </div>
 

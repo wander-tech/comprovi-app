@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { clearTokens } from '@/lib/auth';
 import { getMe, type User } from '@/lib/users';
+import ThemeToggle from '@/components/ThemeToggle';
 
 export default function TopNav() {
   const router = useRouter();
@@ -44,10 +45,10 @@ export default function TopNav() {
   const isOnDashboard = pathname === '/dashboard';
 
   return (
-    <header className="h-16 bg-white border-b border-gray-100 flex items-center px-6 justify-between shrink-0">
+    <header className="h-16 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 flex items-center px-6 justify-between shrink-0">
       <Link
         href="/dashboard"
-        className="text-lg font-bold text-gray-900 hover:text-blue-600 transition-colors"
+        className="text-lg font-bold text-gray-900 dark:text-gray-100 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
       >
         Comprovi
       </Link>
@@ -57,8 +58,8 @@ export default function TopNav() {
           href="/spreadsheets"
           className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
             pathname.startsWith('/spreadsheets')
-              ? 'text-blue-600'
-              : 'text-gray-500 hover:text-gray-900'
+              ? 'text-blue-600 dark:text-blue-400'
+              : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
           }`}
         >
           <svg
@@ -83,8 +84,8 @@ export default function TopNav() {
             href="/admin/users"
             className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
               pathname.startsWith('/admin')
-                ? 'text-blue-600'
-                : 'text-gray-500 hover:text-gray-900'
+                ? 'text-blue-600 dark:text-blue-400'
+                : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'
             }`}
           >
             <svg
@@ -108,7 +109,7 @@ export default function TopNav() {
         {!isOnDashboard && (
           <Link
             href="/dashboard"
-            className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 transition-colors"
+            className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100 transition-colors"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -124,6 +125,8 @@ export default function TopNav() {
           </Link>
         )}
 
+        <ThemeToggle />
+
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setOpen((prev) => !prev)}
@@ -137,13 +140,13 @@ export default function TopNav() {
           </button>
 
           {open && (
-            <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-1 z-50">
+            <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-100 dark:border-gray-800 py-1 z-50">
               {user && (
-                <div className="px-4 py-3 border-b border-gray-100">
-                  <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
-                  <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-800">
+                  <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">{user.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
                   {user.admin && (
-                    <span className="inline-block mt-1 text-xs font-medium bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">
+                    <span className="inline-block mt-1 text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-400 px-1.5 py-0.5 rounded-full">
                       Admin
                     </span>
                   )}
@@ -152,12 +155,12 @@ export default function TopNav() {
 
               <Link
                 href="/profile"
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
                 onClick={() => setOpen(false)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 text-gray-400"
+                  className="w-4 h-4 text-gray-400 dark:text-gray-500"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -175,12 +178,12 @@ export default function TopNav() {
               {user?.admin && (
                 <Link
                   href="/admin/users"
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-gray-300 dark:hover:bg-gray-800 transition-colors"
                   onClick={() => setOpen(false)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="w-4 h-4 text-gray-400"
+                    className="w-4 h-4 text-gray-400 dark:text-gray-500"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -196,11 +199,11 @@ export default function TopNav() {
                 </Link>
               )}
 
-              <hr className="my-1 border-gray-100" />
+              <hr className="my-1 border-gray-100 dark:border-gray-800" />
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40 transition-colors"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -180,8 +180,8 @@ export default function AdminUsersPage() {
       {/* Page header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Usuários</h1>
-          <p className="text-sm text-gray-500 mt-1">Gerencie os usuários do sistema</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Usuários</h1>
+          <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Gerencie os usuários do sistema</p>
         </div>
         <button
           onClick={openCreate}
@@ -197,11 +197,11 @@ export default function AdminUsersPage() {
       {/* Filters */}
       <form
         onSubmit={handleSearch}
-        className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6"
+        className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 mb-6 dark:border-gray-800 dark:bg-gray-900"
       >
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide dark:text-gray-400">
               Nome
             </label>
             <input
@@ -209,11 +209,11 @@ export default function AdminUsersPage() {
               value={filters.name}
               onChange={updateFilter('name')}
               placeholder="Buscar por nome"
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide dark:text-gray-400">
               E-mail
             </label>
             <input
@@ -221,11 +221,11 @@ export default function AdminUsersPage() {
               value={filters.email}
               onChange={updateFilter('email')}
               placeholder="Buscar por e-mail"
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide dark:text-gray-400">
               CPF
             </label>
             <input
@@ -234,11 +234,11 @@ export default function AdminUsersPage() {
               onChange={updateFilter('cpf')}
               placeholder="Buscar por CPF"
               maxLength={11}
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide">
+            <label className="block text-xs font-medium text-gray-500 mb-1.5 uppercase tracking-wide dark:text-gray-400">
               Telefone
             </label>
             <input
@@ -246,7 +246,7 @@ export default function AdminUsersPage() {
               value={filters.phone}
               onChange={updateFilter('phone')}
               placeholder="Ex: 11987654321"
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
             />
           </div>
         </div>
@@ -260,7 +260,7 @@ export default function AdminUsersPage() {
           <button
             type="button"
             onClick={handleClear}
-            className="px-5 py-2 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+            className="px-5 py-2 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-900"
           >
             Limpar
           </button>
@@ -269,71 +269,71 @@ export default function AdminUsersPage() {
 
       {/* Global error */}
       {error && (
-        <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+        <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
           {error}
         </div>
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-800 dark:bg-gray-900">
         {loading ? (
-          <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
+          <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-gray-500">
             Carregando...
           </div>
         ) : users.length === 0 ? (
-          <div className="flex items-center justify-center h-48 text-gray-400 text-sm">
+          <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-gray-500">
             Nenhum usuário encontrado.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50">
-                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                <tr className="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800">
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">
                     Usuário
                   </th>
-                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">
                     Telefone
                   </th>
-                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">
                     CPF
                   </th>
-                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">
                     Cadastro
                   </th>
-                  <th className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <th className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">
                     Ações
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
+              <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
                 {users.map((user) => (
-                  <tr key={user.idUser} className="hover:bg-gray-50 transition-colors">
+                  <tr key={user.idUser} className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-800">
                     <td className="px-5 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-bold shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 text-xs font-bold shrink-0 dark:text-blue-400 dark:bg-blue-950/60">
                           {getInitials(user.name)}
                         </div>
                         <div>
-                          <div className="font-medium text-gray-900 flex items-center gap-2">
+                          <div className="font-medium text-gray-900 flex items-center gap-2 dark:text-gray-100">
                             {user.name}
                             {user.admin && (
-                              <span className="text-xs font-medium bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full">
+                              <span className="text-xs font-medium bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-full dark:text-blue-400 dark:bg-blue-950/60">
                                 Admin
                               </span>
                             )}
                           </div>
-                          <div className="text-xs text-gray-500">{user.email}</div>
+                          <div className="text-xs text-gray-500 dark:text-gray-400">{user.email}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-5 py-4 text-gray-600">{user.phone ?? '—'}</td>
-                    <td className="px-5 py-4 text-gray-600">{user.cpf ?? '—'}</td>
-                    <td className="px-5 py-4 text-gray-600">{formatDate(user.createdAt)}</td>
+                    <td className="px-5 py-4 text-gray-600 dark:text-gray-400">{user.phone ?? '—'}</td>
+                    <td className="px-5 py-4 text-gray-600 dark:text-gray-400">{user.cpf ?? '—'}</td>
+                    <td className="px-5 py-4 text-gray-600 dark:text-gray-400">{formatDate(user.createdAt)}</td>
                     <td className="px-5 py-4">
                       {confirmDelete === user.idUser ? (
                         <div className="flex items-center justify-end gap-2">
-                          <span className="text-xs text-gray-500">Confirmar exclusão?</span>
+                          <span className="text-xs text-gray-500 dark:text-gray-400">Confirmar exclusão?</span>
                           <button
                             onClick={() => handleDelete(user.idUser)}
                             disabled={deleting === user.idUser}
@@ -343,7 +343,7 @@ export default function AdminUsersPage() {
                           </button>
                           <button
                             onClick={() => setConfirmDelete(null)}
-                            className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors"
+                            className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors dark:hover:bg-gray-700 dark:text-gray-400 dark:bg-gray-800"
                           >
                             Não
                           </button>
@@ -352,13 +352,13 @@ export default function AdminUsersPage() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => openEdit(user)}
-                            className="text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
+                            className="text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-blue-300 dark:hover:bg-blue-900/50 dark:text-blue-400 dark:bg-blue-950/40"
                           >
                             Editar
                           </button>
                           <button
                             onClick={() => setConfirmDelete(user.idUser)}
-                            className="text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
+                            className="text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-red-300 dark:hover:bg-red-900/50 dark:text-red-400 dark:bg-red-950/40"
                           >
                             Excluir
                           </button>
@@ -374,7 +374,7 @@ export default function AdminUsersPage() {
 
         {/* Table footer */}
         {!loading && users.length > 0 && (
-          <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-400">
+          <div className="px-5 py-3 border-t border-gray-100 text-xs text-gray-400 dark:border-gray-800 dark:text-gray-500">
             {users.length} {users.length === 1 ? 'usuário encontrado' : 'usuários encontrados'}
           </div>
         )}
@@ -384,10 +384,10 @@ export default function AdminUsersPage() {
       {createState && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setCreateState(null)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto dark:bg-gray-900">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900">Novo usuário</h2>
-              <button onClick={() => setCreateState(null)} className="text-gray-400 hover:text-gray-600 transition-colors" aria-label="Fechar">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Novo usuário</h2>
+              <button onClick={() => setCreateState(null)} className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-gray-300 dark:text-gray-500" aria-label="Fechar">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -395,14 +395,14 @@ export default function AdminUsersPage() {
             </div>
 
             {createState.error && (
-              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
                 {createState.error}
               </div>
             )}
 
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                   Nome completo <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -411,12 +411,12 @@ export default function AdminUsersPage() {
                   onChange={updateCreateField('name')}
                   required
                   placeholder="João Silva"
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                   E-mail <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -425,36 +425,36 @@ export default function AdminUsersPage() {
                   onChange={updateCreateField('email')}
                   required
                   placeholder="joao@email.com"
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">Telefone</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">Telefone</label>
                   <input
                     type="tel"
                     value={createState.form.phone}
                     onChange={updateCreateField('phone')}
                     placeholder="11987654321"
-                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">CPF</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">CPF</label>
                   <input
                     type="text"
                     value={createState.form.cpf}
                     onChange={updateCreateField('cpf')}
                     placeholder="12345678901"
                     maxLength={11}
-                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                   Senha <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -463,12 +463,12 @@ export default function AdminUsersPage() {
                   onChange={updateCreateField('password')}
                   required
                   placeholder="Mínimo 6 caracteres"
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                   Confirmar senha <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -477,7 +477,7 @@ export default function AdminUsersPage() {
                   onChange={updateCreateField('confirmPassword')}
                   required
                   placeholder="••••••••"
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:placeholder-gray-500 dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
 
@@ -492,7 +492,7 @@ export default function AdminUsersPage() {
                 <button
                   type="button"
                   onClick={() => setCreateState(null)}
-                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-900"
                 >
                   Cancelar
                 </button>
@@ -509,15 +509,15 @@ export default function AdminUsersPage() {
             className="absolute inset-0 bg-black/40 backdrop-blur-sm"
             onClick={() => setEditState(null)}
           />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 dark:bg-gray-900">
             <div className="flex items-center justify-between mb-6">
               <div>
-                <h2 className="text-lg font-bold text-gray-900">Editar usuário</h2>
-                <p className="text-sm text-gray-500 mt-0.5">#{editState.user.idUser}</p>
+                <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">Editar usuário</h2>
+                <p className="text-sm text-gray-500 mt-0.5 dark:text-gray-400">#{editState.user.idUser}</p>
               </div>
               <button
                 onClick={() => setEditState(null)}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-gray-300 dark:text-gray-500"
                 aria-label="Fechar"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -527,14 +527,14 @@ export default function AdminUsersPage() {
             </div>
 
             {editState.error && (
-              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
+              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
                 {editState.error}
               </div>
             )}
 
             <form onSubmit={handleSaveEdit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                   Nome completo
                 </label>
                 <input
@@ -542,12 +542,12 @@ export default function AdminUsersPage() {
                   value={editState.form.name}
                   onChange={updateEditField('name')}
                   required
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                   E-mail
                 </label>
                 <input
@@ -555,13 +555,13 @@ export default function AdminUsersPage() {
                   value={editState.form.email}
                   onChange={updateEditField('email')}
                   required
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                     Telefone
                   </label>
                   <input
@@ -569,11 +569,11 @@ export default function AdminUsersPage() {
                     value={editState.form.phone}
                     onChange={updateEditField('phone')}
                     placeholder="11987654321"
-                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-700 dark:text-gray-100"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                     CPF
                   </label>
                   <input
@@ -582,15 +582,15 @@ export default function AdminUsersPage() {
                     onChange={updateEditField('cpf')}
                     placeholder="12345678901"
                     maxLength={11}
-                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-700 dark:text-gray-100"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
                   Nova senha{' '}
-                  <span className="text-gray-400 font-normal">(deixe em branco para não alterar)</span>
+                  <span className="text-gray-400 font-normal dark:text-gray-500">(deixe em branco para não alterar)</span>
                 </label>
                 <input
                   type="password"
@@ -598,7 +598,7 @@ export default function AdminUsersPage() {
                   onChange={updateEditField('password')}
                   placeholder="Mínimo 6 caracteres"
                   minLength={6}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-700 dark:text-gray-100"
                 />
               </div>
 
@@ -613,7 +613,7 @@ export default function AdminUsersPage() {
                 <button
                   type="button"
                   onClick={() => setEditState(null)}
-                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors"
+                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-900"
                 >
                   Cancelar
                 </button>
