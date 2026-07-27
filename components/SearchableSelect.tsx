@@ -117,12 +117,12 @@ export default function SearchableSelect({
         aria-haspopup="listbox"
         aria-expanded={open}
       >
-        <span className={`truncate ${selected ? '' : 'text-gray-400 dark:text-gray-500'}`}>
+        <span className={`truncate ${selected ? '' : 'text-gray-400 dark:text-brand-muted'}`}>
           {selected ? selected.label : placeholder}
         </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-4 h-4 shrink-0 text-gray-400 dark:text-gray-500"
+          className="w-4 h-4 shrink-0 text-gray-400 dark:text-brand-muted"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -133,8 +133,8 @@ export default function SearchableSelect({
       </button>
 
       {open && (
-        <div className="absolute z-50 mt-1.5 w-full bg-white rounded-lg border border-gray-200 shadow-lg overflow-hidden dark:bg-gray-900 dark:border-gray-700">
-          <div className="p-2 border-b border-gray-100 dark:border-gray-800">
+        <div className="absolute z-50 mt-1.5 w-full bg-white rounded-lg border border-gray-200 shadow-lg overflow-hidden dark:bg-brand-surface dark:border-brand-muted/30">
+          <div className="p-2 border-b border-gray-100 dark:border-brand-muted/20">
             <input
               autoFocus
               type="text"
@@ -142,12 +142,12 @@ export default function SearchableSelect({
               onChange={(e) => updateQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               placeholder={searchPlaceholder}
-              className="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+              className="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
             />
           </div>
           <ul role="listbox" className="max-h-56 overflow-y-auto py-1">
             {filtered.length === 0 ? (
-              <li className="px-3 py-2 text-sm text-gray-400 dark:text-gray-500">{noResultsLabel}</li>
+              <li className="px-3 py-2 text-sm text-gray-400 dark:text-brand-muted">{noResultsLabel}</li>
             ) : (
               filtered.map((option, i) => (
                 <li key={option.value} role="option" aria-selected={option.value === value}>
@@ -157,10 +157,10 @@ export default function SearchableSelect({
                     onMouseEnter={() => setActiveIndex(i)}
                     className={`w-full text-left px-3 py-2 text-sm truncate transition-colors ${
                       option.value === value
-                        ? 'bg-blue-50 text-blue-700 font-medium dark:bg-blue-950/60 dark:text-blue-400'
+                        ? 'bg-brand-primary/10 text-brand-primary font-medium dark:bg-brand-primary/60 dark:text-brand-primary'
                         : i === activeIndex
-                          ? 'bg-gray-50 text-gray-900 dark:bg-gray-800 dark:text-gray-100'
-                          : 'text-gray-700 dark:text-gray-300'
+                          ? 'bg-gray-50 text-gray-900 dark:bg-brand-surface dark:text-brand-fg'
+                          : 'text-gray-700 dark:text-brand-fg'
                     }`}
                   >
                     {option.label}

@@ -49,14 +49,14 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-brand-bg px-4 py-12">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Comprovi</h1>
-          <p className="text-gray-500 mt-2 text-sm dark:text-gray-400">Crie sua conta gratuitamente</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-brand-fg">Comprovi</h1>
+          <p className="text-gray-500 mt-2 text-sm dark:text-brand-muted">Crie sua conta gratuitamente</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 dark:bg-gray-900 dark:border-gray-800">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 dark:bg-brand-surface dark:border-brand-muted/20">
           {error && (
             <div className="mb-5 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:bg-red-950/40 dark:border-red-900 dark:text-red-400">
               {error}
@@ -65,7 +65,7 @@ export default function RegisterPage() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
                 Nome completo <span className="text-red-500">*</span>
               </label>
               <input
@@ -76,12 +76,12 @@ export default function RegisterPage() {
                 required
                 autoComplete="name"
                 placeholder="João Silva"
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
               />
             </div>
 
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
                 E-mail <span className="text-red-500">*</span>
               </label>
               <input
@@ -92,13 +92,13 @@ export default function RegisterPage() {
                 required
                 autoComplete="email"
                 placeholder="seu@email.com"
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
                   Telefone
                 </label>
                 <input
@@ -108,11 +108,11 @@ export default function RegisterPage() {
                   onChange={update('phone')}
                   autoComplete="tel"
                   placeholder="+5511987654321"
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
                 />
               </div>
               <div>
-                <label htmlFor="cpf" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+                <label htmlFor="cpf" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
                   CPF
                 </label>
                 <input
@@ -122,13 +122,13 @@ export default function RegisterPage() {
                   onChange={update('cpf')}
                   placeholder="12345678901"
                   maxLength={11}
-                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+                  className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
                 Senha <span className="text-red-500">*</span>
               </label>
               <input
@@ -139,12 +139,12 @@ export default function RegisterPage() {
                 required
                 autoComplete="new-password"
                 placeholder="Mínimo 6 caracteres"
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
                 Confirmar senha <span className="text-red-500">*</span>
               </label>
               <input
@@ -155,23 +155,23 @@ export default function RegisterPage() {
                 required
                 autoComplete="new-password"
                 placeholder="••••••••"
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors mt-2"
+              className="w-full py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors mt-2"
             >
               {loading ? 'Criando conta...' : 'Criar conta'}
             </button>
           </form>
         </div>
 
-        <p className="text-center text-sm text-gray-500 mt-6 dark:text-gray-400">
+        <p className="text-center text-sm text-gray-500 mt-6 dark:text-brand-muted">
           Já tem uma conta?{' '}
-          <Link href="/login" className="text-blue-600 font-semibold hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+          <Link href="/login" className="text-brand-primary font-semibold hover:text-brand-primary dark:text-brand-primary dark:hover:text-brand-primary/80">
             Entrar
           </Link>
         </p>

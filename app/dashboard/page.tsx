@@ -87,9 +87,9 @@ function buildSubcategories(expenses: DashboardExpense[]) {
 function BarTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900">
-      {label && <p className="font-medium text-gray-700 mb-1 dark:text-gray-300">{label}</p>}
-      <p className="text-blue-600 font-semibold dark:text-blue-400">{fmt(payload[0].value)}</p>
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 text-sm dark:border-brand-muted/30 dark:bg-brand-surface">
+      {label && <p className="font-medium text-gray-700 mb-1 dark:text-brand-fg">{label}</p>}
+      <p className="text-brand-primary font-semibold dark:text-brand-primary">{fmt(payload[0].value)}</p>
     </div>
   );
 }
@@ -97,10 +97,10 @@ function BarTooltip({ active, payload, label }: { active?: boolean; payload?: Ar
 function PieTooltip({ active, payload }: { active?: boolean; payload?: Array<{ name: string; value: number; payload: { pct: number } }> }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900">
-      <p className="font-medium text-gray-700 dark:text-gray-300">{payload[0].name}</p>
-      <p className="text-blue-600 font-semibold dark:text-blue-400">{fmt(payload[0].value)}</p>
-      <p className="text-gray-400 text-xs dark:text-gray-500">{payload[0].payload.pct.toFixed(1)}% do total</p>
+    <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 text-sm dark:border-brand-muted/30 dark:bg-brand-surface">
+      <p className="font-medium text-gray-700 dark:text-brand-fg">{payload[0].name}</p>
+      <p className="text-brand-primary font-semibold dark:text-brand-primary">{fmt(payload[0].value)}</p>
+      <p className="text-gray-400 text-xs dark:text-brand-muted">{payload[0].payload.pct.toFixed(1)}% do total</p>
     </div>
   );
 }
@@ -111,7 +111,7 @@ function MetricCard({
   label,
   value,
   sub,
-  color = 'text-gray-900 dark:text-gray-100',
+  color = 'text-gray-900 dark:text-brand-fg',
 }: {
   label: string;
   value: string;
@@ -119,10 +119,10 @@ function MetricCard({
   color?: string;
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-gray-800 dark:bg-gray-900">
-      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1 dark:text-gray-500">{label}</p>
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-brand-muted/20 dark:bg-brand-surface">
+      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1 dark:text-brand-muted">{label}</p>
       <p className={`text-xl sm:text-2xl font-bold ${color} leading-tight break-words`}>{value}</p>
-      {sub && <p className="text-xs text-gray-400 mt-1 dark:text-gray-500">{sub}</p>}
+      {sub && <p className="text-xs text-gray-400 mt-1 dark:text-brand-muted">{sub}</p>}
     </div>
   );
 }
@@ -133,14 +133,14 @@ function CategoryBar({ name, value, pct, color }: { name: string; value: number;
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
-          <span className="text-gray-600 truncate dark:text-gray-400">{name}</span>
+          <span className="text-gray-600 truncate dark:text-brand-muted">{name}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-2">
-          <span className="text-gray-400 dark:text-gray-500">{pct.toFixed(1)}%</span>
-          <span className="font-semibold text-gray-800 w-24 text-right dark:text-gray-200">{fmt(value)}</span>
+          <span className="text-gray-400 dark:text-brand-muted">{pct.toFixed(1)}%</span>
+          <span className="font-semibold text-gray-800 w-24 text-right dark:text-brand-fg">{fmt(value)}</span>
         </div>
       </div>
-      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden dark:bg-gray-800">
+      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden dark:bg-brand-surface">
         <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
       </div>
     </div>
@@ -153,15 +153,15 @@ function SpreadsheetDetailPanel({ sheet, onClose }: { sheet: DashboardSpreadshee
   const topExpenses = [...sheet.expenses].sort((a, b) => b.amount - a.amount).slice(0, 5);
 
   return (
-    <div className="col-span-full bg-white rounded-2xl border border-blue-200 shadow-md p-6 animate-in dark:bg-gray-900">
+    <div className="col-span-full bg-white rounded-2xl border border-brand-primary/30 shadow-md p-6 animate-in dark:bg-brand-surface">
       <div className="flex items-center justify-between mb-5">
         <div>
-          <h3 className="text-base font-bold text-gray-900 dark:text-gray-100">{sheet.name}</h3>
-          <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">{sheet.expenses.length} lançamentos — total {fmt(sheet.totalExpenses)}</p>
+          <h3 className="text-base font-bold text-gray-900 dark:text-brand-fg">{sheet.name}</h3>
+          <p className="text-xs text-gray-400 mt-0.5 dark:text-brand-muted">{sheet.expenses.length} lançamentos — total {fmt(sheet.totalExpenses)}</p>
         </div>
         <button
           onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-gray-300 dark:text-gray-500"
+          className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-brand-fg dark:text-brand-muted"
           aria-label="Fechar detalhe"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -173,9 +173,9 @@ function SpreadsheetDetailPanel({ sheet, onClose }: { sheet: DashboardSpreadshee
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Category breakdown */}
         <div className="space-y-3">
-          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Por Categoria</h4>
+          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Por Categoria</h4>
           {categories.length === 0 ? (
-            <p className="text-sm text-gray-400 dark:text-gray-500">Sem dados</p>
+            <p className="text-sm text-gray-400 dark:text-brand-muted">Sem dados</p>
           ) : (
             <div className="space-y-2.5">
               {categories.map(({ name, value }, i) => (
@@ -192,7 +192,7 @@ function SpreadsheetDetailPanel({ sheet, onClose }: { sheet: DashboardSpreadshee
 
           {subcategories.length > 0 && (
             <>
-              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide pt-2 dark:text-gray-400">Por Subcategoria</h4>
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide pt-2 dark:text-brand-muted">Por Subcategoria</h4>
               <div className="space-y-2.5">
                 {subcategories.slice(0, 5).map(({ name, value }, i) => (
                   <CategoryBar
@@ -210,16 +210,16 @@ function SpreadsheetDetailPanel({ sheet, onClose }: { sheet: DashboardSpreadshee
 
         {/* Top expenses */}
         <div className="space-y-3">
-          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Maiores Despesas</h4>
+          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Maiores Despesas</h4>
           {topExpenses.length === 0 ? (
-            <p className="text-sm text-gray-400 dark:text-gray-500">Sem despesas</p>
+            <p className="text-sm text-gray-400 dark:text-brand-muted">Sem despesas</p>
           ) : (
-            <div className="divide-y divide-gray-50 dark:divide-gray-800">
+            <div className="divide-y divide-gray-50 dark:divide-brand-muted/20">
               {topExpenses.map((e) => (
                 <div key={e.idExpense} className="py-2.5 flex items-start gap-3">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 truncate dark:text-gray-200">{e.description}</p>
-                    <p className="text-xs text-gray-400 mt-0.5 dark:text-gray-500">
+                    <p className="text-sm font-medium text-gray-800 truncate dark:text-brand-fg">{e.description}</p>
+                    <p className="text-xs text-gray-400 mt-0.5 dark:text-brand-muted">
                       {fmtDate(e.date)} · {e.category.name} · {e.subcategory.name}
                     </p>
                   </div>
@@ -293,18 +293,18 @@ function ExpensesTable({
   const paged = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   function SortIcon({ field }: { field: 'date' | 'amount' }) {
-    if (sortField !== field) return <span className="text-gray-300 ml-1 dark:text-gray-600">↕</span>;
-    return <span className="text-blue-500 ml-1 dark:text-blue-400">{sortDir === 'asc' ? '↑' : '↓'}</span>;
+    if (sortField !== field) return <span className="text-gray-300 ml-1 dark:text-brand-muted">↕</span>;
+    return <span className="text-brand-primary ml-1 dark:text-brand-primary">{sortDir === 'asc' ? '↑' : '↓'}</span>;
   }
 
-  const inputClass = 'px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100';
+  const inputClass = 'px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-white dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg';
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-800 dark:bg-gray-900">
+    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-brand-muted/20 dark:bg-brand-surface">
       {/* Filters */}
-      <div className="p-4 border-b border-gray-100 flex flex-wrap gap-3 dark:border-gray-800">
+      <div className="p-4 border-b border-gray-100 flex flex-wrap gap-3 dark:border-brand-muted/20">
         <div className="relative flex-1 min-w-48">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
@@ -340,7 +340,7 @@ function ExpensesTable({
         {(search || filterSheet || filterCat) && (
           <button
             onClick={() => { setSearch(''); setFilterSheet(''); setFilterCat(''); setPage(1); }}
-            className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors dark:hover:text-gray-200 dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+            className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors dark:hover:text-brand-fg dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted"
           >
             Limpar
           </button>
@@ -351,43 +351,43 @@ function ExpensesTable({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-100 dark:border-gray-800 dark:bg-gray-800">
+            <tr className="bg-gray-50 border-b border-gray-100 dark:border-brand-muted/20 dark:bg-brand-surface">
               <th
-                className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200 dark:text-gray-400"
+                className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-gray-700 dark:hover:text-brand-fg dark:text-brand-muted"
                 onClick={() => toggleSort('date')}
               >
                 Data <SortIcon field="date" />
               </th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Descrição</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Categoria</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Subcategoria</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Descrição</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Categoria</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Subcategoria</th>
               {spreadsheets.length > 1 && (
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Planilha</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Planilha</th>
               )}
               <th
-                className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-gray-700 dark:hover:text-gray-200 dark:text-gray-400"
+                className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-gray-700 dark:hover:text-brand-fg dark:text-brand-muted"
                 onClick={() => toggleSort('amount')}
               >
                 Valor <SortIcon field="amount" />
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+          <tbody className="divide-y divide-gray-50 dark:divide-brand-muted/20">
             {paged.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-5 py-10 text-center text-sm text-gray-400 dark:text-gray-500">
+                <td colSpan={6} className="px-5 py-10 text-center text-sm text-gray-400 dark:text-brand-muted">
                   Nenhum lançamento encontrado.
                 </td>
               </tr>
             ) : (
               paged.map((e) => (
-                <tr key={e.idExpense} className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-800">
-                  <td className="px-5 py-3.5 text-gray-500 whitespace-nowrap dark:text-gray-400">{fmtDate(e.date)}</td>
-                  <td className="px-5 py-3.5 text-gray-900 font-medium max-w-xs truncate dark:text-gray-100">{e.description}</td>
-                  <td className="px-5 py-3.5 text-gray-600 dark:text-gray-400">{e.category.name}</td>
-                  <td className="px-5 py-3.5 text-gray-500 dark:text-gray-400">{e.subcategory.name}</td>
+                <tr key={e.idExpense} className="hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface">
+                  <td className="px-5 py-3.5 text-gray-500 whitespace-nowrap dark:text-brand-muted">{fmtDate(e.date)}</td>
+                  <td className="px-5 py-3.5 text-gray-900 font-medium max-w-xs truncate dark:text-brand-fg">{e.description}</td>
+                  <td className="px-5 py-3.5 text-gray-600 dark:text-brand-muted">{e.category.name}</td>
+                  <td className="px-5 py-3.5 text-gray-500 dark:text-brand-muted">{e.subcategory.name}</td>
                   {spreadsheets.length > 1 && (
-                    <td className="px-5 py-3.5 text-gray-500 dark:text-gray-400">{expenseMap.get(e.idExpense) ?? '—'}</td>
+                    <td className="px-5 py-3.5 text-gray-500 dark:text-brand-muted">{expenseMap.get(e.idExpense) ?? '—'}</td>
                   )}
                   <td className="px-5 py-3.5 text-right font-semibold text-red-600 whitespace-nowrap dark:text-red-400">{fmt(e.amount)}</td>
                 </tr>
@@ -398,8 +398,8 @@ function ExpensesTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5 py-3.5 border-t border-gray-100 dark:border-gray-800">
-        <span className="text-xs text-gray-400 dark:text-gray-500">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5 py-3.5 border-t border-gray-100 dark:border-brand-muted/20">
+        <span className="text-xs text-gray-400 dark:text-brand-muted">
           {filtered.length} {filtered.length === 1 ? 'lançamento' : 'lançamentos'}
           {filtered.length !== expenses.length && ` de ${expenses.length}`}
           {totalPages > 1 && ` — página ${page} de ${totalPages}`}
@@ -409,7 +409,7 @@ function ExpensesTable({
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted"
             >
               Anterior
             </button>
@@ -419,7 +419,7 @@ function ExpensesTable({
                 <button
                   key={p}
                   onClick={() => setPage(p)}
-                  className={`w-8 h-8 text-xs font-medium rounded-lg transition-colors ${p === page ? 'bg-blue-600 text-white' : 'border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'
+                  className={`w-8 h-8 text-xs font-medium rounded-lg transition-colors ${p === page ? 'bg-brand-primary text-white' : 'border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-brand-muted/30 dark:text-brand-muted dark:hover:bg-brand-surface'
                     }`}
                 >
                   {p}
@@ -429,7 +429,7 @@ function ExpensesTable({
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted"
             >
               Próxima
             </button>
@@ -507,33 +507,33 @@ export default function DashboardPage() {
       {/* ── Header + filter ── */}
       <div className="flex flex-col sm:flex-row sm:items-end gap-4 justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Visão geral das suas finanças</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-brand-fg">Dashboard</h1>
+          <p className="text-sm text-gray-500 mt-1 dark:text-brand-muted">Visão geral das suas finanças</p>
         </div>
         <form onSubmit={applyFilter} className="flex flex-wrap items-end gap-3">
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-gray-400">Data inicial</label>
+            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data inicial</label>
             <input
               type="date"
               value={pendingStart}
               onChange={(e) => setPendingStart(e.target.value)}
               max={pendingEnd}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-700 dark:text-gray-100"
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg"
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-gray-400">Data final</label>
+            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data final</label>
             <input
               type="date"
               value={pendingEnd}
               onChange={(e) => setPendingEnd(e.target.value)}
               min={pendingStart}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-700 dark:text-gray-100"
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg"
             />
           </div>
           <button
             type="submit"
-            className="px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            className="px-4 py-2 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-colors"
           >
             Aplicar
           </button>
@@ -545,9 +545,9 @@ export default function DashboardPage() {
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center h-64 text-gray-400 dark:text-gray-500">
+        <div className="flex items-center justify-center h-64 text-gray-400 dark:text-brand-muted">
           <div className="flex flex-col items-center gap-3">
-            <svg className="animate-spin w-8 h-8 text-blue-500 dark:text-blue-400" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin w-8 h-8 text-brand-primary dark:text-brand-primary" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
             </svg>
@@ -555,12 +555,12 @@ export default function DashboardPage() {
           </div>
         </div>
       ) : !hasData ? (
-        <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-300 dark:text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm dark:border-brand-muted/20 dark:bg-brand-surface">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-300 dark:text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <p className="text-gray-500 font-medium dark:text-gray-400">Nenhum dado para o período selecionado.</p>
-          <p className="text-gray-400 text-sm dark:text-gray-500">Ajuste o intervalo de datas ou adicione despesas às suas planilhas.</p>
+          <p className="text-gray-500 font-medium dark:text-brand-muted">Nenhum dado para o período selecionado.</p>
+          <p className="text-gray-400 text-sm dark:text-brand-muted">Ajuste o intervalo de datas ou adicione despesas às suas planilhas.</p>
         </div>
       ) : (
         <>
@@ -602,10 +602,10 @@ export default function DashboardPage() {
           {/* ── Charts ── */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Monthly bar chart */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-gray-800 dark:bg-gray-900">
-              <h2 className="text-sm font-semibold text-gray-700 mb-4 dark:text-gray-300">Evolução Mensal de Despesas</h2>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-brand-muted/20 dark:bg-brand-surface">
+              <h2 className="text-sm font-semibold text-gray-700 mb-4 dark:text-brand-fg">Evolução Mensal de Despesas</h2>
               {monthlyData.length === 0 ? (
-                <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-gray-500">
+                <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-brand-muted">
                   Sem dados mensais no período
                 </div>
               ) : (
@@ -632,10 +632,10 @@ export default function DashboardPage() {
             </div>
 
             {/* Category donut + breakdown */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-gray-800 dark:bg-gray-900">
-              <h2 className="text-sm font-semibold text-gray-700 mb-4 dark:text-gray-300">Distribuição por Categoria</h2>
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-brand-muted/20 dark:bg-brand-surface">
+              <h2 className="text-sm font-semibold text-gray-700 mb-4 dark:text-brand-fg">Distribuição por Categoria</h2>
               {categoryData.length === 0 ? (
-                <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-gray-500">
+                <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-brand-muted">
                   Sem dados de categoria
                 </div>
               ) : (
@@ -659,11 +659,11 @@ export default function DashboardPage() {
                       <Legend
                         iconType="circle"
                         iconSize={8}
-                        formatter={(v) => <span className="text-xs text-gray-600 dark:text-gray-400">{v}</span>}
+                        formatter={(v) => <span className="text-xs text-gray-600 dark:text-brand-muted">{v}</span>}
                       />
                     </PieChart>
                   </ResponsiveContainer>
-                  <div className="space-y-2 pt-1 border-t border-gray-100 dark:border-gray-800">
+                  <div className="space-y-2 pt-1 border-t border-gray-100 dark:border-brand-muted/20">
                     {categoryData.map(({ name, value, pct }, i) => (
                       <CategoryBar key={name} name={name} value={value} pct={pct} color={COLORS[i % COLORS.length]} />
                     ))}
@@ -677,7 +677,7 @@ export default function DashboardPage() {
 
           {/* ── Expenses table ── */}
           <div>
-            <h2 className="text-sm font-semibold text-gray-700 mb-3 dark:text-gray-300">Lançamentos</h2>
+            <h2 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Lançamentos</h2>
             <ExpensesTable expenses={allExpenses} spreadsheets={spreadsheets} />
           </div>
         </>

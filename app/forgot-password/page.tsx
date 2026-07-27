@@ -25,14 +25,14 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-brand-bg px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Comprovi</h1>
-          <p className="text-gray-500 mt-2 text-sm dark:text-gray-400">Redefinição de senha</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-brand-fg">Comprovi</h1>
+          <p className="text-gray-500 mt-2 text-sm dark:text-brand-muted">Redefinição de senha</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 dark:bg-gray-900 dark:border-gray-800">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 dark:bg-brand-surface dark:border-brand-muted/20">
           {success ? (
             <div className="text-center py-4">
               <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 dark:bg-green-950/50">
@@ -40,20 +40,20 @@ export default function ForgotPasswordPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-2 dark:text-gray-100">E-mail enviado!</h2>
-              <p className="text-sm text-gray-500 mb-6 dark:text-gray-400">
+              <h2 className="text-lg font-semibold text-gray-900 mb-2 dark:text-brand-fg">E-mail enviado!</h2>
+              <p className="text-sm text-gray-500 mb-6 dark:text-brand-muted">
                 Se o e-mail <strong>{email}</strong> estiver cadastrado, você receberá as instruções para redefinir sua senha.
               </p>
               <Link
                 href="/login"
-                className="text-sm text-blue-600 font-semibold hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                className="text-sm text-brand-primary font-semibold hover:text-brand-primary dark:text-brand-primary dark:hover:text-brand-primary/80"
               >
                 Voltar para o login
               </Link>
             </div>
           ) : (
             <>
-              <p className="text-sm text-gray-600 mb-6 dark:text-gray-300">
+              <p className="text-sm text-gray-600 mb-6 dark:text-brand-fg">
                 Informe seu e-mail e enviaremos um link para você redefinir sua senha.
               </p>
 
@@ -65,7 +65,7 @@ export default function ForgotPasswordPage() {
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
                     E-mail
                   </label>
                   <input
@@ -76,14 +76,14 @@ export default function ForgotPasswordPage() {
                     required
                     autoComplete="email"
                     placeholder="seu@email.com"
-                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                  className="w-full py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                 >
                   {loading ? 'Enviando...' : 'Enviar link de redefinição'}
                 </button>
@@ -93,9 +93,9 @@ export default function ForgotPasswordPage() {
         </div>
 
         {!success && (
-          <p className="text-center text-sm text-gray-500 mt-6 dark:text-gray-400">
+          <p className="text-center text-sm text-gray-500 mt-6 dark:text-brand-muted">
             Lembrou a senha?{' '}
-            <Link href="/login" className="text-blue-600 font-semibold hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+            <Link href="/login" className="text-brand-primary font-semibold hover:text-brand-primary dark:text-brand-primary dark:hover:text-brand-primary/80">
               Voltar ao login
             </Link>
           </p>

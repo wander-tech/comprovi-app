@@ -54,11 +54,11 @@ function ResetPasswordForm() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
         </div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-2 dark:text-gray-100">Link inválido</h2>
-        <p className="text-sm text-gray-500 mb-6 dark:text-gray-400">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2 dark:text-brand-fg">Link inválido</h2>
+        <p className="text-sm text-gray-500 mb-6 dark:text-brand-muted">
           O link de redefinição de senha é inválido ou expirou.
         </p>
-        <Link href="/forgot-password" className="text-sm text-blue-600 font-semibold hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+        <Link href="/forgot-password" className="text-sm text-brand-primary font-semibold hover:text-brand-primary dark:text-brand-primary dark:hover:text-brand-primary/80">
           Solicitar novo link
         </Link>
       </div>
@@ -73,13 +73,13 @@ function ResetPasswordForm() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="text-lg font-semibold text-gray-900 mb-2 dark:text-gray-100">Senha redefinida!</h2>
-        <p className="text-sm text-gray-500 mb-6 dark:text-gray-400">
+        <h2 className="text-lg font-semibold text-gray-900 mb-2 dark:text-brand-fg">Senha redefinida!</h2>
+        <p className="text-sm text-gray-500 mb-6 dark:text-brand-muted">
           Sua senha foi atualizada com sucesso. Agora você pode entrar com a nova senha.
         </p>
         <button
           onClick={() => router.push('/login')}
-          className="px-6 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 transition-colors"
+          className="px-6 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 transition-colors"
         >
           Ir para o login
         </button>
@@ -89,7 +89,7 @@ function ResetPasswordForm() {
 
   return (
     <>
-      <p className="text-sm text-gray-600 mb-6 dark:text-gray-300">Escolha uma nova senha para sua conta.</p>
+      <p className="text-sm text-gray-600 mb-6 dark:text-brand-fg">Escolha uma nova senha para sua conta.</p>
 
       {error && (
         <div className="mb-5 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:bg-red-950/40 dark:border-red-900 dark:text-red-400">
@@ -99,7 +99,7 @@ function ResetPasswordForm() {
 
       <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+          <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
             Nova senha
           </label>
           <input
@@ -110,12 +110,12 @@ function ResetPasswordForm() {
             required
             autoComplete="new-password"
             placeholder="Mínimo 6 caracteres"
-            className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+            className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
           />
         </div>
 
         <div>
-          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+          <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
             Confirmar nova senha
           </label>
           <input
@@ -126,14 +126,14 @@ function ResetPasswordForm() {
             required
             autoComplete="new-password"
             placeholder="••••••••"
-            className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500"
+            className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
           />
         </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+          className="w-full py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
         >
           {loading ? 'Salvando...' : 'Salvar nova senha'}
         </button>
@@ -144,21 +144,21 @@ function ResetPasswordForm() {
 
 export default function ResetPasswordPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-brand-bg px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">Comprovi</h1>
-          <p className="text-gray-500 mt-2 text-sm dark:text-gray-400">Redefinição de senha</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-brand-fg">Comprovi</h1>
+          <p className="text-gray-500 mt-2 text-sm dark:text-brand-muted">Redefinição de senha</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 dark:bg-gray-900 dark:border-gray-800">
-          <Suspense fallback={<div className="text-center text-sm text-gray-500 dark:text-gray-400">Carregando...</div>}>
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 dark:bg-brand-surface dark:border-brand-muted/20">
+          <Suspense fallback={<div className="text-center text-sm text-gray-500 dark:text-brand-muted">Carregando...</div>}>
             <ResetPasswordForm />
           </Suspense>
         </div>
 
-        <p className="text-center text-sm text-gray-500 mt-6 dark:text-gray-400">
-          <Link href="/login" className="text-blue-600 font-semibold hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+        <p className="text-center text-sm text-gray-500 mt-6 dark:text-brand-muted">
+          <Link href="/login" className="text-brand-primary font-semibold hover:text-brand-primary dark:text-brand-primary dark:hover:text-brand-primary/80">
             Voltar ao login
           </Link>
         </p>

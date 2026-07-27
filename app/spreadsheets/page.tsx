@@ -26,11 +26,11 @@ interface ModalState {
 
 const STATUS_COLORS: Record<string, string> = {
   active: 'bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-400',
-  closed: 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
+  closed: 'bg-gray-100 text-gray-600 dark:bg-brand-surface dark:text-brand-muted',
 };
 
 function statusColor(cdChave: string) {
-  return STATUS_COLORS[cdChave] ?? 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-400';
+  return STATUS_COLORS[cdChave] ?? 'bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/60 dark:text-brand-primary';
 }
 
 export default function SpreadsheetsPage() {
@@ -145,19 +145,19 @@ export default function SpreadsheetsPage() {
   }
 
   const inputClass =
-    'w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100 dark:placeholder-gray-500';
+    'w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted';
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Planilhas</h1>
-          <p className="text-sm text-gray-500 mt-1 dark:text-gray-400">Gerencie suas planilhas financeiras</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-brand-fg">Planilhas</h1>
+          <p className="text-sm text-gray-500 mt-1 dark:text-brand-muted">Gerencie suas planilhas financeiras</p>
         </div>
         <button
           onClick={openCreate}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors whitespace-nowrap"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-colors whitespace-nowrap"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
@@ -173,13 +173,13 @@ export default function SpreadsheetsPage() {
       )}
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-gray-800 dark:bg-gray-900">
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-brand-muted/20 dark:bg-brand-surface">
         {loading ? (
-          <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-gray-500">Carregando...</div>
+          <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-brand-muted">Carregando...</div>
         ) : spreadsheets.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-48 gap-2">
-            <p className="text-gray-400 text-sm dark:text-gray-500">Nenhuma planilha encontrada.</p>
-            <button onClick={openCreate} className="text-sm text-blue-600 hover:text-blue-700 font-medium dark:hover:text-blue-300 dark:text-blue-400">
+            <p className="text-gray-400 text-sm dark:text-brand-muted">Nenhuma planilha encontrada.</p>
+            <button onClick={openCreate} className="text-sm text-brand-primary hover:text-brand-primary font-medium dark:hover:text-brand-primary/80 dark:text-brand-primary">
               Criar primeira planilha
             </button>
           </div>
@@ -188,33 +188,33 @@ export default function SpreadsheetsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50 dark:border-gray-800 dark:bg-gray-800">
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Nome</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Status</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Observação</th>
-                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Criado em</th>
-                    <th className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-gray-400">Ações</th>
+                  <tr className="border-b border-gray-100 bg-gray-50 dark:border-brand-muted/20 dark:bg-brand-surface">
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Nome</th>
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Status</th>
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Observação</th>
+                    <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Criado em</th>
+                    <th className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-50 dark:divide-gray-800">
+                <tbody className="divide-y divide-gray-50 dark:divide-brand-muted/20">
                   {paged.map((s) => (
-                    <tr key={s.idSpreadsheet} className="hover:bg-gray-50 transition-colors dark:hover:bg-gray-800">
-                      <td className="px-5 py-4 font-medium text-gray-900 dark:text-gray-100 max-w-[220px] truncate">{s.name}</td>
+                    <tr key={s.idSpreadsheet} className="hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface">
+                      <td className="px-5 py-4 font-medium text-gray-900 dark:text-brand-fg max-w-[220px] truncate">{s.name}</td>
                       <td className="px-5 py-4">
                         {s.status ? (
                           <span className={`inline-block text-xs font-medium px-2.5 py-1 rounded-full ${statusColor(s.status.cdChave)}`}>
                             {s.status.name}
                           </span>
                         ) : (
-                          <span className="text-gray-400 text-xs dark:text-gray-500">—</span>
+                          <span className="text-gray-400 text-xs dark:text-brand-muted">—</span>
                         )}
                       </td>
-                      <td className="px-5 py-4 text-gray-500 max-w-xs truncate dark:text-gray-400">{s.observation || '—'}</td>
-                      <td className="px-5 py-4 text-gray-500 whitespace-nowrap dark:text-gray-400">{formatDate(s.createdAt)}</td>
+                      <td className="px-5 py-4 text-gray-500 max-w-xs truncate dark:text-brand-muted">{s.observation || '—'}</td>
+                      <td className="px-5 py-4 text-gray-500 whitespace-nowrap dark:text-brand-muted">{formatDate(s.createdAt)}</td>
                       <td className="px-5 py-4">
                         {confirmDelete === s.idSpreadsheet ? (
                           <div className="flex items-center justify-end gap-2">
-                            <span className="text-xs text-gray-500 dark:text-gray-400">Confirmar exclusão?</span>
+                            <span className="text-xs text-gray-500 dark:text-brand-muted">Confirmar exclusão?</span>
                             <button
                               onClick={() => handleDelete(s.idSpreadsheet)}
                               disabled={deleting === s.idSpreadsheet}
@@ -224,7 +224,7 @@ export default function SpreadsheetsPage() {
                             </button>
                             <button
                               onClick={() => setConfirmDelete(null)}
-                              className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors dark:hover:bg-gray-700 dark:text-gray-400 dark:bg-gray-800"
+                              className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors dark:hover:bg-brand-surface dark:text-brand-muted dark:bg-brand-surface"
                             >
                               Não
                             </button>
@@ -239,7 +239,7 @@ export default function SpreadsheetsPage() {
                             </Link>
                             <button
                               onClick={() => openEdit(s)}
-                              className="text-xs font-medium text-blue-600 hover:text-blue-800 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-blue-300 dark:hover:bg-blue-900/50 dark:text-blue-400 dark:bg-blue-950/40"
+                              className="text-xs font-medium text-brand-primary hover:text-brand-primary bg-brand-primary/10 hover:bg-brand-primary/10 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-brand-primary/80 dark:hover:bg-brand-primary/50 dark:text-brand-primary dark:bg-brand-primary/40"
                             >
                               Editar
                             </button>
@@ -259,15 +259,15 @@ export default function SpreadsheetsPage() {
             </div>
 
             {/* Pagination */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5 py-3.5 border-t border-gray-100 dark:border-gray-800">
-              <span className="text-xs text-gray-400 dark:text-gray-500">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5 py-3.5 border-t border-gray-100 dark:border-brand-muted/20">
+              <span className="text-xs text-gray-400 dark:text-brand-muted">
                 {spreadsheets.length} {spreadsheets.length === 1 ? 'planilha' : 'planilhas'} — página {page} de {totalPages}
               </span>
               <div className="flex items-center flex-wrap gap-1">
                 <button
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
                   disabled={page === 1}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted"
                 >
                   Anterior
                 </button>
@@ -277,8 +277,8 @@ export default function SpreadsheetsPage() {
                     onClick={() => setPage(p)}
                     className={`w-8 h-8 text-xs font-medium rounded-lg transition-colors ${
                       p === page
-                        ? 'bg-blue-600 text-white'
-                        : 'border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800'
+                        ? 'bg-brand-primary text-white'
+                        : 'border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-brand-muted/30 dark:text-brand-muted dark:hover:bg-brand-surface'
                     }`}
                   >
                     {p}
@@ -287,7 +287,7 @@ export default function SpreadsheetsPage() {
                 <button
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                   disabled={page === totalPages}
-                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400"
+                  className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted"
                 >
                   Próxima
                 </button>
@@ -301,12 +301,12 @@ export default function SpreadsheetsPage() {
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setModal(null)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 dark:bg-gray-900">
+          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 dark:bg-brand-surface">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100">
+              <h2 className="text-lg font-bold text-gray-900 dark:text-brand-fg">
                 {modal.mode === 'create' ? 'Nova planilha' : 'Editar planilha'}
               </h2>
-              <button onClick={() => setModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-gray-300 dark:text-gray-500" aria-label="Fechar">
+              <button onClick={() => setModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-brand-fg dark:text-brand-muted" aria-label="Fechar">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -321,7 +321,7 @@ export default function SpreadsheetsPage() {
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
                   Nome <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -335,7 +335,7 @@ export default function SpreadsheetsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">Status</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">Status</label>
                 <SearchableSelect
                   value={modal.form.idSpreadsheetStatus}
                   onChange={updateStatus}
@@ -348,7 +348,7 @@ export default function SpreadsheetsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-gray-300">Observação</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">Observação</label>
                 <textarea
                   value={modal.form.observation}
                   onChange={updateField('observation')}
@@ -362,7 +362,7 @@ export default function SpreadsheetsPage() {
                 <button
                   type="submit"
                   disabled={modal.saving}
-                  className="flex-1 py-2.5 bg-blue-600 text-white text-sm font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                  className="flex-1 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                 >
                   {modal.saving
                     ? modal.mode === 'create' ? 'Criando...' : 'Salvando...'
@@ -371,7 +371,7 @@ export default function SpreadsheetsPage() {
                 <button
                   type="button"
                   onClick={() => setModal(null)}
-                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:bg-gray-900"
+                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
                 >
                   Cancelar
                 </button>
