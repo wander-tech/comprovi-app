@@ -5,7 +5,7 @@ const API_URL = "http://localhost:3001";
 export interface SpreadsheetStatus {
   idSpreadsheetStatus: number;
   name: string;
-  cdChave: string;
+  keyCode: string;
 }
 
 export interface Spreadsheet {

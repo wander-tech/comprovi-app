@@ -16,6 +16,7 @@ import {
   LabelList,
 } from 'recharts';
 import SearchableSelect from '@/components/SearchableSelect';
+import DatePicker from '@/components/DatePicker';
 import { getDashboard, type DashboardResponse, type DashboardExpense, type DashboardSpreadsheet } from '@/lib/dashboard';
 
 // ─── constants ───────────────────────────────────────────────────────────────
@@ -508,27 +509,24 @@ export default function DashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-end gap-4 justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-brand-fg">Dashboard</h1>
-          <p className="text-sm text-gray-500 mt-1 dark:text-brand-muted">Visão geral das suas finanças</p>
         </div>
-        <form onSubmit={applyFilter} className="flex flex-wrap items-end gap-3">
+        <form onSubmit={applyFilter} className="flex flex-wrap items-end gap-4">
           <div className="flex flex-col gap-1">
             <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data inicial</label>
-            <input
-              type="date"
+            <DatePicker
               value={pendingStart}
-              onChange={(e) => setPendingStart(e.target.value)}
+              onChange={setPendingStart}
               max={pendingEnd}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg"
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg dark:bg-brand-surface"
             />
           </div>
           <div className="flex flex-col gap-1">
             <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data final</label>
-            <input
-              type="date"
+            <DatePicker
               value={pendingEnd}
-              onChange={(e) => setPendingEnd(e.target.value)}
+              onChange={setPendingEnd}
               min={pendingStart}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg"
+              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg dark:bg-brand-surface"
             />
           </div>
           <button
@@ -560,7 +558,7 @@ export default function DashboardPage() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <p className="text-gray-500 font-medium dark:text-brand-muted">Nenhum dado para o período selecionado.</p>
-          <p className="text-gray-400 text-sm dark:text-brand-muted">Ajuste o intervalo de datas ou adicione despesas às suas planilhas.</p>
+          <p className="text-gray-400 text-sm dark:text-brand-muted">Ajuste o intervalo de datas ou adicione despesas</p>
         </div>
       ) : (
         <>

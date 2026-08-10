@@ -104,6 +104,33 @@ export async function deleteExpense(
   });
 }
 
+export async function createExpenseFromReceipt(
+  idSpreadsheet: number,
+  file: File,
+): Promise<Expense> {
+  const token = getAccessToken();
+  const formData = new FormData();
+  formData.append("file", file);
+  const res = await fetch(
+    `${API_URL}/spreadsheets/${idSpreadsheet}/expenses/from-receipt`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    },
+  );
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    const message = Array.isArray(body.message)
+      ? body.message[0]
+      : body.message || "Erro inesperado";
+    throw new Error(message);
+  }
+  return res.json();
+}
+
 export async function getCategories(): Promise<Category[]> {
   return authFetch<Category[]>("/categories");
 }

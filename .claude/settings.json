@@ -25,7 +25,13 @@
       "Bash(lsof -ti:3000 -sTCP:LISTEN)",
       "Bash(xargs -r kill)",
       "Bash(npm uninstall *)",
-      "Bash(rm -rf /tmp/orig-dashboard-check *)"
+      "Bash(rm -rf /tmp/orig-dashboard-check *)",
+      "Bash(npm init *)",
+      "Bash(node preview-datepicker.mjs)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/dev-preview-datepicker --max-time 10)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\\\\n\" http://localhost:3000/dev-preview-datepicker --max-time 10 -L -w \"final: %{http_code}\\\\n\")",
+      "Bash(curl -sD - -o /dev/null http://localhost:3000/dev-preview-datepicker --max-time 10)",
+      "Bash(curl -sD - -o /dev/null http://localhost:3000/dev-preview-datepicker --max-time 10 -H \"Cookie: accessToken=preview-test-token\")"
     ],
     "additionalDirectories": [
       "/tmp/orig-dashboard-check"
