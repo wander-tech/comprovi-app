@@ -1,6 +1,6 @@
-import { getAccessToken } from './auth';
+import { getAccessToken } from "./auth";
 
-const API_URL = 'http://localhost:3001';
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export interface DashboardCategory {
   idCategory: number;
@@ -42,12 +42,12 @@ export async function getDashboard(
 ): Promise<DashboardResponse> {
   const token = getAccessToken();
   const params = new URLSearchParams();
-  if (startDate) params.set('startDate', startDate);
-  if (endDate) params.set('endDate', endDate);
-  const query = params.toString() ? `?${params.toString()}` : '';
+  if (startDate) params.set("startDate", startDate);
+  if (endDate) params.set("endDate", endDate);
+  const query = params.toString() ? `?${params.toString()}` : "";
   const res = await fetch(`${API_URL}/dashboard${query}`, {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
@@ -55,7 +55,7 @@ export async function getDashboard(
     const body = await res.json().catch(() => ({}));
     const message = Array.isArray(body.message)
       ? body.message[0]
-      : body.message || 'Erro ao carregar dashboard';
+      : body.message || "Erro ao carregar dashboard";
     throw new Error(message);
   }
   return res.json();
