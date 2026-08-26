@@ -248,7 +248,7 @@ export default function SpreadsheetExpensesPage() {
   }
 
   const inputClass =
-    'w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted';
+    'w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-base sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted';
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -435,9 +435,9 @@ export default function SpreadsheetExpensesPage() {
 
       {/* Create / Edit modal */}
       {modal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setModal(null)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-xl p-6 max-h-[90vh] overflow-y-auto dark:bg-brand-surface">
+          <div className="relative bg-white rounded-t-2xl sm:rounded-2xl shadow-xl w-full max-w-xl p-5 sm:p-6 max-h-[95vh] overflow-y-auto dark:bg-brand-surface">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-lg font-bold text-gray-900 dark:text-brand-fg">
                 {modal.mode === 'create' ? 'Novo gasto' : 'Editar gasto'}
@@ -470,7 +470,7 @@ export default function SpreadsheetExpensesPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
                     Valor (R$) <span className="text-red-500">*</span>
@@ -527,22 +527,22 @@ export default function SpreadsheetExpensesPage() {
                 />
               </div>
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setModal(null)}
+                  className="w-full sm:w-auto sm:px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
+                >
+                  Cancelar
+                </button>
                 <button
                   type="submit"
                   disabled={modal.saving}
                   className="flex-1 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                 >
                   {modal.saving
-                    ? modal.mode === 'create' ? 'Salvando...' : 'Salvando...'
+                    ? 'Salvando...'
                     : modal.mode === 'create' ? 'Adicionar gasto' : 'Salvar alterações'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setModal(null)}
-                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
-                >
-                  Cancelar
                 </button>
               </div>
             </form>
@@ -593,20 +593,20 @@ export default function SpreadsheetExpensesPage() {
                 </p>
               </div>
 
-              <div className="flex gap-2 pt-2">
+              <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setReceiptModal(null)}
+                  className="w-full sm:w-auto sm:px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
+                >
+                  Cancelar
+                </button>
                 <button
                   type="submit"
                   disabled={receiptModal.saving || !receiptModal.file}
                   className="flex-1 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
                 >
                   {receiptModal.saving ? 'Processando...' : 'Importar'}
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setReceiptModal(null)}
-                  className="px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
-                >
-                  Cancelar
                 </button>
               </div>
             </form>

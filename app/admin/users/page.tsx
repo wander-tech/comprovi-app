@@ -89,6 +89,11 @@ export default function AdminUsersPage() {
       );
   }
 
+  function updateCreateCpf(e: React.ChangeEvent<HTMLInputElement>) {
+    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 11);
+    setCreateState((prev) => (prev ? { ...prev, form: { ...prev.form, cpf: digitsOnly } } : prev));
+  }
+
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
     if (!createState) return;
@@ -139,6 +144,11 @@ export default function AdminUsersPage() {
       setEditState((prev) =>
         prev ? { ...prev, form: { ...prev.form, [field]: e.target.value } } : prev,
       );
+  }
+
+  function updateEditCpf(e: React.ChangeEvent<HTMLInputElement>) {
+    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 11);
+    setEditState((prev) => (prev ? { ...prev, form: { ...prev.form, cpf: digitsOnly } } : prev));
   }
 
   async function handleSaveEdit(e: React.FormEvent) {
@@ -444,8 +454,9 @@ export default function AdminUsersPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">CPF</label>
                   <input
                     type="text"
+                    inputMode="numeric"
                     value={createState.form.cpf}
-                    onChange={updateCreateField('cpf')}
+                    onChange={updateCreateCpf}
                     placeholder="12345678901"
                     maxLength={11}
                     className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:placeholder-brand-muted dark:border-brand-muted/30 dark:text-brand-fg"
@@ -578,8 +589,9 @@ export default function AdminUsersPage() {
                   </label>
                   <input
                     type="text"
+                    inputMode="numeric"
                     value={editState.form.cpf}
-                    onChange={updateEditField('cpf')}
+                    onChange={updateEditCpf}
                     placeholder="12345678901"
                     maxLength={11}
                     className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg"

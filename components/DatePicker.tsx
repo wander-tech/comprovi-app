@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useFloatingPosition } from './useFloatingPosition';
 
 interface DatePickerProps {
   value: string;
@@ -24,7 +25,6 @@ const TRIGGER_BASE =
   'w-full flex items-center justify-between gap-2 text-left disabled:cursor-not-allowed';
 
 const PANEL_WIDTH = 320;
-const VIEWPORT_MARGIN = 12;
 
 function pad(n: number) {
   return String(n).padStart(2, '0');
@@ -64,7 +64,7 @@ export default function DatePicker({
   const [viewDate, setViewDate] = useState(() => selected ?? today);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-  const [panelStyle, setPanelStyle] = useState<React.CSSProperties>({});
+  const panelStyle = useFloatingPosition({ open, triggerRef, panelRef, width: PANEL_WIDTH });
 
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
@@ -84,41 +84,6 @@ export default function DatePicker({
     }
     document.addEventListener('keydown', handleKeyDown);
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open]);
-
-  useLayoutEffect(() => {
-    if (!open) return;
-
-    function updatePosition() {
-      const trigger = triggerRef.current;
-      if (!trigger) return;
-      const rect = trigger.getBoundingClientRect();
-      const panelWidth = Math.min(PANEL_WIDTH, window.innerWidth - VIEWPORT_MARGIN * 2);
-      const panelHeight = panelRef.current?.offsetHeight ?? 340;
-
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const openUpward = spaceBelow < panelHeight + VIEWPORT_MARGIN && rect.top > panelHeight + VIEWPORT_MARGIN;
-
-      let left = rect.left;
-      if (left + panelWidth > window.innerWidth - VIEWPORT_MARGIN) {
-        left = window.innerWidth - VIEWPORT_MARGIN - panelWidth;
-      }
-      left = Math.max(VIEWPORT_MARGIN, left);
-
-      setPanelStyle(
-        openUpward
-          ? { position: 'fixed', bottom: window.innerHeight - rect.top + 4, left, width: panelWidth, zIndex: 60 }
-          : { position: 'fixed', top: rect.bottom + 4, left, width: panelWidth, zIndex: 60 },
-      );
-    }
-
-    updatePosition();
-    window.addEventListener('resize', updatePosition);
-    window.addEventListener('scroll', updatePosition, true);
-    return () => {
-      window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition, true);
-    };
   }, [open]);
 
   function openCalendar() {
@@ -183,7 +148,7 @@ export default function DatePicker({
         <div
           ref={panelRef}
           style={panelStyle}
-          className="bg-white rounded-lg border border-gray-200 shadow-lg p-3 dark:bg-brand-surface dark:border-brand-muted/30"
+          className="overflow-y-auto bg-white rounded-lg border border-gray-200 shadow-lg p-3 dark:bg-brand-surface dark:border-brand-muted/30"
         >
           <div className="flex items-center justify-between mb-2">
             <button

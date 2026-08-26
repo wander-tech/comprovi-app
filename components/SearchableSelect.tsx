@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
+import { useFloatingPosition } from './useFloatingPosition';
 
 export interface SearchableSelectOption {
   value: string;
@@ -38,7 +40,9 @@ export default function SearchableSelect({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [activeIndex, setActiveIndex] = useState(0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const panelStyle = useFloatingPosition({ open, triggerRef, panelRef });
 
   const allOptions = useMemo<SearchableSelectOption[]>(
     () => (emptyOptionLabel !== undefined ? [{ value: '', label: emptyOptionLabel }, ...options] : options),
@@ -55,9 +59,10 @@ export default function SearchableSelect({
 
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
-      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
+      const target = e.target as Node;
+      if (triggerRef.current?.contains(target)) return;
+      if (panelRef.current?.contains(target)) return;
+      setOpen(false);
     }
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
@@ -107,8 +112,9 @@ export default function SearchableSelect({
   }
 
   return (
-    <div className="relative" ref={containerRef}>
+    <div className="relative">
       <button
+        ref={triggerRef}
         id={id}
         type="button"
         disabled={disabled}
@@ -132,9 +138,13 @@ export default function SearchableSelect({
         </svg>
       </button>
 
-      {open && (
-        <div className="absolute z-50 mt-1.5 w-full bg-white rounded-lg border border-gray-200 shadow-lg overflow-hidden dark:bg-brand-surface dark:border-brand-muted/30">
-          <div className="p-2 border-b border-gray-100 dark:border-brand-muted/20">
+      {open && createPortal(
+        <div
+          ref={panelRef}
+          style={{ ...panelStyle, display: 'flex', flexDirection: 'column' }}
+          className="bg-white rounded-lg border border-gray-200 shadow-lg overflow-hidden dark:bg-brand-surface dark:border-brand-muted/30"
+        >
+          <div className="p-2 border-b border-gray-100 shrink-0 dark:border-brand-muted/20">
             <input
               autoFocus
               type="text"
@@ -145,7 +155,7 @@ export default function SearchableSelect({
               className="w-full px-2.5 py-1.5 text-sm border border-gray-200 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
             />
           </div>
-          <ul role="listbox" className="max-h-56 overflow-y-auto py-1">
+          <ul role="listbox" className="flex-1 overflow-y-auto py-1 min-h-0">
             {filtered.length === 0 ? (
               <li className="px-3 py-2 text-sm text-gray-400 dark:text-brand-muted">{noResultsLabel}</li>
             ) : (
@@ -169,7 +179,8 @@ export default function SearchableSelect({
               ))
             )}
           </ul>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
