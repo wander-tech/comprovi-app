@@ -1,41 +1,14 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import SearchableSelect from '@/components/SearchableSelect';
-import DatePicker from '@/components/DatePicker';
+import ExpenseModals, { type ExpenseModalsHandle } from '@/components/ExpenseModals';
+import ExpenseActionButtons from '@/components/ExpenseActionButtons';
 import { getSpreadsheet, type Spreadsheet } from '@/lib/spreadsheets';
-import {
-  getExpenses,
-  createExpense,
-  updateExpense,
-  deleteExpense,
-  createExpenseFromReceipt,
-  getCategories,
-  getSubcategories,
-  type Expense,
-  type Category,
-  type Subcategory,
-} from '@/lib/expenses';
+import { getExpenses, deleteExpense, type Expense } from '@/lib/expenses';
 
 const PAGE_SIZE = 10;
-const EMPTY_FORM = { description: '', amount: '', date: '', idCategory: '', idSubcategory: '' };
-
-interface ModalState {
-  mode: 'create' | 'edit';
-  expense?: Expense;
-  form: typeof EMPTY_FORM;
-  saving: boolean;
-  error: string;
-}
-
-interface ReceiptModalState {
-  file: File | null;
-  saving: boolean;
-  error: string;
-  success: string;
-}
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -52,31 +25,24 @@ export default function SpreadsheetExpensesPage() {
 
   const [spreadsheet, setSpreadsheet] = useState<Spreadsheet | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [page, setPage] = useState(1);
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const [deleting, setDeleting] = useState<number | null>(null);
-  const [modal, setModal] = useState<ModalState | null>(null);
-  const [receiptModal, setReceiptModal] = useState<ReceiptModalState | null>(null);
+  const modalsRef = useRef<ExpenseModalsHandle>(null);
 
   const load = useCallback(async () => {
     if (!idSpreadsheet) return;
     setLoading(true);
     setError('');
     try {
-      const [sheet, expList, cats, subs] = await Promise.all([
+      const [sheet, expList] = await Promise.all([
         getSpreadsheet(idSpreadsheet),
         getExpenses(idSpreadsheet),
-        getCategories(),
-        getSubcategories(),
       ]);
       setSpreadsheet(sheet);
       setExpenses(expList);
-      setCategories(cats);
-      setSubcategories(subs);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar dados');
     } finally {
@@ -92,142 +58,10 @@ export default function SpreadsheetExpensesPage() {
     return expenses.slice(start, start + PAGE_SIZE);
   }, [expenses, page]);
 
-  const filteredSubs = useMemo(
-    () => subcategories.filter((s) => String(s.idCategory) === modal?.form.idCategory),
-    [subcategories, modal?.form.idCategory],
-  );
-
   const totalAmount = useMemo(
     () => expenses.reduce((sum, e) => sum + Number(e.amount), 0),
     [expenses],
   );
-
-  function openCreate() {
-    setModal({ mode: 'create', form: EMPTY_FORM, saving: false, error: '' });
-  }
-
-  function openEdit(e: Expense) {
-    setModal({
-      mode: 'edit',
-      expense: e,
-      form: {
-        description: e.description,
-        amount: String(e.amount),
-        date: e.date.substring(0, 10),
-        idCategory: String(e.idCategory),
-        idSubcategory: String(e.idSubcategory),
-      },
-      saving: false,
-      error: '',
-    });
-  }
-
-  function openReceiptModal() {
-    setReceiptModal({ file: null, saving: false, error: '', success: '' });
-  }
-
-  function updateReceiptFile(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0] ?? null;
-    setReceiptModal((prev) => (prev ? { ...prev, file, error: '', success: '' } : prev));
-  }
-
-  async function handleReceiptSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!receiptModal?.file) return;
-    setReceiptModal((prev) => prev && { ...prev, saving: true, error: '', success: '' });
-    try {
-      const created = await createExpenseFromReceipt(idSpreadsheet, receiptModal.file);
-      if (created.idSpreadsheet === idSpreadsheet) {
-        setExpenses((prev) => [created, ...prev]);
-        setReceiptModal(null);
-      } else {
-        setReceiptModal((prev) => prev && {
-          ...prev,
-          saving: false,
-          file: null,
-          success: 'Comprovante processado, mas o lançamento foi adicionado a outra planilha.',
-        });
-      }
-    } catch (err) {
-      setReceiptModal((prev) => prev && {
-        ...prev,
-        saving: false,
-        error: err instanceof Error ? err.message : 'Erro ao processar o comprovante',
-      });
-    }
-  }
-
-  function updateField(field: keyof typeof EMPTY_FORM) {
-    return (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setModal((prev) => {
-        if (!prev) return prev;
-        const updated = { ...prev, form: { ...prev.form, [field]: value } };
-        if (field === 'idCategory') {
-          updated.form.idSubcategory = '';
-        }
-        return updated;
-      });
-    };
-  }
-
-  function updateDate(value: string) {
-    setModal((prev) => (prev ? { ...prev, form: { ...prev.form, date: value } } : prev));
-  }
-
-  function updateCategory(value: string) {
-    setModal((prev) => (prev ? { ...prev, form: { ...prev.form, idCategory: value, idSubcategory: '' } } : prev));
-  }
-
-  function updateSubcategory(value: string) {
-    setModal((prev) => (prev ? { ...prev, form: { ...prev.form, idSubcategory: value } } : prev));
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (!modal) return;
-    const { description, amount, date, idCategory, idSubcategory } = modal.form;
-
-    if (!idCategory) {
-      setModal((prev) => prev && { ...prev, error: 'Selecione a categoria' });
-      return;
-    }
-
-    if (!idSubcategory) {
-      setModal((prev) => prev && { ...prev, error: 'Selecione a subcategoria' });
-      return;
-    }
-
-    if (!date) {
-      setModal((prev) => prev && { ...prev, error: 'Selecione a data' });
-      return;
-    }
-
-    setModal((prev) => prev && { ...prev, saving: true, error: '' });
-    try {
-      const payload = {
-        description,
-        amount: Number(amount),
-        date,
-        idCategory: Number(idCategory),
-        idSubcategory: Number(idSubcategory),
-      };
-      if (modal.mode === 'create') {
-        const created = await createExpense(idSpreadsheet, payload);
-        setExpenses((prev) => [created, ...prev]);
-      } else if (modal.expense) {
-        const updated = await updateExpense(idSpreadsheet, modal.expense.idExpense, payload);
-        setExpenses((prev) => prev.map((ex) => ex.idExpense === updated.idExpense ? updated : ex));
-      }
-      setModal(null);
-    } catch (err) {
-      setModal((prev) => prev && {
-        ...prev,
-        saving: false,
-        error: err instanceof Error ? err.message : 'Erro ao salvar',
-      });
-    }
-  }
 
   async function handleDelete(id: number) {
     setDeleting(id);
@@ -246,9 +80,6 @@ export default function SpreadsheetExpensesPage() {
       setDeleting(null);
     }
   }
-
-  const inputClass =
-    'w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-base sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted';
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
@@ -275,26 +106,10 @@ export default function SpreadsheetExpensesPage() {
             </span>
           )}
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            onClick={openReceiptModal}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-white text-brand-primary border border-brand-primary/30 text-sm font-semibold rounded-lg hover:bg-brand-primary/5 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-colors whitespace-nowrap dark:bg-brand-surface dark:hover:bg-brand-primary/10"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-            </svg>
-            Importar comprovante
-          </button>
-          <button
-            onClick={openCreate}
-            className="flex items-center justify-center gap-2 px-4 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-colors whitespace-nowrap"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-            Novo gasto
-          </button>
-        </div>
+        <ExpenseActionButtons
+          onImportReceipt={() => modalsRef.current?.openReceiptImport()}
+          onNewExpense={() => modalsRef.current?.openCreate()}
+        />
       </div>
 
       {/* Summary card */}
@@ -324,7 +139,7 @@ export default function SpreadsheetExpensesPage() {
         ) : expenses.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-48 gap-2">
             <p className="text-gray-400 text-sm dark:text-brand-muted">Nenhum gasto registrado nesta planilha.</p>
-            <button onClick={openCreate} className="text-sm text-brand-primary hover:text-brand-primary font-medium dark:hover:text-brand-primary/80 dark:text-brand-primary">
+            <button onClick={() => modalsRef.current?.openCreate()} className="text-sm text-brand-primary hover:text-brand-primary font-medium dark:hover:text-brand-primary/80 dark:text-brand-primary">
               Adicionar primeiro gasto
             </button>
           </div>
@@ -377,7 +192,7 @@ export default function SpreadsheetExpensesPage() {
                         ) : (
                           <div className="flex items-center justify-end gap-2">
                             <button
-                              onClick={() => openEdit(exp)}
+                              onClick={() => modalsRef.current?.openEdit(exp)}
                               className="text-xs font-medium text-brand-primary hover:text-brand-primary bg-brand-primary/10 hover:bg-brand-primary/10 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-brand-primary/80 dark:hover:bg-brand-primary/50 dark:text-brand-primary dark:bg-brand-primary/40"
                             >
                               Editar
@@ -433,186 +248,19 @@ export default function SpreadsheetExpensesPage() {
         )}
       </div>
 
-      {/* Create / Edit modal */}
-      {modal && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setModal(null)} />
-          <div className="relative bg-white rounded-t-2xl sm:rounded-2xl shadow-xl w-full max-w-xl p-5 sm:p-6 max-h-[95vh] overflow-y-auto dark:bg-brand-surface">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-brand-fg">
-                {modal.mode === 'create' ? 'Novo gasto' : 'Editar gasto'}
-              </h2>
-              <button onClick={() => setModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-brand-fg dark:text-brand-muted" aria-label="Fechar">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            {modal.error && (
-              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
-                {modal.error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                  Descrição <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="text"
-                  value={modal.form.description}
-                  onChange={updateField('description')}
-                  required
-                  placeholder="Ex: Aluguel de março"
-                  className={inputClass}
-                />
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                    Valor (R$) <span className="text-red-500">*</span>
-                  </label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    value={modal.form.amount}
-                    onChange={updateField('amount')}
-                    required
-                    placeholder="0,00"
-                    className={inputClass}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                    Data <span className="text-red-500">*</span>
-                  </label>
-                  <DatePicker
-                    value={modal.form.date}
-                    onChange={updateDate}
-                    className={inputClass}
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                  Categoria <span className="text-red-500">*</span>
-                </label>
-                <SearchableSelect
-                  value={modal.form.idCategory}
-                  onChange={updateCategory}
-                  options={categories.map((c) => ({ value: String(c.idCategory), label: c.name }))}
-                  placeholder="Selecione a categoria"
-                  searchPlaceholder="Buscar categoria..."
-                  className={inputClass}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                  Subcategoria <span className="text-red-500">*</span>
-                </label>
-                <SearchableSelect
-                  value={modal.form.idSubcategory}
-                  onChange={updateSubcategory}
-                  options={filteredSubs.map((s) => ({ value: String(s.idSubcategory), label: s.name }))}
-                  placeholder={modal.form.idCategory ? 'Selecione a subcategoria' : 'Selecione uma categoria primeiro'}
-                  searchPlaceholder="Buscar subcategoria..."
-                  disabled={!modal.form.idCategory}
-                  className={`${inputClass} disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed dark:disabled:bg-brand-bg dark:disabled:text-brand-muted`}
-                />
-              </div>
-
-              <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setModal(null)}
-                  className="w-full sm:w-auto sm:px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={modal.saving}
-                  className="flex-1 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                >
-                  {modal.saving
-                    ? 'Salvando...'
-                    : modal.mode === 'create' ? 'Adicionar gasto' : 'Salvar alterações'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Receipt import modal */}
-      {receiptModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setReceiptModal(null)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto dark:bg-brand-surface">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-brand-fg">Importar comprovante</h2>
-              <button onClick={() => setReceiptModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-brand-fg dark:text-brand-muted" aria-label="Fechar">
-                <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-
-            {receiptModal.error && (
-              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
-                {receiptModal.error}
-              </div>
-            )}
-
-            {receiptModal.success && (
-              <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm dark:border-green-900 dark:text-green-400 dark:bg-green-950/40">
-                {receiptModal.success}
-              </div>
-            )}
-
-            <form onSubmit={handleReceiptSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                  Comprovante (PDF, JPEG ou PNG) <span className="text-red-500">*</span>
-                </label>
-                <input
-                  type="file"
-                  accept="application/pdf,image/jpeg,image/png"
-                  onChange={updateReceiptFile}
-                  required
-                  className={`${inputClass} file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20`}
-                />
-                <p className="mt-1.5 text-xs text-gray-400 dark:text-brand-muted">
-                  O gasto será lançado automaticamente a partir dos dados do comprovante.
-                </p>
-              </div>
-
-              <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setReceiptModal(null)}
-                  className="w-full sm:w-auto sm:px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={receiptModal.saving || !receiptModal.file}
-                  className="flex-1 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                >
-                  {receiptModal.saving ? 'Processando...' : 'Importar'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <ExpenseModals
+        ref={modalsRef}
+        spreadsheets={[]}
+        lockedSpreadsheetId={idSpreadsheet}
+        onExpenseCreated={(created) => {
+          if (created.idSpreadsheet === idSpreadsheet) {
+            setExpenses((prev) => [created, ...prev]);
+          }
+        }}
+        onExpenseUpdated={(updated) => {
+          setExpenses((prev) => prev.map((ex) => (ex.idExpense === updated.idExpense ? updated : ex)));
+        }}
+      />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback, useMemo } from 'react';
+import { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import {
   BarChart,
   Bar,
@@ -17,6 +17,8 @@ import {
 } from 'recharts';
 import SearchableSelect from '@/components/SearchableSelect';
 import DatePicker from '@/components/DatePicker';
+import ExpenseModals, { type ExpenseModalsHandle } from '@/components/ExpenseModals';
+import ExpenseActionButtons from '@/components/ExpenseActionButtons';
 import { getDashboard, type DashboardResponse, type DashboardExpense, type DashboardSpreadsheet } from '@/lib/dashboard';
 
 // ─── constants ───────────────────────────────────────────────────────────────
@@ -453,6 +455,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const modalsRef = useRef<ExpenseModalsHandle>(null);
 
   const load = useCallback(async (start: string, end: string) => {
     setLoading(true);
@@ -510,32 +513,38 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-2xl font-bold text-gray-900 dark:text-brand-fg">Dashboard</h1>
         </div>
-        <form onSubmit={applyFilter} className="flex flex-wrap items-end gap-4">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data inicial</label>
-            <DatePicker
-              value={pendingStart}
-              onChange={setPendingStart}
-              max={pendingEnd}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg dark:bg-brand-surface"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data final</label>
-            <DatePicker
-              value={pendingEnd}
-              onChange={setPendingEnd}
-              min={pendingStart}
-              className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg dark:bg-brand-surface"
-            />
-          </div>
-          <button
-            type="submit"
-            className="px-4 py-2 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-colors"
-          >
-            Aplicar
-          </button>
-        </form>
+        <div className="flex flex-col lg:flex-row lg:items-end gap-4">
+          <form onSubmit={applyFilter} className="flex flex-wrap items-end gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data inicial</label>
+              <DatePicker
+                value={pendingStart}
+                onChange={setPendingStart}
+                max={pendingEnd}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg dark:bg-brand-surface"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data final</label>
+              <DatePicker
+                value={pendingEnd}
+                onChange={setPendingEnd}
+                min={pendingStart}
+                className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg dark:bg-brand-surface"
+              />
+            </div>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-colors"
+            >
+              Aplicar
+            </button>
+          </form>
+          <ExpenseActionButtons
+            onImportReceipt={() => modalsRef.current?.openReceiptImport()}
+            onNewExpense={() => modalsRef.current?.openCreate()}
+          />
+        </div>
       </div>
 
       {error && (
@@ -680,6 +689,12 @@ export default function DashboardPage() {
           </div>
         </>
       )}
+
+      <ExpenseModals
+        ref={modalsRef}
+        spreadsheets={spreadsheets}
+        onExpenseCreated={() => load(startDate, endDate)}
+      />
     </div>
   );
 }
