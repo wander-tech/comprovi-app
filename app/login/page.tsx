@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { login, saveTokens } from '@/lib/auth';
+import Image from 'next/image'
 
 export default function LoginPage() {
   const router = useRouter();
@@ -31,8 +32,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-brand-bg px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-brand-fg">Comprovi</h1>
-          <p className="text-gray-500 mt-2 text-sm dark:text-brand-muted">Faça login para continuar</p>
+          <Image src='/logo/comprovi.png' alt="Comprovi Logo" width={480} height={20} />
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 dark:bg-brand-surface dark:border-brand-muted/20">

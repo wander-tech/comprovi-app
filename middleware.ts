@@ -8,8 +8,15 @@ const PUBLIC_ROUTES = [
   "/reset-password",
 ];
 
+const STATIC_ASSET_EXTENSION = /\.(?:svg|png|jpg|jpeg|gif|webp|ico)$/;
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  if (STATIC_ASSET_EXTENSION.test(pathname)) {
+    return NextResponse.next();
+  }
+
   const token = request.cookies.get("accessToken")?.value;
   const isPublic = PUBLIC_ROUTES.some((route) => pathname.startsWith(route));
 
