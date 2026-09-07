@@ -5,8 +5,10 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import ExpenseModals, { type ExpenseModalsHandle } from '@/components/ExpenseModals';
 import ExpenseActionButtons from '@/components/ExpenseActionButtons';
+import SharingManager from '@/components/SharingManager';
 import { getSpreadsheet, type Spreadsheet } from '@/lib/spreadsheets';
 import { getExpenses, deleteExpense, type Expense } from '@/lib/expenses';
+import { getMe } from '@/lib/users';
 
 const PAGE_SIZE = 10;
 
@@ -30,6 +32,8 @@ export default function SpreadsheetExpensesPage() {
   const [page, setPage] = useState(1);
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const [deleting, setDeleting] = useState<number | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [showSharing, setShowSharing] = useState(false);
   const modalsRef = useRef<ExpenseModalsHandle>(null);
 
   const load = useCallback(async () => {
@@ -37,12 +41,14 @@ export default function SpreadsheetExpensesPage() {
     setLoading(true);
     setError('');
     try {
-      const [sheet, expList] = await Promise.all([
+      const [sheet, expList, me] = await Promise.all([
         getSpreadsheet(idSpreadsheet),
         getExpenses(idSpreadsheet),
+        getMe(),
       ]);
       setSpreadsheet(sheet);
       setExpenses(expList);
+      setCurrentUserId(me.idUser);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar dados');
     } finally {
@@ -106,10 +112,20 @@ export default function SpreadsheetExpensesPage() {
             </span>
           )}
         </div>
-        <ExpenseActionButtons
-          onImportReceipt={() => modalsRef.current?.openReceiptImport()}
-          onNewExpense={() => modalsRef.current?.openCreate()}
-        />
+        <div className="flex items-center gap-2 shrink-0">
+          {spreadsheet && spreadsheet.idOwner === currentUserId && (
+            <button
+              onClick={() => setShowSharing(true)}
+              className="flex items-center justify-center gap-2 px-4 py-2.5 bg-purple-50 text-purple-700 text-sm font-semibold rounded-lg hover:bg-purple-100 transition-colors whitespace-nowrap dark:bg-purple-950/40 dark:text-purple-400 dark:hover:bg-purple-900/50"
+            >
+              Gerenciar acesso
+            </button>
+          )}
+          <ExpenseActionButtons
+            onImportReceipt={() => modalsRef.current?.openReceiptImport()}
+            onNewExpense={() => modalsRef.current?.openCreate()}
+          />
+        </div>
       </div>
 
       {/* Summary card */}
@@ -261,6 +277,14 @@ export default function SpreadsheetExpensesPage() {
           setExpenses((prev) => prev.map((ex) => (ex.idExpense === updated.idExpense ? updated : ex)));
         }}
       />
+
+      {showSharing && spreadsheet && (
+        <SharingManager
+          idSpreadsheet={spreadsheet.idSpreadsheet}
+          spreadsheetName={spreadsheet.name}
+          onClose={() => setShowSharing(false)}
+        />
+      )}
     </div>
   );
 }

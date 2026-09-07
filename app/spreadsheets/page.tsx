@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import SearchableSelect from '@/components/SearchableSelect';
+import SharingManager from '@/components/SharingManager';
 import {
   getSpreadsheets,
   createSpreadsheet,
@@ -12,6 +13,7 @@ import {
   type Spreadsheet,
   type SpreadsheetStatus,
 } from '@/lib/spreadsheets';
+import { getMe } from '@/lib/users';
 
 const PAGE_SIZE = 10;
 const EMPTY_FORM = { name: '', idSpreadsheetStatus: '', observation: '' };
@@ -42,17 +44,21 @@ export default function SpreadsheetsPage() {
   const [confirmDelete, setConfirmDelete] = useState<number | null>(null);
   const [deleting, setDeleting] = useState<number | null>(null);
   const [modal, setModal] = useState<ModalState | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [sharingTarget, setSharingTarget] = useState<Spreadsheet | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const [data, statusList] = await Promise.all([
+      const [data, statusList, me] = await Promise.all([
         getSpreadsheets(),
         getSpreadsheetStatuses(),
+        getMe(),
       ]);
       setSpreadsheets(data);
       setStatuses(statusList);
+      setCurrentUserId(me.idUser);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar planilhas');
     } finally {
@@ -243,6 +249,14 @@ export default function SpreadsheetsPage() {
                             >
                               Editar
                             </button>
+                            {spreadsheet.idOwner === currentUserId && (
+                              <button
+                                onClick={() => setSharingTarget(spreadsheet)}
+                                className="text-xs font-medium text-purple-600 hover:text-purple-800 bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-purple-300 dark:hover:bg-purple-900/50 dark:text-purple-400 dark:bg-purple-950/40"
+                              >
+                                Compartilhar
+                              </button>
+                            )}
                             <button
                               onClick={() => setConfirmDelete(spreadsheet.idSpreadsheet)}
                               className="text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors dark:hover:text-red-300 dark:hover:bg-red-900/50 dark:text-red-400 dark:bg-red-950/40"
@@ -381,6 +395,14 @@ export default function SpreadsheetsPage() {
           </div>
         )
       }
+
+      {sharingTarget && (
+        <SharingManager
+          idSpreadsheet={sharingTarget.idSpreadsheet}
+          spreadsheetName={sharingTarget.name}
+          onClose={() => setSharingTarget(null)}
+        />
+      )}
     </div >
   );
 }

@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from 'react';
 import { getMe, updateUser, type User } from '@/lib/users';
+import DefaultPermissionsManager from '@/components/DefaultPermissionsManager';
 
-type Section = 'info' | 'password';
+type Section = 'info' | 'password' | 'permissions';
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -149,6 +150,16 @@ export default function ProfilePage() {
         >
           Alterar senha
         </button>
+        <button
+          onClick={() => { setSection('permissions'); setError(''); setSuccess(''); }}
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+            section === 'permissions'
+              ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
+          }`}
+        >
+          Permissões padrão
+        </button>
       </div>
 
       {/* Feedback */}
@@ -275,6 +286,9 @@ export default function ProfilePage() {
           </div>
         </form>
       )}
+
+      {/* Default permissions */}
+      {section === 'permissions' && <DefaultPermissionsManager />}
     </div>
   );
 }

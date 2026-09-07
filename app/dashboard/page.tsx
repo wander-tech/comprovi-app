@@ -150,92 +150,6 @@ function CategoryBar({ name, value, pct, color }: { name: string; value: number;
   );
 }
 
-function SpreadsheetDetailPanel({ sheet, onClose }: { sheet: DashboardSpreadsheet; onClose: () => void }) {
-  const categories = buildCategories(sheet.expenses);
-  const subcategories = buildSubcategories(sheet.expenses);
-  const topExpenses = [...sheet.expenses].sort((a, b) => b.amount - a.amount).slice(0, 5);
-
-  return (
-    <div className="col-span-full bg-white rounded-2xl border border-brand-primary/30 shadow-md p-6 animate-in dark:bg-brand-surface">
-      <div className="flex items-center justify-between mb-5">
-        <div>
-          <h3 className="text-base font-bold text-gray-900 dark:text-brand-fg">{sheet.name}</h3>
-          <p className="text-xs text-gray-400 mt-0.5 dark:text-brand-muted">{sheet.expenses.length} lançamentos — total {fmt(sheet.totalExpenses)}</p>
-        </div>
-        <button
-          onClick={onClose}
-          className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-brand-fg dark:text-brand-muted"
-          aria-label="Fechar detalhe"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Category breakdown */}
-        <div className="space-y-3">
-          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Por Categoria</h4>
-          {categories.length === 0 ? (
-            <p className="text-sm text-gray-400 dark:text-brand-muted">Sem dados</p>
-          ) : (
-            <div className="space-y-2.5">
-              {categories.map(({ name, value }, i) => (
-                <CategoryBar
-                  key={name}
-                  name={name}
-                  value={value}
-                  pct={(value / sheet.totalExpenses) * 100}
-                  color={COLORS[i % COLORS.length]}
-                />
-              ))}
-            </div>
-          )}
-
-          {subcategories.length > 0 && (
-            <>
-              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide pt-2 dark:text-brand-muted">Por Subcategoria</h4>
-              <div className="space-y-2.5">
-                {subcategories.slice(0, 5).map(({ name, value }, i) => (
-                  <CategoryBar
-                    key={name}
-                    name={name}
-                    value={value}
-                    pct={(value / sheet.totalExpenses) * 100}
-                    color={COLORS[i % COLORS.length]}
-                  />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Top expenses */}
-        <div className="space-y-3">
-          <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Maiores Despesas</h4>
-          {topExpenses.length === 0 ? (
-            <p className="text-sm text-gray-400 dark:text-brand-muted">Sem despesas</p>
-          ) : (
-            <div className="divide-y divide-gray-50 dark:divide-brand-muted/20">
-              {topExpenses.map((e) => (
-                <div key={e.idExpense} className="py-2.5 flex items-start gap-3">
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-800 truncate dark:text-brand-fg">{e.description}</p>
-                    <p className="text-xs text-gray-400 mt-0.5 dark:text-brand-muted">
-                      {fmtDate(e.date)} · {e.category.name} · {e.subcategory.name}
-                    </p>
-                  </div>
-                  <p className="text-sm font-bold text-red-600 whitespace-nowrap dark:text-red-400">{fmt(e.amount)}</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function ExpensesTable({
   expenses,
@@ -647,7 +561,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
-                  <ResponsiveContainer width="100%" height={200}>
+                  <ResponsiveContainer width="100%" height={250}>
                     <PieChart>
                       <Pie
                         data={categoryData}

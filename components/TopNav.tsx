@@ -5,6 +5,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useState, useRef, useEffect } from 'react';
 import { clearTokens } from '@/lib/auth';
 import { getMe, type User } from '@/lib/users';
+import { getMyInvitations } from '@/lib/invitations';
 import ThemeToggle from '@/components/ThemeToggle';
 
 export default function TopNav() {
@@ -13,12 +14,16 @@ export default function TopNav() {
   const [open, setOpen] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [pendingInvitations, setPendingInvitations] = useState(0);
   const menuRef = useRef<HTMLDivElement>(null);
   const mobileNavRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     getMe().then(setUser).catch(() => null);
-  }, []);
+    getMyInvitations()
+      .then((list) => setPendingInvitations(list.filter((i) => i.status === 'pending').length))
+      .catch(() => null);
+  }, [pathname]);
 
   useEffect(() => {
     function handleOutsideClick(e: MouseEvent) {
@@ -78,6 +83,33 @@ export default function TopNav() {
           />
         </svg>
         Planilhas
+      </Link>
+
+      <Link
+        href="/invitations"
+        onClick={() => setMobileNavOpen(false)}
+        className={navLinkClass(pathname.startsWith('/invitations'))}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="w-4 h-4 shrink-0"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          strokeWidth={2}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
+        </svg>
+        Convites
+        {pendingInvitations > 0 && (
+          <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-500 rounded-full">
+            {pendingInvitations}
+          </span>
+        )}
       </Link>
 
       {user?.admin && (
