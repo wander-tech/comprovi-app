@@ -5,6 +5,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 export interface Category {
   idCategory: number;
   name: string;
+  idUser: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -13,6 +14,7 @@ export interface Subcategory {
   idSubcategory: number;
   idCategory: number;
   name: string;
+  idUser: number | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -49,6 +51,10 @@ export interface UpdateExpensePayload {
   idSubcategory?: number;
 }
 
+export interface ApiError extends Error {
+  status?: number;
+}
+
 async function authFetch<T>(path: string, init?: RequestInit): Promise<T> {
   const token = getAccessToken();
   const res = await fetch(`${API_URL}${path}`, {
@@ -64,7 +70,9 @@ async function authFetch<T>(path: string, init?: RequestInit): Promise<T> {
     const message = Array.isArray(body.message)
       ? body.message[0]
       : body.message || "Erro inesperado";
-    throw new Error(message);
+    const error: ApiError = new Error(message);
+    error.status = res.status;
+    throw error;
   }
   if (res.status === 204) return undefined as T;
   return res.json();
@@ -137,4 +145,58 @@ export async function getCategories(): Promise<Category[]> {
 
 export async function getSubcategories(): Promise<Subcategory[]> {
   return authFetch<Subcategory[]>("/subcategories");
+}
+
+export async function createCategory(name: string): Promise<Category> {
+  return authFetch<Category>("/categories", {
+    method: "POST",
+    body: JSON.stringify({ name }),
+  });
+}
+
+export async function createSubcategory(
+  name: string,
+  idCategory: number,
+): Promise<Subcategory> {
+  return authFetch<Subcategory>("/subcategories", {
+    method: "POST",
+    body: JSON.stringify({ name, idCategory }),
+  });
+}
+
+export interface UpdateCategoryPayload {
+  name?: string;
+}
+
+export interface UpdateSubcategoryPayload {
+  name?: string;
+  idCategory?: number;
+}
+
+export async function updateCategory(
+  id: number,
+  data: UpdateCategoryPayload,
+): Promise<Category> {
+  return authFetch<Category>(`/categories/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteCategory(id: number): Promise<void> {
+  return authFetch<void>(`/categories/${id}`, { method: "DELETE" });
+}
+
+export async function updateSubcategory(
+  id: number,
+  data: UpdateSubcategoryPayload,
+): Promise<Subcategory> {
+  return authFetch<Subcategory>(`/subcategories/${id}`, {
+    method: "PATCH",
+    body: JSON.stringify(data),
+  });
+}
+
+export async function deleteSubcategory(id: number): Promise<void> {
+  return authFetch<void>(`/subcategories/${id}`, { method: "DELETE" });
 }

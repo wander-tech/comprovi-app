@@ -8,6 +8,12 @@ import {
   declineInvitation,
   type SpreadsheetInvitation,
 } from '@/lib/invitations';
+import {
+  getReceivedDefaultPermissionInvitations,
+  acceptDefaultPermissionInvitation,
+  declineDefaultPermissionInvitation,
+  type DefaultPermissionInvitation,
+} from '@/lib/defaultPermissions';
 
 const STATUS_LABEL: Record<string, string> = {
   pending: 'Pendente',
@@ -24,16 +30,22 @@ const STATUS_COLOR: Record<string, string> = {
 export default function InvitationsPage() {
   const router = useRouter();
   const [invitations, setInvitations] = useState<SpreadsheetInvitation[]>([]);
+  const [defaultPermissionInvitations, setDefaultPermissionInvitations] = useState<DefaultPermissionInvitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [respondingId, setRespondingId] = useState<number | null>(null);
+  const [respondingDefaultPermissionId, setRespondingDefaultPermissionId] = useState<number | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const data = await getMyInvitations();
+      const [data, defaultPermissionData] = await Promise.all([
+        getMyInvitations(),
+        getReceivedDefaultPermissionInvitations(),
+      ]);
       setInvitations(data);
+      setDefaultPermissionInvitations(defaultPermissionData);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar convites');
     } finally {
@@ -68,18 +80,44 @@ export default function InvitationsPage() {
     }
   }
 
+  async function handleAcceptDefaultPermission(inv: DefaultPermissionInvitation) {
+    setRespondingDefaultPermissionId(inv.idInvitation);
+    try {
+      const updated = await acceptDefaultPermissionInvitation(inv.idInvitation);
+      setDefaultPermissionInvitations((prev) => prev.map((i) => (i.idInvitation === updated.idInvitation ? updated : i)));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao aceitar convite');
+    } finally {
+      setRespondingDefaultPermissionId(null);
+    }
+  }
+
+  async function handleDeclineDefaultPermission(inv: DefaultPermissionInvitation) {
+    setRespondingDefaultPermissionId(inv.idInvitation);
+    try {
+      const updated = await declineDefaultPermissionInvitation(inv.idInvitation);
+      setDefaultPermissionInvitations((prev) => prev.map((i) => (i.idInvitation === updated.idInvitation ? updated : i)));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao recusar convite');
+    } finally {
+      setRespondingDefaultPermissionId(null);
+    }
+  }
+
   function formatDate(iso: string) {
     return new Date(iso).toLocaleDateString('pt-BR');
   }
 
   const pending = invitations.filter((i) => i.status === 'pending');
   const answered = invitations.filter((i) => i.status !== 'pending');
+  const pendingDefaultPermissions = defaultPermissionInvitations.filter((i) => i.status === 'pending');
+  const answeredDefaultPermissions = defaultPermissionInvitations.filter((i) => i.status !== 'pending');
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-brand-fg">Convites</h1>
-        <p className="text-sm text-gray-500 mt-1 dark:text-brand-muted">Convites de acesso a planilhas recebidos por e-mail</p>
+        <p className="text-sm text-gray-500 mt-1 dark:text-brand-muted">Convites recebidos por e-mail</p>
       </div>
 
       {error && (
@@ -88,52 +126,109 @@ export default function InvitationsPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-brand-muted/20 dark:bg-brand-surface">
-        {loading ? (
-          <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">Carregando...</div>
-        ) : invitations.length === 0 ? (
-          <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">
-            Nenhum convite recebido.
-          </div>
-        ) : (
-          <ul className="divide-y divide-gray-50 dark:divide-brand-muted/20">
-            {[...pending, ...answered].map((inv) => (
-              <li key={inv.idInvitation} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4">
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-medium text-gray-900 dark:text-brand-fg truncate">
-                      {inv.spreadsheetName ?? `Planilha #${inv.idSpreadsheet}`}
-                    </span>
-                    <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_COLOR[inv.status]}`}>
-                      {STATUS_LABEL[inv.status]}
-                    </span>
+      <div className="mb-8">
+        <h2 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Acesso a planilhas</h2>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-brand-muted/20 dark:bg-brand-surface">
+          {loading ? (
+            <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">Carregando...</div>
+          ) : invitations.length === 0 ? (
+            <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">
+              Nenhum convite recebido.
+            </div>
+          ) : (
+            <ul className="divide-y divide-gray-50 dark:divide-brand-muted/20">
+              {[...pending, ...answered].map((inv) => (
+                <li key={inv.idInvitation} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium text-gray-900 dark:text-brand-fg truncate">
+                        {inv.spreadsheetName ?? `Planilha #${inv.idSpreadsheet}`}
+                      </span>
+                      <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_COLOR[inv.status]}`}>
+                        {STATUS_LABEL[inv.status]}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-0.5 dark:text-brand-muted">
+                      Convidado por {inv.inviterName ?? `usuário #${inv.idInviter}`} · {inv.permission === 'edit' ? 'Edição' : 'Leitura'} · {formatDate(inv.createdAt)}
+                    </p>
                   </div>
-                  <p className="text-xs text-gray-500 mt-0.5 dark:text-brand-muted">
-                    Convidado por {inv.inviterName ?? `usuário #${inv.idInviter}`} · {inv.permission === 'edit' ? 'Edição' : 'Leitura'} · {formatDate(inv.createdAt)}
-                  </p>
-                </div>
-                {inv.status === 'pending' && (
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      onClick={() => handleAccept(inv)}
-                      disabled={respondingId === inv.idInvitation}
-                      className="text-xs font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 px-3 py-1.5 rounded-lg disabled:opacity-60 transition-colors"
-                    >
-                      {respondingId === inv.idInvitation ? 'Aguarde...' : 'Aceitar'}
-                    </button>
-                    <button
-                      onClick={() => handleDecline(inv)}
-                      disabled={respondingId === inv.idInvitation}
-                      className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 dark:hover:bg-brand-surface dark:text-brand-muted dark:bg-brand-surface"
-                    >
-                      Recusar
-                    </button>
+                  {inv.status === 'pending' && (
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => handleAccept(inv)}
+                        disabled={respondingId === inv.idInvitation}
+                        className="text-xs font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 px-3 py-1.5 rounded-lg disabled:opacity-60 transition-colors"
+                      >
+                        {respondingId === inv.idInvitation ? 'Aguarde...' : 'Aceitar'}
+                      </button>
+                      <button
+                        onClick={() => handleDecline(inv)}
+                        disabled={respondingId === inv.idInvitation}
+                        className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 dark:hover:bg-brand-surface dark:text-brand-muted dark:bg-brand-surface"
+                      >
+                        Recusar
+                      </button>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </div>
+
+      <div>
+        <h2 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Permissão padrão</h2>
+        <p className="text-xs text-gray-500 mb-3 dark:text-brand-muted">
+          Se você aceitar, passará a receber acesso automaticamente em toda nova planilha criada por essa pessoa.
+        </p>
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-brand-muted/20 dark:bg-brand-surface">
+          {loading ? (
+            <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">Carregando...</div>
+          ) : defaultPermissionInvitations.length === 0 ? (
+            <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">
+              Nenhum convite recebido.
+            </div>
+          ) : (
+            <ul className="divide-y divide-gray-50 dark:divide-brand-muted/20">
+              {[...pendingDefaultPermissions, ...answeredDefaultPermissions].map((inv) => (
+                <li key={inv.idInvitation} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-medium text-gray-900 dark:text-brand-fg truncate">
+                        {inv.inviterName ?? inv.inviterEmail ?? `usuário #${inv.idInviter}`}
+                      </span>
+                      <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_COLOR[inv.status]}`}>
+                        {STATUS_LABEL[inv.status]}
+                      </span>
+                    </div>
+                    <p className="text-xs text-gray-500 mt-0.5 dark:text-brand-muted">
+                      {inv.permission === 'edit' ? 'Edição' : 'Leitura'} · {formatDate(inv.createdAt)}
+                    </p>
                   </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
+                  {inv.status === 'pending' && (
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => handleAcceptDefaultPermission(inv)}
+                        disabled={respondingDefaultPermissionId === inv.idInvitation}
+                        className="text-xs font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 px-3 py-1.5 rounded-lg disabled:opacity-60 transition-colors"
+                      >
+                        {respondingDefaultPermissionId === inv.idInvitation ? 'Aguarde...' : 'Aceitar'}
+                      </button>
+                      <button
+                        onClick={() => handleDeclineDefaultPermission(inv)}
+                        disabled={respondingDefaultPermissionId === inv.idInvitation}
+                        className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 dark:hover:bg-brand-surface dark:text-brand-muted dark:bg-brand-surface"
+                      >
+                        Recusar
+                      </button>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       </div>
     </div>
   );

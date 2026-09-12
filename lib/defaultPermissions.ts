@@ -3,16 +3,34 @@ import type { SharingPermission } from "./sharings";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+export type DefaultPermissionInvitationStatus = "pending" | "accepted" | "declined";
+
 export interface UserDefaultPermission {
   idDefaultPermission: number;
   idTargetUser: number;
+  targetName: string;
+  targetEmail: string;
   permission: SharingPermission;
   createdAt: string;
   updatedAt: string;
 }
 
+export interface DefaultPermissionInvitation {
+  idInvitation: number;
+  idInviter: number;
+  inviterName?: string;
+  inviterEmail?: string;
+  idInvitedUser: number;
+  invitedUserName?: string;
+  invitedUserEmail?: string;
+  permission: SharingPermission;
+  status: DefaultPermissionInvitationStatus;
+  createdAt: string;
+  respondedAt: string | null;
+}
+
 export interface CreateDefaultPermissionPayload {
-  idTargetUser: number;
+  email: string;
   permission: SharingPermission;
 }
 
@@ -45,10 +63,10 @@ export async function getDefaultPermissions(): Promise<UserDefaultPermission[]> 
   return authFetch<UserDefaultPermission[]>("/users/me/default-permissions");
 }
 
-export async function addDefaultPermission(
+export async function inviteDefaultPermission(
   data: CreateDefaultPermissionPayload,
-): Promise<UserDefaultPermission> {
-  return authFetch<UserDefaultPermission>("/users/me/default-permissions", {
+): Promise<DefaultPermissionInvitation> {
+  return authFetch<DefaultPermissionInvitation>("/users/me/default-permissions", {
     method: "POST",
     body: JSON.stringify(data),
   });
@@ -73,4 +91,43 @@ export async function removeDefaultPermission(
   return authFetch<void>(`/users/me/default-permissions/${idTargetUser}`, {
     method: "DELETE",
   });
+}
+
+export async function getSentDefaultPermissionInvitations(): Promise<DefaultPermissionInvitation[]> {
+  return authFetch<DefaultPermissionInvitation[]>(
+    "/users/me/default-permissions/invitations",
+  );
+}
+
+export async function cancelDefaultPermissionInvitation(
+  idInvitation: number,
+): Promise<void> {
+  return authFetch<void>(
+    `/users/me/default-permissions/invitations/${idInvitation}`,
+    { method: "DELETE" },
+  );
+}
+
+export async function getReceivedDefaultPermissionInvitations(): Promise<DefaultPermissionInvitation[]> {
+  return authFetch<DefaultPermissionInvitation[]>(
+    "/default-permission-invitations",
+  );
+}
+
+export async function acceptDefaultPermissionInvitation(
+  id: number,
+): Promise<DefaultPermissionInvitation> {
+  return authFetch<DefaultPermissionInvitation>(
+    `/default-permission-invitations/${id}/accept`,
+    { method: "POST" },
+  );
+}
+
+export async function declineDefaultPermissionInvitation(
+  id: number,
+): Promise<DefaultPermissionInvitation> {
+  return authFetch<DefaultPermissionInvitation>(
+    `/default-permission-invitations/${id}/decline`,
+    { method: "POST" },
+  );
 }

@@ -1,14 +1,16 @@
 'use client';
 
-import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import SearchableSelect from '@/components/SearchableSelect';
-import { getMe, getUsers, type User } from '@/lib/users';
 import {
   getDefaultPermissions,
-  addDefaultPermission,
+  inviteDefaultPermission,
   updateDefaultPermission,
   removeDefaultPermission,
+  getSentDefaultPermissionInvitations,
+  cancelDefaultPermissionInvitation,
   type UserDefaultPermission,
+  type DefaultPermissionInvitation,
 } from '@/lib/defaultPermissions';
 import type { SharingPermission } from '@/lib/sharings';
 
@@ -22,41 +24,28 @@ const inputClass =
 
 export default function DefaultPermissionsManager() {
   const [permissions, setPermissions] = useState<UserDefaultPermission[]>([]);
-  const [users, setUsers] = useState<User[] | null>(null);
-  const [currentUserId, setCurrentUserId] = useState<number | null>(null);
+  const [pendingInvitations, setPendingInvitations] = useState<DefaultPermissionInvitation[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const [selectedUserId, setSelectedUserId] = useState('');
-  const [manualUserId, setManualUserId] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
   const [permission, setPermission] = useState<SharingPermission>('read');
-  const [adding, setAdding] = useState(false);
-  const [addError, setAddError] = useState('');
+  const [inviting, setInviting] = useState(false);
+  const [inviteError, setInviteError] = useState('');
 
   const [savingUserId, setSavingUserId] = useState<number | null>(null);
-
-  const usersById = useMemo(() => {
-    const map = new Map<number, User>();
-    users?.forEach((u) => map.set(u.idUser, u));
-    return map;
-  }, [users]);
+  const [cancelingId, setCancelingId] = useState<number | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const me = await getMe();
-      setCurrentUserId(me.idUser);
-      const list = await getDefaultPermissions();
+      const [list, invitations] = await Promise.all([
+        getDefaultPermissions(),
+        getSentDefaultPermissionInvitations(),
+      ]);
       setPermissions(list);
-      if (me.admin) {
-        try {
-          const allUsers = await getUsers();
-          setUsers(allUsers);
-        } catch {
-          setUsers(null);
-        }
-      }
+      setPendingInvitations(invitations.filter((inv) => inv.status === 'pending'));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erro ao carregar permissões padrão');
     } finally {
@@ -66,37 +55,39 @@ export default function DefaultPermissionsManager() {
 
   useEffect(() => { load(); }, [load]);
 
-  const assignedUserIds = useMemo(() => new Set(permissions.map((p) => p.idTargetUser)), [permissions]);
-
-  const selectableUsers = useMemo(
-    () => (users ?? []).filter((u) => u.idUser !== currentUserId && !assignedUserIds.has(u.idUser)),
-    [users, currentUserId, assignedUserIds],
-  );
-
-  function displayUser(idTargetUser: number) {
-    const u = usersById.get(idTargetUser);
-    return u ? `${u.name} (${u.email})` : `Usuário #${idTargetUser}`;
+  function displayUser(p: UserDefaultPermission) {
+    return p.targetName ? `${p.targetName} (${p.targetEmail})` : p.targetEmail;
   }
 
-  async function handleAdd(e: React.FormEvent) {
+  async function handleInvite(e: React.FormEvent) {
     e.preventDefault();
-    const idTargetUser = Number(users ? selectedUserId : manualUserId);
-    if (!idTargetUser) {
-      setAddError('Selecione ou informe um usuário válido.');
+    if (!inviteEmail.trim()) {
+      setInviteError('Informe um e-mail válido.');
       return;
     }
-    setAdding(true);
-    setAddError('');
+    setInviting(true);
+    setInviteError('');
     try {
-      const created = await addDefaultPermission({ idTargetUser, permission });
-      setPermissions((prev) => [...prev, created]);
-      setSelectedUserId('');
-      setManualUserId('');
+      const created = await inviteDefaultPermission({ email: inviteEmail.trim(), permission });
+      setPendingInvitations((prev) => [created, ...prev]);
+      setInviteEmail('');
       setPermission('read');
     } catch (err) {
-      setAddError(err instanceof Error ? err.message : 'Erro ao adicionar permissão padrão');
+      setInviteError(err instanceof Error ? err.message : 'Erro ao enviar convite');
     } finally {
-      setAdding(false);
+      setInviting(false);
+    }
+  }
+
+  async function handleCancelInvitation(idInvitation: number) {
+    setCancelingId(idInvitation);
+    try {
+      await cancelDefaultPermissionInvitation(idInvitation);
+      setPendingInvitations((prev) => prev.filter((inv) => inv.idInvitation !== idInvitation));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Erro ao cancelar convite');
+    } finally {
+      setCancelingId(null);
     }
   }
 
@@ -128,7 +119,8 @@ export default function DefaultPermissionsManager() {
     <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 dark:bg-brand-surface dark:border-brand-muted/20">
       <h2 className="text-base font-semibold text-gray-900 mb-1 dark:text-brand-fg">Permissões padrão</h2>
       <p className="text-sm text-gray-500 mb-5 dark:text-brand-muted">
-        Usuários adicionados aqui recebem acesso automaticamente em toda nova planilha que você criar.
+        Convide alguém por e-mail. Depois que a pessoa aceitar o convite, ela passa a receber acesso
+        automaticamente em toda nova planilha que você criar.
       </p>
 
       {error && (
@@ -148,7 +140,7 @@ export default function DefaultPermissionsManager() {
               <ul className="divide-y divide-gray-100 dark:divide-brand-muted/20 border border-gray-100 rounded-xl overflow-hidden dark:border-brand-muted/20">
                 {permissions.map((p) => (
                   <li key={p.idTargetUser} className="flex items-center justify-between gap-3 px-4 py-3">
-                    <span className="text-sm text-gray-900 truncate dark:text-brand-fg">{displayUser(p.idTargetUser)}</span>
+                    <span className="text-sm text-gray-900 truncate dark:text-brand-fg">{displayUser(p)}</span>
                     <div className="flex items-center gap-2 shrink-0">
                       <div className="w-28">
                         <SearchableSelect
@@ -173,36 +165,48 @@ export default function DefaultPermissionsManager() {
             )}
           </div>
 
-          <form onSubmit={handleAdd} className="border-t border-gray-100 pt-5 dark:border-brand-muted/20">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Adicionar usuário</h3>
+          {pendingInvitations.length > 0 && (
+            <div className="mb-5">
+              <h3 className="text-sm font-semibold text-gray-700 mb-2 dark:text-brand-fg">Convites pendentes</h3>
+              <ul className="divide-y divide-gray-100 dark:divide-brand-muted/20 border border-gray-100 rounded-xl overflow-hidden dark:border-brand-muted/20">
+                {pendingInvitations.map((inv) => (
+                  <li key={inv.idInvitation} className="flex items-center justify-between gap-3 px-4 py-3">
+                    <div className="min-w-0">
+                      <span className="text-sm text-gray-900 truncate block dark:text-brand-fg">{inv.invitedUserEmail}</span>
+                      <span className="text-xs text-gray-400 dark:text-brand-muted">
+                        {inv.permission === 'edit' ? 'Edição' : 'Leitura'} · aguardando resposta
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => handleCancelInvitation(inv.idInvitation)}
+                      disabled={cancelingId === inv.idInvitation}
+                      className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 shrink-0 dark:hover:bg-brand-surface dark:text-brand-muted dark:bg-brand-surface"
+                    >
+                      {cancelingId === inv.idInvitation ? 'Cancelando...' : 'Cancelar convite'}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
-            {addError && (
+          <form onSubmit={handleInvite} className="border-t border-gray-100 pt-5 dark:border-brand-muted/20">
+            <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Convidar por e-mail</h3>
+
+            {inviteError && (
               <div className="mb-3 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
-                {addError}
+                {inviteError}
               </div>
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3">
-              {users ? (
-                <SearchableSelect
-                  value={selectedUserId}
-                  onChange={setSelectedUserId}
-                  options={selectableUsers.map((u) => ({ value: String(u.idUser), label: `${u.name} (${u.email})` }))}
-                  placeholder="Selecione um usuário"
-                  searchPlaceholder="Buscar por nome ou e-mail..."
-                  noResultsLabel="Nenhum usuário disponível"
-                  className={inputClass}
-                />
-              ) : (
-                <input
-                  type="number"
-                  min={1}
-                  value={manualUserId}
-                  onChange={(e) => setManualUserId(e.target.value)}
-                  placeholder="ID do usuário"
-                  className={inputClass}
-                />
-              )}
+              <input
+                type="email"
+                value={inviteEmail}
+                onChange={(e) => setInviteEmail(e.target.value)}
+                placeholder="email@exemplo.com"
+                className={inputClass}
+              />
               <div className="w-32">
                 <SearchableSelect
                   value={permission}
@@ -212,18 +216,16 @@ export default function DefaultPermissionsManager() {
                 />
               </div>
             </div>
-            {!users && (
-              <p className="text-xs text-gray-400 mt-2 dark:text-brand-muted">
-                Peça o ID do usuário para adicioná-lo. Apenas administradores podem buscar por nome ou e-mail.
-              </p>
-            )}
+            <p className="text-xs text-gray-400 mt-2 dark:text-brand-muted">
+              A pessoa precisa já ter uma conta na Comprovi com esse e-mail e aceitar o convite.
+            </p>
 
             <button
               type="submit"
-              disabled={adding}
+              disabled={inviting}
               className="mt-3 w-full py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
             >
-              {adding ? 'Adicionando...' : 'Adicionar'}
+              {inviting ? 'Enviando...' : 'Enviar convite'}
             </button>
           </form>
         </>

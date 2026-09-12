@@ -31,10 +31,30 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\\\\n\" http://localhost:3000/dev-preview-datepicker --max-time 10)",
       "Bash(curl -s -o /dev/null -w \"%{http_code} -> %{redirect_url}\\\\n\" http://localhost:3000/dev-preview-datepicker --max-time 10 -L -w \"final: %{http_code}\\\\n\")",
       "Bash(curl -sD - -o /dev/null http://localhost:3000/dev-preview-datepicker --max-time 10)",
-      "Bash(curl -sD - -o /dev/null http://localhost:3000/dev-preview-datepicker --max-time 10 -H \"Cookie: accessToken=preview-test-token\")"
+      "Bash(curl -sD - -o /dev/null http://localhost:3000/dev-preview-datepicker --max-time 10 -H \"Cookie: accessToken=preview-test-token\")",
+      "Bash(find /var/www/html/comprovi/comprovi-api/src/modules/users -maxdepth 1 -type f | sort)",
+      "Read(//var/www/html/comprovi/comprovi-api/src/modules/users/**)",
+      "Bash(cat /var/www/html/comprovi/comprovi-api/src/modules/users/dto/user-default-permissions.dto.ts)",
+      "Read(//var/www/html/comprovi/comprovi-api/src/modules/users/dto/**)",
+      "Bash(grep -rln \"invitation\" /var/www/html/comprovi/comprovi-api/src --include=\"*.ts\" -i | grep -v node_modules | grep -v \".spec.ts\")",
+      "Read(//var/www/html/comprovi/comprovi-api/src/**)",
+      "Read(//var/www/html/comprovi/comprovi-api/src/modules/spreadsheets/**)",
+      "Read(//var/www/html/comprovi/comprovi-api/src/modules/spreadsheets/entities/**)",
+      "Bash(grep -n \"invite\\\\|Invite\\\\|email\\\\|Email\" /var/www/html/comprovi/comprovi-api/src/modules/spreadsheets/spreadsheets-facade.service.ts | head -60)",
+      "Bash(grep -n \"findByEmail\" /var/www/html/comprovi/comprovi-api/src/modules/users/users.service.ts)",
+      "Bash(cat /var/www/html/comprovi/comprovi-api/src/modules/users/entities/user-default-permission.entity.ts)",
+      "Read(//var/www/html/comprovi/comprovi-api/src/modules/users/entities/**)",
+      "Bash(grep -n \"IsEmail\\\\|class-validator\" /var/www/html/comprovi/comprovi-api/src/modules/spreadsheets/dto/spreadsheets.dto.ts | head; grep -n \"CreateSpreadsheetInvitationDto\" -A 15 /var/www/html/comprovi/comprovi-api/src/modules/spreadsheets/dto/spreadsheets.dto.ts | head -20)",
+      "Read(//var/www/html/comprovi/comprovi-api/src/modules/spreadsheets/dto/**)",
+      "Bash(grep -rln \"MailService\\\\|mail.service\\\\|sendMail\" /var/www/html/comprovi/comprovi-api/src --include=\"*.ts\" | grep -v node_modules | grep -v \".spec.ts\")",
+      "Bash(cd /var/www/html/comprovi/comprovi-api && cat package.json | grep -A8 '\"scripts\"')",
+      "Read(//var/www/html/comprovi/comprovi-api/**)",
+      "Bash(npx tsc *)"
     ],
     "additionalDirectories": [
-      "/tmp/orig-dashboard-check"
+      "/tmp/orig-dashboard-check",
+      "/var/www/html/comprovi/comprovi-api/src/modules/users/dto",
+      "/var/www/html/comprovi/comprovi-api/src/modules/users"
     ]
   }
 }

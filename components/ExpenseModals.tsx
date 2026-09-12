@@ -9,6 +9,8 @@ import {
   createExpenseFromReceipt,
   getCategories,
   getSubcategories,
+  createCategory,
+  createSubcategory,
   type Expense,
   type Category,
   type Subcategory,
@@ -37,6 +39,12 @@ interface ReceiptModalState {
   success: string;
 }
 
+interface InlineCreateState {
+  name: string;
+  saving: boolean;
+  error: string;
+}
+
 export interface ExpenseModalsHandle {
   openCreate: () => void;
   openEdit: (expense: Expense) => void;
@@ -63,6 +71,8 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
   const [subcategories, setSubcategories] = useState<Subcategory[]>([]);
   const [modal, setModal] = useState<ModalState | null>(null);
   const [receiptModal, setReceiptModal] = useState<ReceiptModalState | null>(null);
+  const [creatingCategory, setCreatingCategory] = useState<InlineCreateState | null>(null);
+  const [creatingSubcategory, setCreatingSubcategory] = useState<InlineCreateState | null>(null);
 
   useEffect(() => {
     getCategories().then(setCategories).catch(() => {});
@@ -94,6 +104,8 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
         saving: false,
         error: '',
       });
+      setCreatingCategory(null);
+      setCreatingSubcategory(null);
     },
     openEdit(expense: Expense) {
       setModal({
@@ -110,6 +122,8 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
         saving: false,
         error: '',
       });
+      setCreatingCategory(null);
+      setCreatingSubcategory(null);
     },
     openReceiptImport() {
       setReceiptModal({
@@ -144,10 +158,81 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
 
   function updateCategory(value: string) {
     setModal((prev) => (prev ? { ...prev, form: { ...prev.form, idCategory: value, idSubcategory: '' } } : prev));
+    setCreatingSubcategory(null);
   }
 
   function updateSubcategory(value: string) {
     setModal((prev) => (prev ? { ...prev, form: { ...prev.form, idSubcategory: value } } : prev));
+  }
+
+  function openCreateCategory() {
+    setCreatingCategory({ name: '', saving: false, error: '' });
+  }
+
+  function openCreateSubcategory() {
+    setCreatingSubcategory({ name: '', saving: false, error: '' });
+  }
+
+  function updateCreatingCategoryName(value: string) {
+    setCreatingCategory((prev) => (prev ? { ...prev, name: value, error: '' } : prev));
+  }
+
+  function updateCreatingSubcategoryName(value: string) {
+    setCreatingSubcategory((prev) => (prev ? { ...prev, name: value, error: '' } : prev));
+  }
+
+  async function submitCreateCategory() {
+    const name = creatingCategory?.name.trim();
+    if (!name) return;
+    setCreatingCategory((prev) => prev && { ...prev, saving: true, error: '' });
+    try {
+      const created = await createCategory(name);
+      setCategories((prev) => [...prev, created]);
+      updateCategory(String(created.idCategory));
+      setCreatingCategory(null);
+    } catch (err) {
+      setCreatingCategory((prev) => prev && {
+        ...prev,
+        saving: false,
+        error: err instanceof Error ? err.message : 'Erro ao criar categoria',
+      });
+    }
+  }
+
+  async function submitCreateSubcategory() {
+    const name = creatingSubcategory?.name.trim();
+    if (!name || !modal?.form.idCategory) return;
+    setCreatingSubcategory((prev) => prev && { ...prev, saving: true, error: '' });
+    try {
+      const created = await createSubcategory(name, Number(modal.form.idCategory));
+      setSubcategories((prev) => [...prev, created]);
+      updateSubcategory(String(created.idSubcategory));
+      setCreatingSubcategory(null);
+    } catch (err) {
+      setCreatingSubcategory((prev) => prev && {
+        ...prev,
+        saving: false,
+        error: err instanceof Error ? err.message : 'Erro ao criar subcategoria',
+      });
+    }
+  }
+
+  function handleCreateCategoryKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitCreateCategory();
+    } else if (e.key === 'Escape') {
+      setCreatingCategory(null);
+    }
+  }
+
+  function handleCreateSubcategoryKeyDown(e: React.KeyboardEvent) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitCreateSubcategory();
+    } else if (e.key === 'Escape') {
+      setCreatingSubcategory(null);
+    }
   }
 
   function updateReceiptSpreadsheet(value: string) {
@@ -321,9 +406,20 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                  Categoria <span className="text-red-500">*</span>
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-brand-fg">
+                    Categoria <span className="text-red-500">*</span>
+                  </label>
+                  {!creatingCategory && (
+                    <button
+                      type="button"
+                      onClick={openCreateCategory}
+                      className="text-xs font-medium text-brand-primary hover:underline"
+                    >
+                      + Nova categoria
+                    </button>
+                  )}
+                </div>
                 <SearchableSelect
                   value={modal.form.idCategory}
                   onChange={updateCategory}
@@ -332,12 +428,56 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
                   searchPlaceholder="Buscar categoria..."
                   className={inputClass}
                 />
+                {creatingCategory && (
+                  <div className="mt-2 flex items-start gap-2">
+                    <div className="flex-1">
+                      <input
+                        autoFocus
+                        type="text"
+                        value={creatingCategory.name}
+                        onChange={(e) => updateCreatingCategoryName(e.target.value)}
+                        onKeyDown={handleCreateCategoryKeyDown}
+                        placeholder="Nome da nova categoria"
+                        className={inputClass}
+                      />
+                      {creatingCategory.error && (
+                        <p className="mt-1 text-xs text-red-600 dark:text-red-400">{creatingCategory.error}</p>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={submitCreateCategory}
+                      disabled={creatingCategory.saving || !creatingCategory.name.trim()}
+                      className="px-3 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-brand-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {creatingCategory.saving ? '...' : 'Adicionar'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCreatingCategory(null)}
+                      className="px-3 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                  Subcategoria <span className="text-red-500">*</span>
-                </label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-brand-fg">
+                    Subcategoria <span className="text-red-500">*</span>
+                  </label>
+                  {!creatingSubcategory && modal.form.idCategory && (
+                    <button
+                      type="button"
+                      onClick={openCreateSubcategory}
+                      className="text-xs font-medium text-brand-primary hover:underline"
+                    >
+                      + Nova subcategoria
+                    </button>
+                  )}
+                </div>
                 <SearchableSelect
                   value={modal.form.idSubcategory}
                   onChange={updateSubcategory}
@@ -347,6 +487,39 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
                   disabled={!modal.form.idCategory}
                   className={`${inputClass} disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed dark:disabled:bg-brand-bg dark:disabled:text-brand-muted`}
                 />
+                {creatingSubcategory && (
+                  <div className="mt-2 flex items-start gap-2">
+                    <div className="flex-1">
+                      <input
+                        autoFocus
+                        type="text"
+                        value={creatingSubcategory.name}
+                        onChange={(e) => updateCreatingSubcategoryName(e.target.value)}
+                        onKeyDown={handleCreateSubcategoryKeyDown}
+                        placeholder="Nome da nova subcategoria"
+                        className={inputClass}
+                      />
+                      {creatingSubcategory.error && (
+                        <p className="mt-1 text-xs text-red-600 dark:text-red-400">{creatingSubcategory.error}</p>
+                      )}
+                    </div>
+                    <button
+                      type="button"
+                      onClick={submitCreateSubcategory}
+                      disabled={creatingSubcategory.saving || !creatingSubcategory.name.trim()}
+                      className="px-3 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-brand-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {creatingSubcategory.saving ? '...' : 'Adicionar'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCreatingSubcategory(null)}
+                      className="px-3 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
+                    >
+                      Cancelar
+                    </button>
+                  </div>
+                )}
               </div>
 
               <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">

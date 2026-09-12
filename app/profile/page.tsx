@@ -3,8 +3,9 @@
 import { useEffect, useState } from 'react';
 import { getMe, updateUser, type User } from '@/lib/users';
 import DefaultPermissionsManager from '@/components/DefaultPermissionsManager';
+import CategoriesManager from '@/components/CategoriesManager';
 
-type Section = 'info' | 'password' | 'permissions';
+type Section = 'info' | 'password' | 'categories' | 'permissions';
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -151,6 +152,16 @@ export default function ProfilePage() {
           Alterar senha
         </button>
         <button
+          onClick={() => { setSection('categories'); setError(''); setSuccess(''); }}
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+            section === 'categories'
+              ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
+              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
+          }`}
+        >
+          Categorias
+        </button>
+        <button
           onClick={() => { setSection('permissions'); setError(''); setSuccess(''); }}
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
             section === 'permissions'
@@ -286,6 +297,9 @@ export default function ProfilePage() {
           </div>
         </form>
       )}
+
+      {/* Categories */}
+      {section === 'categories' && <CategoriesManager />}
 
       {/* Default permissions */}
       {section === 'permissions' && <DefaultPermissionsManager />}
