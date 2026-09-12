@@ -290,7 +290,7 @@ export default function CategoriesManager() {
 
               return (
                 <li key={cat.idCategory} className="px-4 py-3">
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <button
                       type="button"
                       onClick={() => toggleExpand(cat.idCategory)}
@@ -300,31 +300,33 @@ export default function CategoriesManager() {
                       <ChevronIcon expanded={expanded} />
                     </button>
 
-                    {isEditing ? (
-                      <input
-                        autoFocus
-                        type="text"
-                        value={editingCategory.name}
-                        onChange={(e) => setEditingCategory((prev) => prev && { ...prev, name: e.target.value })}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') { e.preventDefault(); saveEditCategory(); }
-                          else if (e.key === 'Escape') setEditingCategory(null);
-                        }}
-                        className={`${inputClass} flex-1`}
-                      />
-                    ) : (
-                      <span className="flex-1 text-sm text-gray-900 truncate dark:text-brand-fg">{cat.name}</span>
-                    )}
+                    <div className="flex-1 min-w-0 flex items-center flex-wrap gap-2">
+                      {isEditing ? (
+                        <input
+                          autoFocus
+                          type="text"
+                          value={editingCategory.name}
+                          onChange={(e) => setEditingCategory((prev) => prev && { ...prev, name: e.target.value })}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') { e.preventDefault(); saveEditCategory(); }
+                            else if (e.key === 'Escape') setEditingCategory(null);
+                          }}
+                          className={`${inputClass} flex-1 min-w-[140px]`}
+                        />
+                      ) : (
+                        <span className="min-w-0 flex-1 text-sm text-gray-900 truncate dark:text-brand-fg">{cat.name}</span>
+                      )}
 
-                    {cat.idUser === null && (
-                      <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full dark:bg-brand-bg dark:text-brand-muted">
-                        <LockIcon /> Sistema
-                      </span>
-                    )}
+                      {cat.idUser === null && (
+                        <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full dark:bg-brand-bg dark:text-brand-muted">
+                          <LockIcon /> Sistema
+                        </span>
+                      )}
+                    </div>
 
                     {manageable && !isConfirmingDelete && (
                       isEditing ? (
-                        <div className="flex items-center gap-2 shrink-0">
+                        <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end sm:justify-start">
                           <button type="button" onClick={saveEditCategory} disabled={editingCategory.saving || !editingCategory.name.trim()} className={editButtonClass}>
                             {editingCategory.saving ? 'Salvando...' : 'Salvar'}
                           </button>
@@ -333,7 +335,7 @@ export default function CategoriesManager() {
                           </button>
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2 shrink-0">
+                        <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end sm:justify-start">
                           <button type="button" onClick={() => startEditCategory(cat)} className={editButtonClass}>
                             Editar
                           </button>
@@ -345,7 +347,7 @@ export default function CategoriesManager() {
                     )}
 
                     {isConfirmingDelete && (
-                      <div className="flex items-center gap-2 shrink-0">
+                      <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end sm:justify-start">
                         <span className="text-xs text-gray-500 dark:text-brand-muted">Excluir?</span>
                         <button type="button" disabled={isDeleting} onClick={() => handleConfirmDeleteCategory(cat.idCategory)} className={deleteButtonClass}>
                           {isDeleting ? 'Excluindo...' : 'Sim'}
@@ -362,7 +364,7 @@ export default function CategoriesManager() {
                   )}
 
                   {expanded && (
-                    <div className="mt-3 ml-6 pl-3 border-l-2 border-gray-100 space-y-2 dark:border-brand-muted/20">
+                    <div className="mt-3 ml-3 sm:ml-6 pl-2 sm:pl-3 border-l-2 border-gray-100 space-y-2 dark:border-brand-muted/20">
                       {subs.length === 0 && (
                         <p className="text-xs text-gray-400 dark:text-brand-muted">Nenhuma subcategoria.</p>
                       )}
@@ -374,32 +376,34 @@ export default function CategoriesManager() {
 
                         return (
                           <div key={sub.idSubcategory}>
-                            <div className="flex items-center gap-2">
-                              {subEditing ? (
-                                <input
-                                  autoFocus
-                                  type="text"
-                                  value={editingSub.name}
-                                  onChange={(e) => setEditingSub((prev) => prev && { ...prev, name: e.target.value })}
-                                  onKeyDown={(e) => {
-                                    if (e.key === 'Enter') { e.preventDefault(); saveEditSub(); }
-                                    else if (e.key === 'Escape') setEditingSub(null);
-                                  }}
-                                  className={`${inputClass} flex-1 py-1.5`}
-                                />
-                              ) : (
-                                <span className="flex-1 text-sm text-gray-700 truncate dark:text-brand-fg">{sub.name}</span>
-                              )}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <div className="flex-1 min-w-0 flex items-center flex-wrap gap-2">
+                                {subEditing ? (
+                                  <input
+                                    autoFocus
+                                    type="text"
+                                    value={editingSub.name}
+                                    onChange={(e) => setEditingSub((prev) => prev && { ...prev, name: e.target.value })}
+                                    onKeyDown={(e) => {
+                                      if (e.key === 'Enter') { e.preventDefault(); saveEditSub(); }
+                                      else if (e.key === 'Escape') setEditingSub(null);
+                                    }}
+                                    className={`${inputClass} flex-1 min-w-[120px] py-1.5`}
+                                  />
+                                ) : (
+                                  <span className="min-w-0 flex-1 text-sm text-gray-700 truncate dark:text-brand-fg">{sub.name}</span>
+                                )}
 
-                              {sub.idUser === null && (
-                                <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-medium text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-full dark:bg-brand-bg dark:text-brand-muted">
-                                  <LockIcon /> Sistema
-                                </span>
-                              )}
+                                {sub.idUser === null && (
+                                  <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-medium text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-full dark:bg-brand-bg dark:text-brand-muted">
+                                    <LockIcon /> Sistema
+                                  </span>
+                                )}
+                              </div>
 
                               {subManageable && !subConfirming && (
                                 subEditing ? (
-                                  <div className="flex items-center gap-2 shrink-0">
+                                  <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end sm:justify-start">
                                     <button type="button" onClick={saveEditSub} disabled={editingSub.saving || !editingSub.name.trim()} className={editButtonClass}>
                                       {editingSub.saving ? 'Salvando...' : 'Salvar'}
                                     </button>
@@ -408,7 +412,7 @@ export default function CategoriesManager() {
                                     </button>
                                   </div>
                                 ) : (
-                                  <div className="flex items-center gap-2 shrink-0">
+                                  <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end sm:justify-start">
                                     <button type="button" onClick={() => startEditSub(sub)} className={editButtonClass}>
                                       Editar
                                     </button>
@@ -420,7 +424,7 @@ export default function CategoriesManager() {
                               )}
 
                               {subConfirming && (
-                                <div className="flex items-center gap-2 shrink-0">
+                                <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end sm:justify-start">
                                   <span className="text-xs text-gray-500 dark:text-brand-muted">Excluir?</span>
                                   <button type="button" disabled={subDeleting} onClick={() => handleConfirmDeleteSub(sub.idSubcategory)} className={deleteButtonClass}>
                                     {subDeleting ? 'Excluindo...' : 'Sim'}
@@ -439,7 +443,7 @@ export default function CategoriesManager() {
                       })}
 
                       {addSub?.idCategory === cat.idCategory ? (
-                        <div className="flex items-start gap-2 pt-1">
+                        <div className="flex flex-col sm:flex-row sm:items-start gap-2 pt-1">
                           <div className="flex-1">
                             <input
                               autoFocus
@@ -455,17 +459,19 @@ export default function CategoriesManager() {
                             />
                             {addSub.error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{addSub.error}</p>}
                           </div>
-                          <button
-                            type="button"
-                            onClick={submitAddSub}
-                            disabled={addSub.saving || !addSub.name.trim()}
-                            className="px-3 py-1.5 bg-brand-primary text-white text-xs font-medium rounded-lg hover:bg-brand-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
-                          >
-                            {addSub.saving ? '...' : 'Adicionar'}
-                          </button>
-                          <button type="button" onClick={() => setAddSub(null)} className={cancelButtonClass}>
-                            Cancelar
-                          </button>
+                          <div className="flex gap-2">
+                            <button
+                              type="button"
+                              onClick={submitAddSub}
+                              disabled={addSub.saving || !addSub.name.trim()}
+                              className="px-3 py-1.5 bg-brand-primary text-white text-xs font-medium rounded-lg hover:bg-brand-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                            >
+                              {addSub.saving ? '...' : 'Adicionar'}
+                            </button>
+                            <button type="button" onClick={() => setAddSub(null)} className={cancelButtonClass}>
+                              Cancelar
+                            </button>
+                          </div>
                         </div>
                       ) : (
                         <button
@@ -490,13 +496,13 @@ export default function CategoriesManager() {
                 {newCategory.error}
               </div>
             )}
-            <div className="flex gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3">
               <input
                 type="text"
                 value={newCategory.name}
                 onChange={(e) => setNewCategory((prev) => ({ ...prev, name: e.target.value }))}
                 placeholder="Nome da categoria"
-                className={`${inputClass} flex-1`}
+                className={inputClass}
               />
               <button
                 type="submit"

@@ -130,10 +130,10 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200 dark:border-brand-muted/20">
+      <div className="flex gap-1 mb-6 border-b border-gray-200 overflow-x-auto dark:border-brand-muted/20">
         <button
           onClick={() => { setSection('info'); setError(''); setSuccess(''); }}
-          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px shrink-0 transition-colors ${
             section === 'info'
               ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
@@ -143,7 +143,7 @@ export default function ProfilePage() {
         </button>
         <button
           onClick={() => { setSection('password'); setError(''); setSuccess(''); }}
-          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px shrink-0 transition-colors ${
             section === 'password'
               ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
@@ -153,7 +153,7 @@ export default function ProfilePage() {
         </button>
         <button
           onClick={() => { setSection('categories'); setError(''); setSuccess(''); }}
-          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px shrink-0 transition-colors ${
             section === 'categories'
               ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
@@ -163,7 +163,7 @@ export default function ProfilePage() {
         </button>
         <button
           onClick={() => { setSection('permissions'); setError(''); setSuccess(''); }}
-          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+          className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px shrink-0 transition-colors ${
             section === 'permissions'
               ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
               : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
