@@ -23,9 +23,11 @@ import { getDashboard, type DashboardResponse, type DashboardExpense, type Dashb
 
 // ─── constants ───────────────────────────────────────────────────────────────
 
+// Apple's public iOS/macOS system-color palette, used as a categorical chart
+// set (the source design doc has no data-viz palette of its own).
 const COLORS = [
-  '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6',
-  '#06b6d4', '#f97316', '#84cc16', '#ec4899', '#6366f1',
+  '#0066cc', '#34c759', '#ff9500', '#ff3b30', '#af52de',
+  '#30b0c7', '#ff2d55', '#ffcc00', '#5856d6', '#a2845e',
 ];
 
 const PAGE_SIZE = 10;
@@ -90,9 +92,9 @@ function buildSubcategories(expenses: DashboardExpense[]) {
 function BarTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 text-sm dark:border-brand-muted/30 dark:bg-brand-surface">
-      {label && <p className="font-medium text-gray-700 mb-1 dark:text-brand-fg">{label}</p>}
-      <p className="text-brand-primary font-semibold dark:text-brand-primary">{fmt(payload[0].value)}</p>
+    <div className="bg-canvas border border-hairline shadow-lg rounded-lg px-3 py-2 text-sm">
+      {label && <p className="font-medium text-ink-muted mb-1">{label}</p>}
+      <p className="text-primary font-semibold">{fmt(payload[0].value)}</p>
     </div>
   );
 }
@@ -100,10 +102,10 @@ function BarTooltip({ active, payload, label }: { active?: boolean; payload?: Ar
 function PieTooltip({ active, payload }: { active?: boolean; payload?: Array<{ name: string; value: number; payload: { pct: number } }> }) {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-lg px-3 py-2 text-sm dark:border-brand-muted/30 dark:bg-brand-surface">
-      <p className="font-medium text-gray-700 dark:text-brand-fg">{payload[0].name}</p>
-      <p className="text-brand-primary font-semibold dark:text-brand-primary">{fmt(payload[0].value)}</p>
-      <p className="text-gray-400 text-xs dark:text-brand-muted">{payload[0].payload.pct.toFixed(1)}% do total</p>
+    <div className="bg-canvas border border-hairline shadow-lg rounded-lg px-3 py-2 text-sm">
+      <p className="font-medium text-ink-muted">{payload[0].name}</p>
+      <p className="text-primary font-semibold">{fmt(payload[0].value)}</p>
+      <p className="text-ink-subtle text-xs">{payload[0].payload.pct.toFixed(1)}% do total</p>
     </div>
   );
 }
@@ -114,7 +116,7 @@ function MetricCard({
   label,
   value,
   sub,
-  color = 'text-gray-900 dark:text-brand-fg',
+  color = 'text-ink',
 }: {
   label: string;
   value: string;
@@ -122,10 +124,10 @@ function MetricCard({
   color?: string;
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-brand-muted/20 dark:bg-brand-surface">
-      <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-1 dark:text-brand-muted">{label}</p>
-      <p className={`text-xl sm:text-2xl font-bold ${color} leading-tight break-words`}>{value}</p>
-      {sub && <p className="text-xs text-gray-400 mt-1 dark:text-brand-muted">{sub}</p>}
+    <div className="bg-canvas border border-hairline rounded-lg p-5">
+      <p className="text-xs font-semibold text-ink-subtle uppercase tracking-wide mb-1">{label}</p>
+      <p className={`text-xl sm:text-2xl font-semibold ${color} leading-tight break-words`}>{value}</p>
+      {sub && <p className="text-xs text-ink-subtle mt-1">{sub}</p>}
     </div>
   );
 }
@@ -136,14 +138,14 @@ function CategoryBar({ name, value, pct, color }: { name: string; value: number;
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-1.5 min-w-0">
           <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: color }} />
-          <span className="text-gray-600 truncate dark:text-brand-muted">{name}</span>
+          <span className="text-ink-muted truncate">{name}</span>
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-2">
-          <span className="text-gray-400 dark:text-brand-muted">{pct.toFixed(1)}%</span>
-          <span className="font-semibold text-gray-800 w-24 text-right dark:text-brand-fg">{fmt(value)}</span>
+          <span className="text-ink-subtle">{pct.toFixed(1)}%</span>
+          <span className="font-semibold text-ink w-24 text-right">{fmt(value)}</span>
         </div>
       </div>
-      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden dark:bg-brand-surface">
+      <div className="h-1.5 bg-surface-1 rounded-full overflow-hidden">
         <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
       </div>
     </div>
@@ -210,18 +212,18 @@ function ExpensesTable({
   const paged = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   function SortIcon({ field }: { field: 'date' | 'amount' }) {
-    if (sortField !== field) return <span className="text-gray-300 ml-1 dark:text-brand-muted">↕</span>;
-    return <span className="text-brand-primary ml-1 dark:text-brand-primary">{sortDir === 'asc' ? '↑' : '↓'}</span>;
+    if (sortField !== field) return <span className="text-ink-subtle ml-1">↕</span>;
+    return <span className="text-primary ml-1">{sortDir === 'asc' ? '↑' : '↓'}</span>;
   }
 
-  const inputClass = 'px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent bg-white dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg';
+  const inputClass = 'px-3 py-2 bg-canvas border border-hairline rounded-lg text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus';
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-brand-muted/20 dark:bg-brand-surface">
+    <div className="bg-canvas border border-hairline rounded-lg overflow-hidden">
       {/* Filters */}
-      <div className="p-4 border-b border-gray-100 flex flex-wrap gap-3 dark:border-brand-muted/20">
+      <div className="p-4 border-b border-hairline flex flex-wrap gap-3">
         <div className="relative flex-1 min-w-48">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-ink-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
@@ -257,7 +259,7 @@ function ExpensesTable({
         {(search || filterSheet || filterCat) && (
           <button
             onClick={() => { setSearch(''); setFilterSheet(''); setFilterCat(''); setPage(1); }}
-            className="px-3 py-2 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors dark:hover:text-brand-fg dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted"
+            className="px-3 py-2 rounded-full text-sm text-ink-muted hover:text-ink border border-hairline hover:bg-surface-1 transition-colors"
           >
             Limpar
           </button>
@@ -268,45 +270,45 @@ function ExpensesTable({
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-50 border-b border-gray-100 dark:border-brand-muted/20 dark:bg-brand-surface">
+            <tr className="bg-hairline border-b border-hairline">
               <th
-                className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-gray-700 dark:hover:text-brand-fg dark:text-brand-muted"
+                className="text-left px-5 py-3.5 text-xs font-semibold text-ink-muted uppercase tracking-wide cursor-pointer select-none hover:text-ink"
                 onClick={() => toggleSort('date')}
               >
                 Data <SortIcon field="date" />
               </th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Descrição</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Categoria</th>
-              <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Subcategoria</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Descrição</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Categoria</th>
+              <th className="text-left px-5 py-3.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Subcategoria</th>
               {spreadsheets.length > 1 && (
-                <th className="text-left px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide dark:text-brand-muted">Planilha</th>
+                <th className="text-left px-5 py-3.5 text-xs font-semibold text-ink-muted uppercase tracking-wide">Planilha</th>
               )}
               <th
-                className="text-right px-5 py-3.5 text-xs font-semibold text-gray-500 uppercase tracking-wide cursor-pointer select-none hover:text-gray-700 dark:hover:text-brand-fg dark:text-brand-muted"
+                className="text-right px-5 py-3.5 text-xs font-semibold text-ink-muted uppercase tracking-wide cursor-pointer select-none hover:text-ink"
                 onClick={() => toggleSort('amount')}
               >
                 Valor <SortIcon field="amount" />
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50 dark:divide-brand-muted/20">
+          <tbody className="divide-y divide-hairline">
             {paged.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-5 py-10 text-center text-sm text-gray-400 dark:text-brand-muted">
+                <td colSpan={6} className="px-5 py-10 text-center text-sm text-ink-subtle">
                   Nenhum lançamento encontrado.
                 </td>
               </tr>
             ) : (
               paged.map((e) => (
-                <tr key={e.idExpense} className="hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface">
-                  <td className="px-5 py-3.5 text-gray-500 whitespace-nowrap dark:text-brand-muted">{fmtDate(e.date)}</td>
-                  <td className="px-5 py-3.5 text-gray-900 font-medium max-w-xs truncate dark:text-brand-fg">{e.description}</td>
-                  <td className="px-5 py-3.5 text-gray-600 dark:text-brand-muted">{e.category.name}</td>
-                  <td className="px-5 py-3.5 text-gray-500 dark:text-brand-muted">{e.subcategory.name}</td>
+                <tr key={e.idExpense} className="hover:bg-surface-1 transition-colors">
+                  <td className="px-5 py-3.5 text-ink-muted whitespace-nowrap">{fmtDate(e.date)}</td>
+                  <td className="px-5 py-3.5 text-ink font-medium max-w-xs truncate">{e.description}</td>
+                  <td className="px-5 py-3.5 text-ink-muted">{e.category.name}</td>
+                  <td className="px-5 py-3.5 text-ink-muted">{e.subcategory.name}</td>
                   {spreadsheets.length > 1 && (
-                    <td className="px-5 py-3.5 text-gray-500 dark:text-brand-muted">{expenseMap.get(e.idExpense) ?? '—'}</td>
+                    <td className="px-5 py-3.5 text-ink-muted">{expenseMap.get(e.idExpense) ?? '—'}</td>
                   )}
-                  <td className="px-5 py-3.5 text-right font-semibold text-red-600 whitespace-nowrap dark:text-red-400">{fmt(e.amount)}</td>
+                  <td className="px-5 py-3.5 text-right font-semibold text-error whitespace-nowrap">{fmt(e.amount)}</td>
                 </tr>
               ))
             )}
@@ -315,8 +317,8 @@ function ExpensesTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5 py-3.5 border-t border-gray-100 dark:border-brand-muted/20">
-        <span className="text-xs text-gray-400 dark:text-brand-muted">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 px-5 py-3.5 border-t border-hairline">
+        <span className="text-xs text-ink-subtle">
           {filtered.length} {filtered.length === 1 ? 'lançamento' : 'lançamentos'}
           {filtered.length !== expenses.length && ` de ${expenses.length}`}
           {totalPages > 1 && ` — página ${page} de ${totalPages}`}
@@ -326,7 +328,7 @@ function ExpensesTable({
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted"
+              className="px-3 py-1.5 rounded-full text-xs font-medium border border-hairline text-ink-muted hover:bg-surface-1 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Anterior
             </button>
@@ -336,7 +338,7 @@ function ExpensesTable({
                 <button
                   key={p}
                   onClick={() => setPage(p)}
-                  className={`w-8 h-8 text-xs font-medium rounded-lg transition-colors ${p === page ? 'bg-brand-primary text-white' : 'border border-gray-200 text-gray-600 hover:bg-gray-50 dark:border-brand-muted/30 dark:text-brand-muted dark:hover:bg-brand-surface'
+                  className={`w-8 h-8 rounded-full text-xs font-medium transition-colors ${p === page ? 'bg-primary text-on-primary' : 'border border-hairline text-ink-muted hover:bg-surface-1'
                     }`}
                 >
                   {p}
@@ -346,7 +348,7 @@ function ExpensesTable({
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-3 py-1.5 text-xs font-medium rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted"
+              className="px-3 py-1.5 rounded-full text-xs font-medium border border-hairline text-ink-muted hover:bg-surface-1 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
             >
               Próxima
             </button>
@@ -425,31 +427,31 @@ export default function DashboardPage() {
       {/* ── Header + filter ── */}
       <div className="flex flex-col sm:flex-row sm:items-end gap-4 justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-brand-fg">Dashboard</h1>
+          <h1 className="text-2xl font-semibold text-ink">Dashboard</h1>
         </div>
         <div className="flex flex-col lg:flex-row lg:items-end gap-4">
           <form onSubmit={applyFilter} className="flex flex-wrap items-end gap-4">
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data inicial</label>
+              <label className="text-xs font-medium text-ink-muted uppercase tracking-wide">Data inicial</label>
               <DatePicker
                 value={pendingStart}
                 onChange={setPendingStart}
                 max={pendingEnd}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg dark:bg-brand-surface"
+                className="px-3 py-2 bg-canvas border border-hairline rounded-lg text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus"
               />
             </div>
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-gray-500 uppercase tracking-wide dark:text-brand-muted">Data final</label>
+              <label className="text-xs font-medium text-ink-muted uppercase tracking-wide">Data final</label>
               <DatePicker
                 value={pendingEnd}
                 onChange={setPendingEnd}
                 min={pendingStart}
-                className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:border-brand-muted/30 dark:text-brand-fg dark:bg-brand-surface"
+                className="px-3 py-2 bg-canvas border border-hairline rounded-lg text-sm text-ink focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus"
               />
             </div>
             <button
               type="submit"
-              className="px-4 py-2 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 transition-colors"
+              className="px-4 py-2 rounded-full bg-primary text-on-primary text-sm font-semibold hover:bg-primary-hover active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-focus focus:ring-offset-2 transition"
             >
               Aplicar
             </button>
@@ -462,13 +464,13 @@ export default function DashboardPage() {
       </div>
 
       {error && (
-        <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">{error}</div>
+        <div className="px-4 py-3 bg-error/10 border border-error/30 text-error text-sm">{error}</div>
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center h-64 text-gray-400 dark:text-brand-muted">
+        <div className="flex items-center justify-center h-64 text-ink-subtle">
           <div className="flex flex-col items-center gap-3">
-            <svg className="animate-spin w-8 h-8 text-brand-primary dark:text-brand-primary" fill="none" viewBox="0 0 24 24">
+            <svg className="animate-spin w-8 h-8 text-primary" fill="none" viewBox="0 0 24 24">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
             </svg>
@@ -476,12 +478,12 @@ export default function DashboardPage() {
           </div>
         </div>
       ) : !hasData ? (
-        <div className="flex flex-col items-center justify-center h-64 gap-3 bg-white rounded-2xl border border-gray-100 shadow-sm dark:border-brand-muted/20 dark:bg-brand-surface">
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-gray-300 dark:text-brand-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <div className="flex flex-col items-center justify-center h-64 gap-3 bg-canvas border border-hairline rounded-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-12 h-12 text-ink-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
-          <p className="text-gray-500 font-medium dark:text-brand-muted">Nenhum dado para o período selecionado.</p>
-          <p className="text-gray-400 text-sm dark:text-brand-muted">Ajuste o intervalo de datas ou adicione despesas</p>
+          <p className="text-ink-muted font-medium">Nenhum dado para o período selecionado.</p>
+          <p className="text-ink-subtle text-sm">Ajuste o intervalo de datas ou adicione despesas</p>
         </div>
       ) : (
         <>
@@ -491,7 +493,7 @@ export default function DashboardPage() {
               label="Total de Despesas"
               value={fmt(totalExpenses)}
               sub={`${fmtDate(startDate)} – ${fmtDate(endDate)}`}
-              color="text-red-600 dark:text-red-400"
+              color="text-error"
             />
             <MetricCard
               label="Lançamentos"
@@ -506,12 +508,12 @@ export default function DashboardPage() {
             <MetricCard
               label="Maior Despesa"
               value={fmt(maxExpense)}
-              color="text-red-500 dark:text-red-400"
+              color="text-error"
             />
             <MetricCard
               label="Menor Despesa"
               value={fmt(minExpense)}
-              color="text-green-600 dark:text-green-400"
+              color="text-success"
             />
             <MetricCard
               label="Ticket Médio"
@@ -523,20 +525,20 @@ export default function DashboardPage() {
           {/* ── Charts ── */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Monthly bar chart */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-brand-muted/20 dark:bg-brand-surface">
-              <h2 className="text-sm font-semibold text-gray-700 mb-4 dark:text-brand-fg">Evolução Mensal de Despesas</h2>
+            <div className="bg-canvas border border-hairline rounded-lg p-5">
+              <h2 className="text-sm font-semibold text-ink mb-4">Evolução Mensal de Despesas</h2>
               {monthlyData.length === 0 ? (
-                <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-brand-muted">
+                <div className="flex items-center justify-center h-48 text-ink-subtle text-sm">
                   Sem dados mensais no período
                 </div>
               ) : (
                 <ResponsiveContainer width="100%" height={240}>
                   <BarChart data={monthlyData} margin={{ top: 20, right: 8, left: 0, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,0.25)" />
-                    <XAxis dataKey="month" tick={{ fontSize: 12, fill: '#6b7280' }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 11, fill: '#6b7280' }} axisLine={false} tickLine={false} tickFormatter={(v) => `R$${(v / 1000).toFixed(0)}k`} width={52} />
+                    <CartesianGrid strokeDasharray="3 3" stroke="var(--hairline)" />
+                    <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'var(--ink-subtle)' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 11, fill: 'var(--ink-subtle)' }} axisLine={false} tickLine={false} tickFormatter={(v) => `R$${(v / 1000).toFixed(0)}k`} width={52} />
                     <Tooltip content={<BarTooltip />} />
-                    <Bar dataKey="total" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Despesas">
+                    <Bar dataKey="total" fill="var(--primary)" radius={[6, 6, 0, 0]} name="Despesas">
                       <LabelList
                         dataKey="total"
                         position="top"
@@ -544,7 +546,7 @@ export default function DashboardPage() {
                           const n = Number(v);
                           return n >= 1000 ? `R$${(n / 1000).toFixed(1)}k` : `R$${n}`;
                         }}
-                        style={{ fontSize: 10, fill: '#6b7280' }}
+                        style={{ fontSize: 10, fill: 'var(--ink-subtle)' }}
                       />
                     </Bar>
                   </BarChart>
@@ -553,10 +555,10 @@ export default function DashboardPage() {
             </div>
 
             {/* Category donut + breakdown */}
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 dark:border-brand-muted/20 dark:bg-brand-surface">
-              <h2 className="text-sm font-semibold text-gray-700 mb-4 dark:text-brand-fg">Distribuição por Categoria</h2>
+            <div className="bg-canvas border border-hairline rounded-lg p-5">
+              <h2 className="text-sm font-semibold text-ink mb-4">Distribuição por Categoria</h2>
               {categoryData.length === 0 ? (
-                <div className="flex items-center justify-center h-48 text-gray-400 text-sm dark:text-brand-muted">
+                <div className="flex items-center justify-center h-48 text-ink-subtle text-sm">
                   Sem dados de categoria
                 </div>
               ) : (
@@ -580,11 +582,11 @@ export default function DashboardPage() {
                       <Legend
                         iconType="circle"
                         iconSize={8}
-                        formatter={(v) => <span className="text-xs text-gray-600 dark:text-brand-muted">{v}</span>}
+                        formatter={(v) => <span className="text-xs text-ink-muted">{v}</span>}
                       />
                     </PieChart>
                   </ResponsiveContainer>
-                  <div className="space-y-2 pt-1 border-t border-gray-100 dark:border-brand-muted/20">
+                  <div className="space-y-2 pt-1 border-t border-hairline">
                     {categoryData.map(({ name, value, pct }, i) => (
                       <CategoryBar key={name} name={name} value={value} pct={pct} color={COLORS[i % COLORS.length]} />
                     ))}
@@ -598,7 +600,7 @@ export default function DashboardPage() {
 
           {/* ── Expenses table ── */}
           <div>
-            <h2 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Lançamentos</h2>
+            <h2 className="text-sm font-semibold text-ink mb-3">Lançamentos</h2>
             <ExpensesTable expenses={allExpenses} spreadsheets={spreadsheets} />
           </div>
         </>

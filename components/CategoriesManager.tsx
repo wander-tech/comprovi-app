@@ -31,16 +31,18 @@ interface AddSubState {
 }
 
 const inputClass =
-  'w-full px-3.5 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted';
+  'w-full px-3.5 py-2 bg-canvas border border-hairline rounded-lg text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus';
 
 const editButtonClass =
-  'text-xs font-medium text-brand-primary hover:text-brand-primary bg-brand-primary/10 hover:bg-brand-primary/10 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 dark:hover:text-brand-primary/80 dark:hover:bg-brand-primary/50 dark:text-brand-primary dark:bg-brand-primary/40';
+  'text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 rounded-full px-3 py-1.5 active:scale-95 transition disabled:opacity-60';
 
 const deleteButtonClass =
-  'text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 dark:hover:text-red-300 dark:hover:bg-red-900/50 dark:text-red-400 dark:bg-red-950/40';
+  'text-xs font-medium text-error bg-error/10 hover:bg-error/20 rounded-full px-3 py-1.5 active:scale-95 transition disabled:opacity-60';
 
 const cancelButtonClass =
-  'text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors dark:hover:bg-brand-surface dark:text-brand-muted dark:bg-brand-surface';
+  'text-xs font-medium text-ink-muted bg-surface-1 hover:bg-surface-2 rounded-full px-3 py-1.5 active:scale-95 transition';
+
+const errorBannerClass = 'px-4 py-3 bg-error/10 border border-error/30 text-error text-sm';
 
 function friendlyError(err: unknown, notFoundMessage: string): string {
   const status = err instanceof Error ? (err as ApiError).status : undefined;
@@ -253,9 +255,9 @@ export default function CategoriesManager() {
   }
 
   return (
-    <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 dark:bg-brand-surface dark:border-brand-muted/20">
-      <h2 className="text-base font-semibold text-gray-900 mb-1 dark:text-brand-fg">Minhas categorias</h2>
-      <p className="text-sm text-gray-500 mb-5 dark:text-brand-muted">
+    <div className="bg-canvas border border-hairline rounded-lg p-6">
+      <h2 className="text-base font-semibold text-ink mb-1">Minhas categorias</h2>
+      <p className="text-sm text-ink-muted mb-5">
         {isAdmin ? (
           <>
             Categorias marcadas como <span className="inline-flex items-center gap-1 align-middle"><LockIcon /> Sistema</span> são
@@ -267,18 +269,18 @@ export default function CategoriesManager() {
       </p>
 
       {error && (
-        <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
+        <div className={`mb-4 ${errorBannerClass}`}>
           {error}
         </div>
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center h-24 text-gray-400 text-sm dark:text-brand-muted">Carregando...</div>
+        <div className="flex items-center justify-center h-24 text-ink-subtle text-sm">Carregando...</div>
       ) : (
         <>
-          <ul className="divide-y divide-gray-100 border border-gray-100 rounded-xl overflow-hidden dark:divide-brand-muted/20 dark:border-brand-muted/20 mb-6">
+          <ul className="divide-y divide-hairline border border-hairline rounded-lg overflow-hidden mb-6">
             {visibleCategories.length === 0 && (
-              <li className="px-4 py-3 text-sm text-gray-400 dark:text-brand-muted">Nenhuma categoria.</li>
+              <li className="px-4 py-3 text-sm text-ink-subtle">Nenhuma categoria.</li>
             )}
             {visibleCategories.map((cat) => {
               const subs = subsByCategory.get(cat.idCategory) ?? [];
@@ -294,7 +296,7 @@ export default function CategoriesManager() {
                     <button
                       type="button"
                       onClick={() => toggleExpand(cat.idCategory)}
-                      className="shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-brand-fg"
+                      className="shrink-0 text-ink-subtle hover:text-ink"
                       aria-label={expanded ? 'Recolher subcategorias' : 'Ver subcategorias'}
                     >
                       <ChevronIcon expanded={expanded} />
@@ -314,11 +316,11 @@ export default function CategoriesManager() {
                           className={`${inputClass} flex-1 min-w-[140px]`}
                         />
                       ) : (
-                        <span className="min-w-0 flex-1 text-sm text-gray-900 truncate dark:text-brand-fg">{cat.name}</span>
+                        <span className="min-w-0 flex-1 text-sm text-ink truncate">{cat.name}</span>
                       )}
 
                       {cat.idUser === null && (
-                        <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full dark:bg-brand-bg dark:text-brand-muted">
+                        <span className="shrink-0 inline-flex items-center gap-1 text-xs font-medium text-ink-muted bg-surface-2 px-2 py-0.5 rounded-full">
                           <LockIcon /> Sistema
                         </span>
                       )}
@@ -348,7 +350,7 @@ export default function CategoriesManager() {
 
                     {isConfirmingDelete && (
                       <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end sm:justify-start">
-                        <span className="text-xs text-gray-500 dark:text-brand-muted">Excluir?</span>
+                        <span className="text-xs text-ink-muted">Excluir?</span>
                         <button type="button" disabled={isDeleting} onClick={() => handleConfirmDeleteCategory(cat.idCategory)} className={deleteButtonClass}>
                           {isDeleting ? 'Excluindo...' : 'Sim'}
                         </button>
@@ -360,13 +362,13 @@ export default function CategoriesManager() {
                   </div>
 
                   {isEditing && editingCategory.error && (
-                    <p className="mt-1.5 ml-6 text-xs text-red-600 dark:text-red-400">{editingCategory.error}</p>
+                    <p className="mt-1.5 ml-6 text-xs text-error">{editingCategory.error}</p>
                   )}
 
                   {expanded && (
-                    <div className="mt-3 ml-3 sm:ml-6 pl-2 sm:pl-3 border-l-2 border-gray-100 space-y-2 dark:border-brand-muted/20">
+                    <div className="mt-3 ml-3 sm:ml-6 pl-2 sm:pl-3 border-l-2 border-hairline space-y-2">
                       {subs.length === 0 && (
-                        <p className="text-xs text-gray-400 dark:text-brand-muted">Nenhuma subcategoria.</p>
+                        <p className="text-xs text-ink-subtle">Nenhuma subcategoria.</p>
                       )}
                       {subs.map((sub) => {
                         const subManageable = canManage(sub.idUser);
@@ -391,11 +393,11 @@ export default function CategoriesManager() {
                                     className={`${inputClass} flex-1 min-w-[120px] py-1.5`}
                                   />
                                 ) : (
-                                  <span className="min-w-0 flex-1 text-sm text-gray-700 truncate dark:text-brand-fg">{sub.name}</span>
+                                  <span className="min-w-0 flex-1 text-sm text-ink-muted truncate">{sub.name}</span>
                                 )}
 
                                 {sub.idUser === null && (
-                                  <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-medium text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded-full dark:bg-brand-bg dark:text-brand-muted">
+                                  <span className="shrink-0 inline-flex items-center gap-1 text-[11px] font-medium text-ink-muted bg-surface-2 px-1.5 py-0.5 rounded-full">
                                     <LockIcon /> Sistema
                                   </span>
                                 )}
@@ -425,7 +427,7 @@ export default function CategoriesManager() {
 
                               {subConfirming && (
                                 <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end sm:justify-start">
-                                  <span className="text-xs text-gray-500 dark:text-brand-muted">Excluir?</span>
+                                  <span className="text-xs text-ink-muted">Excluir?</span>
                                   <button type="button" disabled={subDeleting} onClick={() => handleConfirmDeleteSub(sub.idSubcategory)} className={deleteButtonClass}>
                                     {subDeleting ? 'Excluindo...' : 'Sim'}
                                   </button>
@@ -436,7 +438,7 @@ export default function CategoriesManager() {
                               )}
                             </div>
                             {subEditing && editingSub.error && (
-                              <p className="mt-1 text-xs text-red-600 dark:text-red-400">{editingSub.error}</p>
+                              <p className="mt-1 text-xs text-error">{editingSub.error}</p>
                             )}
                           </div>
                         );
@@ -457,14 +459,14 @@ export default function CategoriesManager() {
                               placeholder="Nome da subcategoria"
                               className={`${inputClass} py-1.5`}
                             />
-                            {addSub.error && <p className="mt-1 text-xs text-red-600 dark:text-red-400">{addSub.error}</p>}
+                            {addSub.error && <p className="mt-1 text-xs text-error">{addSub.error}</p>}
                           </div>
                           <div className="flex gap-2">
                             <button
                               type="button"
                               onClick={submitAddSub}
                               disabled={addSub.saving || !addSub.name.trim()}
-                              className="px-3 py-1.5 bg-brand-primary text-white text-xs font-medium rounded-lg hover:bg-brand-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                              className="px-3 py-1.5 rounded-full bg-primary text-on-primary text-xs font-medium hover:bg-primary-hover active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed transition"
                             >
                               {addSub.saving ? '...' : 'Adicionar'}
                             </button>
@@ -477,7 +479,7 @@ export default function CategoriesManager() {
                         <button
                           type="button"
                           onClick={() => openAddSub(cat.idCategory)}
-                          className="text-xs font-medium text-brand-primary hover:underline pt-1"
+                          className="text-xs font-medium text-primary hover:underline pt-1"
                         >
                           + Nova subcategoria
                         </button>
@@ -489,10 +491,10 @@ export default function CategoriesManager() {
             })}
           </ul>
 
-          <form onSubmit={handleCreateCategory} className="border-t border-gray-100 pt-5 dark:border-brand-muted/20">
-            <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Nova categoria</h3>
+          <form onSubmit={handleCreateCategory} className="border-t border-hairline pt-5">
+            <h3 className="text-sm font-semibold text-ink mb-3">Nova categoria</h3>
             {newCategory.error && (
-              <div className="mb-3 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
+              <div className={`mb-3 ${errorBannerClass}`}>
                 {newCategory.error}
               </div>
             )}
@@ -507,7 +509,7 @@ export default function CategoriesManager() {
               <button
                 type="submit"
                 disabled={newCategory.saving || !newCategory.name.trim()}
-                className="px-5 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                className="px-5 py-2.5 rounded-full bg-primary text-on-primary text-sm font-semibold hover:bg-primary-hover active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-focus focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
               >
                 {newCategory.saving ? 'Adicionando...' : 'Adicionar'}
               </button>

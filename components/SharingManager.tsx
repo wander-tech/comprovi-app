@@ -23,7 +23,15 @@ const PERMISSION_OPTIONS = [
 ];
 
 const inputClass =
-  'w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted';
+  'w-full px-3.5 py-2.5 bg-canvas border border-hairline rounded-lg text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus';
+
+const removeButtonClass =
+  'text-xs font-medium text-error bg-error/10 hover:bg-error/20 rounded-full px-3 py-2 active:scale-95 transition disabled:opacity-60';
+
+const neutralPillButtonClass =
+  'text-xs font-medium text-ink-muted bg-surface-1 hover:bg-surface-2 rounded-full px-3 py-1.5 active:scale-95 transition disabled:opacity-60 shrink-0';
+
+const errorBannerClass = 'px-4 py-3 bg-error/10 border border-error/30 text-error text-sm';
 
 interface SharingManagerProps {
   idSpreadsheet: number;
@@ -163,36 +171,36 @@ export default function SharingManager({ idSpreadsheet, spreadsheetName, onClose
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto dark:bg-brand-surface">
+      <div className="relative bg-canvas shadow-xl rounded-2xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-1">
-          <h2 className="text-lg font-bold text-gray-900 dark:text-brand-fg">Controle de acesso</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-brand-fg dark:text-brand-muted" aria-label="Fechar">
+          <h2 className="text-lg font-semibold text-ink">Controle de acesso</h2>
+          <button onClick={onClose} className="text-ink-subtle hover:text-ink transition-colors" aria-label="Fechar">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-        <p className="text-sm text-gray-500 mb-5 truncate dark:text-brand-muted">{spreadsheetName}</p>
+        <p className="text-sm text-ink-muted mb-5 truncate">{spreadsheetName}</p>
 
         {error && (
-          <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
+          <div className={`mb-4 ${errorBannerClass}`}>
             {error}
           </div>
         )}
 
         {loading ? (
-          <div className="flex items-center justify-center h-24 text-gray-400 text-sm dark:text-brand-muted">Carregando...</div>
+          <div className="flex items-center justify-center h-24 text-ink-subtle text-sm">Carregando...</div>
         ) : (
           <>
             <div className="mb-5">
-              <h3 className="text-sm font-semibold text-gray-700 mb-2 dark:text-brand-fg">Quem tem acesso</h3>
+              <h3 className="text-sm font-semibold text-ink mb-2">Quem tem acesso</h3>
               {sharings.length === 0 ? (
-                <p className="text-sm text-gray-400 dark:text-brand-muted">Nenhum usuário com acesso além de você.</p>
+                <p className="text-sm text-ink-subtle">Nenhum usuário com acesso além de você.</p>
               ) : (
-                <ul className="divide-y divide-gray-100 dark:divide-brand-muted/20 border border-gray-100 rounded-xl overflow-hidden dark:border-brand-muted/20">
+                <ul className="divide-y divide-hairline border border-hairline rounded-lg overflow-hidden">
                   {sharings.map((s) => (
                     <li key={s.idUser} className="flex items-center justify-between gap-3 px-4 py-3">
-                      <span className="text-sm text-gray-900 truncate dark:text-brand-fg">{displayUser(s.idUser)}</span>
+                      <span className="text-sm text-ink truncate">{displayUser(s.idUser)}</span>
                       <div className="flex items-center gap-2 shrink-0">
                         <div className="w-28">
                           <SearchableSelect
@@ -206,7 +214,7 @@ export default function SharingManager({ idSpreadsheet, spreadsheetName, onClose
                         <button
                           onClick={() => handleRemove(s.idUser)}
                           disabled={savingUserId === s.idUser}
-                          className="text-xs font-medium text-red-600 hover:text-red-800 bg-red-50 hover:bg-red-100 px-3 py-2 rounded-lg transition-colors disabled:opacity-60 dark:hover:text-red-300 dark:hover:bg-red-900/50 dark:text-red-400 dark:bg-red-950/40"
+                          className={removeButtonClass}
                         >
                           Remover
                         </button>
@@ -219,20 +227,20 @@ export default function SharingManager({ idSpreadsheet, spreadsheetName, onClose
 
             {pendingInvitations.length > 0 && (
               <div className="mb-5">
-                <h3 className="text-sm font-semibold text-gray-700 mb-2 dark:text-brand-fg">Convites pendentes</h3>
-                <ul className="divide-y divide-gray-100 dark:divide-brand-muted/20 border border-gray-100 rounded-xl overflow-hidden dark:border-brand-muted/20">
+                <h3 className="text-sm font-semibold text-ink mb-2">Convites pendentes</h3>
+                <ul className="divide-y divide-hairline border border-hairline rounded-lg overflow-hidden">
                   {pendingInvitations.map((inv) => (
                     <li key={inv.idInvitation} className="flex items-center justify-between gap-3 px-4 py-3">
                       <div className="min-w-0">
-                        <span className="text-sm text-gray-900 truncate block dark:text-brand-fg">{inv.invitedUserEmail}</span>
-                        <span className="text-xs text-gray-400 dark:text-brand-muted">
+                        <span className="text-sm text-ink truncate block">{inv.invitedUserEmail}</span>
+                        <span className="text-xs text-ink-subtle">
                           {inv.permission === 'edit' ? 'Edição' : 'Leitura'} · aguardando resposta
                         </span>
                       </div>
                       <button
                         onClick={() => handleCancelInvitation(inv.idInvitation)}
                         disabled={cancelingId === inv.idInvitation}
-                        className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 shrink-0 dark:hover:bg-brand-surface dark:text-brand-muted dark:bg-brand-surface"
+                        className={neutralPillButtonClass}
                       >
                         {cancelingId === inv.idInvitation ? 'Cancelando...' : 'Cancelar convite'}
                       </button>
@@ -242,11 +250,11 @@ export default function SharingManager({ idSpreadsheet, spreadsheetName, onClose
               </div>
             )}
 
-            <form onSubmit={handleInvite} className="border-t border-gray-100 pt-5 dark:border-brand-muted/20">
-              <h3 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Convidar por e-mail</h3>
+            <form onSubmit={handleInvite} className="border-t border-hairline pt-5">
+              <h3 className="text-sm font-semibold text-ink mb-3">Convidar por e-mail</h3>
 
               {inviteError && (
-                <div className="mb-3 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
+                <div className={`mb-3 ${errorBannerClass}`}>
                   {inviteError}
                 </div>
               )}
@@ -268,14 +276,14 @@ export default function SharingManager({ idSpreadsheet, spreadsheetName, onClose
                   />
                 </div>
               </div>
-              <p className="text-xs text-gray-400 mt-2 dark:text-brand-muted">
+              <p className="text-xs text-ink-subtle mt-2">
                 O acesso só é concedido depois que o convite for aceito.
               </p>
 
               <button
                 type="submit"
                 disabled={inviting}
-                className="mt-3 w-full py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                className="mt-3 w-full py-2.5 rounded-full bg-primary text-on-primary text-sm font-semibold hover:bg-primary-hover active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-focus focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
               >
                 {inviting ? 'Enviando...' : 'Enviar convite'}
               </button>

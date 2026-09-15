@@ -61,7 +61,20 @@ interface ExpenseModalsProps {
 }
 
 const inputClass =
-  'w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-base sm:text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted';
+  'w-full px-3.5 py-2.5 bg-canvas border border-hairline rounded-lg text-base sm:text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus';
+
+const labelClass = 'block text-sm font-medium text-ink-muted mb-1.5';
+const linkButtonClass = 'text-xs font-medium text-primary hover:underline';
+const errorBannerClass = 'mb-4 px-4 py-3 bg-error/10 border border-error/30 text-error text-sm';
+const successBannerClass = 'mb-4 px-4 py-3 bg-success/10 border border-success/30 text-success text-sm';
+const inlineAddButtonClass =
+  'px-3 py-2.5 rounded-full bg-primary text-on-primary text-sm font-medium hover:bg-primary-hover active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed transition';
+const inlineCancelButtonClass =
+  'px-3 py-2.5 rounded-full bg-canvas text-ink-muted text-sm font-medium border border-hairline hover:bg-surface-1 active:scale-95 transition';
+const modalCancelButtonClass =
+  'w-full sm:w-auto sm:px-5 py-2.5 rounded-full bg-canvas text-ink-muted text-sm font-medium border border-hairline hover:bg-surface-1 active:scale-95 transition';
+const modalSubmitButtonClass =
+  'flex-1 py-2.5 rounded-full bg-primary text-on-primary text-sm font-semibold hover:bg-primary-hover active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-focus focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition';
 
 const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(function ExpenseModals(
   { spreadsheets, lockedSpreadsheetId, onExpenseCreated, onExpenseUpdated },
@@ -328,12 +341,12 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
       {modal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center sm:p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setModal(null)} />
-          <div className="relative bg-white shadow-xl w-full h-full sm:h-auto sm:rounded-2xl sm:max-w-xl p-5 sm:p-6 sm:max-h-[90vh] overflow-y-auto dark:bg-brand-surface">
+          <div className="relative bg-canvas shadow-xl w-full h-full sm:h-auto sm:rounded-2xl sm:max-w-xl p-5 sm:p-6 sm:max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-brand-fg">
+              <h2 className="text-lg font-semibold text-ink">
                 {modal.mode === 'create' ? 'Novo gasto' : 'Editar gasto'}
               </h2>
-              <button onClick={() => setModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-brand-fg dark:text-brand-muted" aria-label="Fechar">
+              <button onClick={() => setModal(null)} className="text-ink-subtle hover:text-ink transition-colors" aria-label="Fechar">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -341,7 +354,7 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
             </div>
 
             {modal.error && (
-              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
+              <div className={errorBannerClass}>
                 {modal.error}
               </div>
             )}
@@ -349,8 +362,8 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
             <form onSubmit={handleSubmit} className="space-y-4">
               {!lockedSpreadsheetId && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                    Planilha <span className="text-red-500">*</span>
+                  <label className={labelClass}>
+                    Planilha <span className="text-error">*</span>
                   </label>
                   <SearchableSelect
                     value={modal.form.idSpreadsheet}
@@ -364,8 +377,8 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                  Descrição <span className="text-red-500">*</span>
+                <label className={labelClass}>
+                  Descrição <span className="text-error">*</span>
                 </label>
                 <input
                   type="text"
@@ -379,8 +392,8 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                    Valor (R$) <span className="text-red-500">*</span>
+                  <label className={labelClass}>
+                    Valor (R$) <span className="text-error">*</span>
                   </label>
                   <input
                     type="number"
@@ -394,8 +407,8 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                    Data <span className="text-red-500">*</span>
+                  <label className={labelClass}>
+                    Data <span className="text-error">*</span>
                   </label>
                   <DatePicker
                     value={modal.form.date}
@@ -407,14 +420,14 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-brand-fg">
-                    Categoria <span className="text-red-500">*</span>
+                  <label className={labelClass}>
+                    Categoria <span className="text-error">*</span>
                   </label>
                   {!creatingCategory && (
                     <button
                       type="button"
                       onClick={openCreateCategory}
-                      className="text-xs font-medium text-brand-primary hover:underline"
+                      className={linkButtonClass}
                     >
                       + Nova categoria
                     </button>
@@ -441,21 +454,21 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
                         className={inputClass}
                       />
                       {creatingCategory.error && (
-                        <p className="mt-1 text-xs text-red-600 dark:text-red-400">{creatingCategory.error}</p>
+                        <p className="mt-1 text-xs text-error">{creatingCategory.error}</p>
                       )}
                     </div>
                     <button
                       type="button"
                       onClick={submitCreateCategory}
                       disabled={creatingCategory.saving || !creatingCategory.name.trim()}
-                      className="px-3 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-brand-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                      className={inlineAddButtonClass}
                     >
                       {creatingCategory.saving ? '...' : 'Adicionar'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setCreatingCategory(null)}
-                      className="px-3 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
+                      className={inlineCancelButtonClass}
                     >
                       Cancelar
                     </button>
@@ -465,14 +478,14 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
 
               <div>
                 <div className="flex items-center justify-between mb-1.5">
-                  <label className="block text-sm font-medium text-gray-700 dark:text-brand-fg">
-                    Subcategoria <span className="text-red-500">*</span>
+                  <label className={labelClass}>
+                    Subcategoria <span className="text-error">*</span>
                   </label>
                   {!creatingSubcategory && modal.form.idCategory && (
                     <button
                       type="button"
                       onClick={openCreateSubcategory}
-                      className="text-xs font-medium text-brand-primary hover:underline"
+                      className={linkButtonClass}
                     >
                       + Nova subcategoria
                     </button>
@@ -485,7 +498,7 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
                   placeholder={modal.form.idCategory ? 'Selecione a subcategoria' : 'Selecione uma categoria primeiro'}
                   searchPlaceholder="Buscar subcategoria..."
                   disabled={!modal.form.idCategory}
-                  className={`${inputClass} disabled:bg-gray-50 disabled:text-gray-400 disabled:cursor-not-allowed dark:disabled:bg-brand-bg dark:disabled:text-brand-muted`}
+                  className={`${inputClass} disabled:bg-surface-2 disabled:text-ink-subtle disabled:cursor-not-allowed`}
                 />
                 {creatingSubcategory && (
                   <div className="mt-2 flex items-start gap-2">
@@ -500,21 +513,21 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
                         className={inputClass}
                       />
                       {creatingSubcategory.error && (
-                        <p className="mt-1 text-xs text-red-600 dark:text-red-400">{creatingSubcategory.error}</p>
+                        <p className="mt-1 text-xs text-error">{creatingSubcategory.error}</p>
                       )}
                     </div>
                     <button
                       type="button"
                       onClick={submitCreateSubcategory}
                       disabled={creatingSubcategory.saving || !creatingSubcategory.name.trim()}
-                      className="px-3 py-2.5 bg-brand-primary text-white text-sm font-medium rounded-lg hover:bg-brand-primary/90 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                      className={inlineAddButtonClass}
                     >
                       {creatingSubcategory.saving ? '...' : 'Adicionar'}
                     </button>
                     <button
                       type="button"
                       onClick={() => setCreatingSubcategory(null)}
-                      className="px-3 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
+                      className={inlineCancelButtonClass}
                     >
                       Cancelar
                     </button>
@@ -526,14 +539,14 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
                 <button
                   type="button"
                   onClick={() => setModal(null)}
-                  className="w-full sm:w-auto sm:px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
+                  className={modalCancelButtonClass}
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={modal.saving}
-                  className="flex-1 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                  className={modalSubmitButtonClass}
                 >
                   {modal.saving
                     ? 'Salvando...'
@@ -548,10 +561,10 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
       {receiptModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setReceiptModal(null)} />
-          <div className="relative bg-white rounded-2xl shadow-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto dark:bg-brand-surface">
+          <div className="relative bg-canvas shadow-xl rounded-2xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-bold text-gray-900 dark:text-brand-fg">Importar comprovante</h2>
-              <button onClick={() => setReceiptModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors dark:hover:text-brand-fg dark:text-brand-muted" aria-label="Fechar">
+              <h2 className="text-lg font-semibold text-ink">Importar comprovante</h2>
+              <button onClick={() => setReceiptModal(null)} className="text-ink-subtle hover:text-ink transition-colors" aria-label="Fechar">
                 <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -559,13 +572,13 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
             </div>
 
             {receiptModal.error && (
-              <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
+              <div className={errorBannerClass}>
                 {receiptModal.error}
               </div>
             )}
 
             {receiptModal.success && (
-              <div className="mb-4 px-4 py-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm dark:border-green-900 dark:text-green-400 dark:bg-green-950/40">
+              <div className={successBannerClass}>
                 {receiptModal.success}
               </div>
             )}
@@ -573,8 +586,8 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
             <form onSubmit={handleReceiptSubmit} className="space-y-4">
               {!lockedSpreadsheetId && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                    Planilha <span className="text-red-500">*</span>
+                  <label className={labelClass}>
+                    Planilha <span className="text-error">*</span>
                   </label>
                   <SearchableSelect
                     value={receiptModal.idSpreadsheet}
@@ -588,17 +601,17 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
-                  Comprovante (PDF, JPEG ou PNG) <span className="text-red-500">*</span>
+                <label className={labelClass}>
+                  Comprovante (PDF, JPEG ou PNG) <span className="text-error">*</span>
                 </label>
                 <input
                   type="file"
                   accept="application/pdf,image/jpeg,image/png"
                   onChange={updateReceiptFile}
                   required
-                  className={`${inputClass} file:mr-3 file:py-1.5 file:px-3 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-brand-primary/10 file:text-brand-primary hover:file:bg-brand-primary/20`}
+                  className={`${inputClass} file:mr-3 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20`}
                 />
-                <p className="mt-1.5 text-xs text-gray-400 dark:text-brand-muted">
+                <p className="mt-1.5 text-xs text-ink-subtle">
                   O gasto será lançado automaticamente a partir dos dados do comprovante.
                 </p>
               </div>
@@ -607,14 +620,14 @@ const ExpenseModals = forwardRef<ExpenseModalsHandle, ExpenseModalsProps>(functi
                 <button
                   type="button"
                   onClick={() => setReceiptModal(null)}
-                  className="w-full sm:w-auto sm:px-5 py-2.5 bg-white text-gray-600 text-sm font-medium rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors dark:hover:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-muted dark:bg-brand-surface"
+                  className={modalCancelButtonClass}
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={receiptModal.saving || !receiptModal.file}
-                  className="flex-1 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                  className={modalSubmitButtonClass}
                 >
                   {receiptModal.saving ? 'Processando...' : 'Importar'}
                 </button>

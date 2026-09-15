@@ -22,9 +22,9 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 const STATUS_COLOR: Record<string, string> = {
-  pending: 'bg-yellow-100 text-yellow-700 dark:bg-yellow-950/60 dark:text-yellow-400',
-  accepted: 'bg-green-100 text-green-700 dark:bg-green-950/60 dark:text-green-400',
-  declined: 'bg-gray-100 text-gray-600 dark:bg-brand-surface dark:text-brand-muted',
+  pending: 'bg-warning/20 text-ink',
+  accepted: 'bg-success/10 text-success',
+  declined: 'bg-surface-2 text-ink-muted',
 };
 
 export default function InvitationsPage() {
@@ -116,39 +116,39 @@ export default function InvitationsPage() {
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-brand-fg">Convites</h1>
-        <p className="text-sm text-gray-500 mt-1 dark:text-brand-muted">Convites recebidos por e-mail</p>
+        <h1 className="text-2xl font-semibold text-ink">Convites</h1>
+        <p className="text-sm text-ink-muted mt-1">Convites recebidos por e-mail</p>
       </div>
 
       {error && (
-        <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:border-red-900 dark:text-red-400 dark:bg-red-950/40">
+        <div className="mb-4 px-4 py-3 bg-error/10 border border-error/30 text-error text-sm">
           {error}
         </div>
       )}
 
       <div className="mb-8">
-        <h2 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Acesso a planilhas</h2>
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-brand-muted/20 dark:bg-brand-surface">
+        <h2 className="text-sm font-semibold text-ink mb-3">Acesso a planilhas</h2>
+        <div className="bg-canvas border border-hairline rounded-lg overflow-hidden">
           {loading ? (
-            <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">Carregando...</div>
+            <div className="flex items-center justify-center h-40 text-ink-subtle text-sm">Carregando...</div>
           ) : invitations.length === 0 ? (
-            <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">
+            <div className="flex items-center justify-center h-40 text-ink-subtle text-sm">
               Nenhum convite recebido.
             </div>
           ) : (
-            <ul className="divide-y divide-gray-50 dark:divide-brand-muted/20">
+            <ul className="divide-y divide-hairline">
               {[...pending, ...answered].map((inv) => (
                 <li key={inv.idInvitation} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium text-gray-900 dark:text-brand-fg truncate">
+                      <span className="font-medium text-ink truncate">
                         {inv.spreadsheetName ?? `Planilha #${inv.idSpreadsheet}`}
                       </span>
                       <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_COLOR[inv.status]}`}>
                         {STATUS_LABEL[inv.status]}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-0.5 dark:text-brand-muted">
+                    <p className="text-xs text-ink-muted mt-0.5">
                       Convidado por {inv.inviterName ?? `usuário #${inv.idInviter}`} · {inv.permission === 'edit' ? 'Edição' : 'Leitura'} · {formatDate(inv.createdAt)}
                     </p>
                   </div>
@@ -157,14 +157,14 @@ export default function InvitationsPage() {
                       <button
                         onClick={() => handleAccept(inv)}
                         disabled={respondingId === inv.idInvitation}
-                        className="text-xs font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 px-3 py-1.5 rounded-lg disabled:opacity-60 transition-colors"
+                        className="text-xs font-semibold text-on-primary bg-primary hover:bg-primary-hover rounded-full px-3 py-1.5 active:scale-95 disabled:opacity-60 transition"
                       >
                         {respondingId === inv.idInvitation ? 'Aguarde...' : 'Aceitar'}
                       </button>
                       <button
                         onClick={() => handleDecline(inv)}
                         disabled={respondingId === inv.idInvitation}
-                        className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 dark:hover:bg-brand-surface dark:text-brand-muted dark:bg-brand-surface"
+                        className="text-xs font-medium text-ink-muted bg-surface-1 hover:bg-surface-2 rounded-full px-3 py-1.5 active:scale-95 transition disabled:opacity-60"
                       >
                         Recusar
                       </button>
@@ -178,31 +178,31 @@ export default function InvitationsPage() {
       </div>
 
       <div>
-        <h2 className="text-sm font-semibold text-gray-700 mb-3 dark:text-brand-fg">Permissão padrão</h2>
-        <p className="text-xs text-gray-500 mb-3 dark:text-brand-muted">
+        <h2 className="text-sm font-semibold text-ink mb-3">Permissão padrão</h2>
+        <p className="text-xs text-ink-muted mb-3">
           Se você aceitar, passará a receber acesso automaticamente em toda nova planilha criada por essa pessoa.
         </p>
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden dark:border-brand-muted/20 dark:bg-brand-surface">
+        <div className="bg-canvas border border-hairline rounded-lg overflow-hidden">
           {loading ? (
-            <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">Carregando...</div>
+            <div className="flex items-center justify-center h-40 text-ink-subtle text-sm">Carregando...</div>
           ) : defaultPermissionInvitations.length === 0 ? (
-            <div className="flex items-center justify-center h-40 text-gray-400 text-sm dark:text-brand-muted">
+            <div className="flex items-center justify-center h-40 text-ink-subtle text-sm">
               Nenhum convite recebido.
             </div>
           ) : (
-            <ul className="divide-y divide-gray-50 dark:divide-brand-muted/20">
+            <ul className="divide-y divide-hairline">
               {[...pendingDefaultPermissions, ...answeredDefaultPermissions].map((inv) => (
                 <li key={inv.idInvitation} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="font-medium text-gray-900 dark:text-brand-fg truncate">
+                      <span className="font-medium text-ink truncate">
                         {inv.inviterName ?? inv.inviterEmail ?? `usuário #${inv.idInviter}`}
                       </span>
                       <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_COLOR[inv.status]}`}>
                         {STATUS_LABEL[inv.status]}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-500 mt-0.5 dark:text-brand-muted">
+                    <p className="text-xs text-ink-muted mt-0.5">
                       {inv.permission === 'edit' ? 'Edição' : 'Leitura'} · {formatDate(inv.createdAt)}
                     </p>
                   </div>
@@ -211,14 +211,14 @@ export default function InvitationsPage() {
                       <button
                         onClick={() => handleAcceptDefaultPermission(inv)}
                         disabled={respondingDefaultPermissionId === inv.idInvitation}
-                        className="text-xs font-semibold text-white bg-brand-primary hover:bg-brand-primary/90 px-3 py-1.5 rounded-lg disabled:opacity-60 transition-colors"
+                        className="text-xs font-semibold text-on-primary bg-primary hover:bg-primary-hover rounded-full px-3 py-1.5 active:scale-95 disabled:opacity-60 transition"
                       >
                         {respondingDefaultPermissionId === inv.idInvitation ? 'Aguarde...' : 'Aceitar'}
                       </button>
                       <button
                         onClick={() => handleDeclineDefaultPermission(inv)}
                         disabled={respondingDefaultPermissionId === inv.idInvitation}
-                        className="text-xs font-medium text-gray-600 bg-gray-100 hover:bg-gray-200 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-60 dark:hover:bg-brand-surface dark:text-brand-muted dark:bg-brand-surface"
+                        className="text-xs font-medium text-ink-muted bg-surface-1 hover:bg-surface-2 rounded-full px-3 py-1.5 active:scale-95 transition disabled:opacity-60"
                       >
                         Recusar
                       </button>

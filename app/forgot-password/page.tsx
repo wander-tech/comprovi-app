@@ -25,47 +25,47 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-brand-bg px-4">
+    <div className="min-h-screen flex items-center justify-center bg-surface-1 px-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-brand-fg">Comprovi</h1>
-          <p className="text-gray-500 mt-2 text-sm dark:text-brand-muted">Redefinição de senha</p>
+          <h1 className="text-3xl font-semibold text-ink">Comprovi</h1>
+          <p className="text-ink-muted mt-2 text-sm">Redefinição de senha</p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 dark:bg-brand-surface dark:border-brand-muted/20">
+        <div className="bg-canvas border border-hairline rounded-lg p-8">
           {success ? (
             <div className="text-center py-4">
-              <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 dark:bg-green-950/50">
-                <svg className="w-7 h-7 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-14 h-14 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
-              <h2 className="text-lg font-semibold text-gray-900 mb-2 dark:text-brand-fg">E-mail enviado!</h2>
-              <p className="text-sm text-gray-500 mb-6 dark:text-brand-muted">
+              <h2 className="text-lg font-semibold text-ink mb-2">E-mail enviado!</h2>
+              <p className="text-sm text-ink-muted mb-6">
                 Se o e-mail <strong>{email}</strong> estiver cadastrado, você receberá as instruções para redefinir sua senha.
               </p>
               <Link
                 href="/login"
-                className="text-sm text-brand-primary font-semibold hover:text-brand-primary dark:text-brand-primary dark:hover:text-brand-primary/80"
+                className="text-sm text-primary font-semibold hover:underline"
               >
                 Voltar para o login
               </Link>
             </div>
           ) : (
             <>
-              <p className="text-sm text-gray-600 mb-6 dark:text-brand-fg">
+              <p className="text-sm text-ink-muted mb-6">
                 Informe seu e-mail e enviaremos um link para você redefinir sua senha.
               </p>
 
               {error && (
-                <div className="mb-5 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:bg-red-950/40 dark:border-red-900 dark:text-red-400">
+                <div className="mb-5 px-4 py-3 bg-error/10 border border-error/30 text-error text-sm">
                   {error}
                 </div>
               )}
 
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
+                  <label htmlFor="email" className="block text-sm font-medium text-ink-muted mb-1.5">
                     E-mail
                   </label>
                   <input
@@ -76,14 +76,14 @@ export default function ForgotPasswordPage() {
                     required
                     autoComplete="email"
                     placeholder="seu@email.com"
-                    className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
+                    className="w-full px-3.5 py-2.5 bg-canvas border border-hairline rounded-lg text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus transition-colors"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                  className="w-full py-2.5 rounded-full bg-primary text-on-primary text-sm font-semibold hover:bg-primary-hover active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-focus focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
                 >
                   {loading ? 'Enviando...' : 'Enviar link de redefinição'}
                 </button>
@@ -93,9 +93,9 @@ export default function ForgotPasswordPage() {
         </div>
 
         {!success && (
-          <p className="text-center text-sm text-gray-500 mt-6 dark:text-brand-muted">
+          <p className="text-center text-sm text-ink-muted mt-6">
             Lembrou a senha?{' '}
-            <Link href="/login" className="text-brand-primary font-semibold hover:text-brand-primary dark:text-brand-primary dark:hover:text-brand-primary/80">
+            <Link href="/login" className="text-primary font-semibold hover:underline">
               Voltar ao login
             </Link>
           </p>

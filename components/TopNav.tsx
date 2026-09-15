@@ -55,10 +55,10 @@ export default function TopNav() {
   const isOnDashboard = pathname === '/dashboard';
 
   const navLinkClass = (active: boolean) =>
-    `flex items-center gap-2 text-sm font-medium transition-colors rounded-lg px-2.5 py-2 sm:px-0 sm:py-0 ${
+    `flex items-center gap-2 text-sm font-medium transition-colors rounded-full px-2.5 py-2 sm:px-0 sm:py-0 sm:rounded-none ${
       active
-        ? 'text-brand-primary dark:text-brand-primary bg-brand-primary/10 dark:bg-brand-primary/40 sm:bg-transparent sm:dark:bg-transparent'
-        : 'text-gray-500 hover:text-gray-900 hover:bg-gray-50 dark:text-brand-muted dark:hover:text-brand-fg dark:hover:bg-brand-surface sm:hover:bg-transparent sm:dark:hover:bg-transparent'
+        ? 'text-primary bg-primary/10 sm:bg-transparent'
+        : 'text-ink-muted hover:text-ink hover:bg-surface-1 sm:hover:bg-transparent'
     }`;
 
   const navLinks = (
@@ -106,7 +106,7 @@ export default function TopNav() {
         </svg>
         Convites
         {pendingInvitations > 0 && (
-          <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-white bg-red-500 rounded-full">
+          <span className="inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 text-[10px] font-bold text-on-primary bg-error rounded-full">
             {pendingInvitations}
           </span>
         )}
@@ -159,10 +159,10 @@ export default function TopNav() {
   );
 
   return (
-    <header className="relative h-16 bg-white dark:bg-brand-surface border-b border-gray-100 dark:border-brand-muted/20 flex items-center px-4 sm:px-6 justify-between shrink-0">
+    <header className="relative h-16 bg-canvas border-b border-hairline flex items-center px-4 sm:px-6 justify-between shrink-0">
       <Link
         href="/dashboard"
-        className="text-lg font-bold text-gray-900 dark:text-brand-fg hover:text-brand-primary dark:hover:text-brand-primary transition-colors"
+        className="text-lg font-semibold text-ink hover:text-primary transition-colors"
       >
         Comprovi
       </Link>
@@ -173,7 +173,7 @@ export default function TopNav() {
         <div className="relative sm:hidden" ref={mobileNavRef}>
           <button
             onClick={() => setMobileNavOpen((prev) => !prev)}
-            className="flex items-center justify-center w-9 h-9 rounded-full text-gray-500 hover:text-gray-900 hover:bg-gray-100 dark:text-brand-muted dark:hover:text-brand-fg dark:hover:bg-brand-surface transition-colors"
+            className="flex items-center justify-center w-9 h-9 rounded-full text-ink-muted hover:text-ink hover:bg-surface-1 transition-colors"
             aria-label="Menu de navegação"
             aria-expanded={mobileNavOpen}
           >
@@ -189,7 +189,7 @@ export default function TopNav() {
           </button>
 
           {mobileNavOpen && (
-            <div className="absolute right-0 mt-2 w-52 bg-white dark:bg-brand-surface rounded-xl shadow-lg border border-gray-100 dark:border-brand-muted/20 py-2 z-50 flex flex-col gap-1 px-2">
+            <div className="absolute right-0 mt-2 w-52 bg-canvas shadow-lg border border-hairline rounded-xl py-2 z-50 flex flex-col gap-1 px-2">
               {navLinks}
             </div>
           )}
@@ -200,23 +200,23 @@ export default function TopNav() {
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setOpen((prev) => !prev)}
-            className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2"
+            className="flex items-center gap-2 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-focus focus:ring-offset-2"
             aria-label="Menu do perfil"
             aria-expanded={open}
           >
-            <div className="w-9 h-9 rounded-full bg-brand-primary flex items-center justify-center text-white text-sm font-semibold select-none">
+            <div className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-on-primary text-sm font-semibold select-none">
               {user ? getInitials(user.name) : '…'}
             </div>
           </button>
 
           {open && (
-            <div className="absolute right-0 mt-2 w-56 bg-white dark:bg-brand-surface rounded-xl shadow-lg border border-gray-100 dark:border-brand-muted/20 py-1 z-50">
+            <div className="absolute right-0 mt-2 w-56 bg-canvas shadow-lg border border-hairline rounded-xl py-1 z-50 overflow-hidden">
               {user && (
-                <div className="px-4 py-3 border-b border-gray-100 dark:border-brand-muted/20">
-                  <p className="text-sm font-semibold text-gray-900 dark:text-brand-fg truncate">{user.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-brand-muted truncate">{user.email}</p>
+                <div className="px-4 py-3 border-b border-hairline">
+                  <p className="text-sm font-semibold text-ink truncate">{user.name}</p>
+                  <p className="text-xs text-ink-muted truncate">{user.email}</p>
                   {user.admin && (
-                    <span className="inline-block mt-1 text-xs font-medium bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/60 dark:text-brand-primary px-1.5 py-0.5 rounded-full">
+                    <span className="inline-block mt-1 text-xs font-medium bg-primary/10 text-primary px-1.5 py-0.5 rounded-full">
                       Admin
                     </span>
                   )}
@@ -225,12 +225,12 @@ export default function TopNav() {
 
               <Link
                 href="/profile"
-                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-brand-fg dark:hover:bg-brand-surface transition-colors"
+                className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-ink hover:bg-surface-1 transition-colors"
                 onClick={() => setOpen(false)}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  className="w-4 h-4 text-gray-400 dark:text-brand-muted"
+                  className="w-4 h-4 text-ink-muted"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -248,12 +248,12 @@ export default function TopNav() {
               {user?.admin && (
                 <Link
                   href="/admin/users"
-                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 dark:text-brand-fg dark:hover:bg-brand-surface transition-colors"
+                  className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-ink hover:bg-surface-1 transition-colors"
                   onClick={() => setOpen(false)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    className="w-4 h-4 text-gray-400 dark:text-brand-muted"
+                    className="w-4 h-4 text-ink-muted"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -269,11 +269,11 @@ export default function TopNav() {
                 </Link>
               )}
 
-              <hr className="my-1 border-gray-100 dark:border-brand-muted/20" />
+              <hr className="my-1 border-hairline" />
 
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40 transition-colors"
+                className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-error hover:bg-error/10 transition-colors"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

@@ -105,7 +105,7 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 text-gray-400 dark:text-brand-muted text-sm">
+      <div className="flex items-center justify-center h-64 text-ink-subtle text-sm">
         Carregando...
       </div>
     );
@@ -115,14 +115,14 @@ export default function ProfilePage() {
     <div className="max-w-2xl mx-auto px-4 py-10">
       {/* Header */}
       <div className="flex items-center gap-5 mb-8">
-        <div className="w-16 h-16 rounded-full bg-brand-primary flex items-center justify-center text-white text-xl font-bold shrink-0">
+        <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-on-primary text-xl font-semibold shrink-0">
           {user ? getInitials(user.name) : 'U'}
         </div>
         <div>
-          <h1 className="text-xl font-bold text-gray-900 dark:text-brand-fg">{user?.name}</h1>
-          <p className="text-sm text-gray-500 dark:text-brand-muted">{user?.email}</p>
+          <h1 className="text-xl font-semibold text-ink">{user?.name}</h1>
+          <p className="text-sm text-ink-muted">{user?.email}</p>
           {user?.admin && (
-            <span className="inline-block mt-1 text-xs font-medium bg-brand-primary/10 text-brand-primary dark:bg-brand-primary/60 dark:text-brand-primary px-2 py-0.5 rounded-full">
+            <span className="inline-block mt-1 text-xs font-medium bg-primary/10 text-primary px-2 py-0.5 rounded-full">
               Admin
             </span>
           )}
@@ -130,13 +130,13 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-gray-200 overflow-x-auto dark:border-brand-muted/20">
+      <div className="flex gap-1 mb-6 border-b border-hairline overflow-x-auto">
         <button
           onClick={() => { setSection('info'); setError(''); setSuccess(''); }}
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px shrink-0 transition-colors ${
             section === 'info'
-              ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
-              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-ink-muted hover:text-ink'
           }`}
         >
           Dados pessoais
@@ -145,8 +145,8 @@ export default function ProfilePage() {
           onClick={() => { setSection('password'); setError(''); setSuccess(''); }}
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px shrink-0 transition-colors ${
             section === 'password'
-              ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
-              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-ink-muted hover:text-ink'
           }`}
         >
           Alterar senha
@@ -155,8 +155,8 @@ export default function ProfilePage() {
           onClick={() => { setSection('categories'); setError(''); setSuccess(''); }}
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px shrink-0 transition-colors ${
             section === 'categories'
-              ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
-              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-ink-muted hover:text-ink'
           }`}
         >
           Categorias
@@ -165,8 +165,8 @@ export default function ProfilePage() {
           onClick={() => { setSection('permissions'); setError(''); setSuccess(''); }}
           className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px shrink-0 transition-colors ${
             section === 'permissions'
-              ? 'border-brand-primary text-brand-primary dark:text-brand-primary'
-              : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-brand-muted dark:hover:text-brand-fg'
+              ? 'border-primary text-primary'
+              : 'border-transparent text-ink-muted hover:text-ink'
           }`}
         >
           Permissões padrão
@@ -175,21 +175,21 @@ export default function ProfilePage() {
 
       {/* Feedback */}
       {success && (
-        <div className="mb-5 px-4 py-3 bg-green-50 border border-green-200 text-green-700 rounded-lg text-sm dark:bg-green-950/40 dark:border-green-900 dark:text-green-400">
+        <div className="mb-5 px-4 py-3 bg-success/10 border border-success/30 text-success text-sm">
           {success}
         </div>
       )}
       {error && (
-        <div className="mb-5 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm dark:bg-red-950/40 dark:border-red-900 dark:text-red-400">
+        <div className="mb-5 px-4 py-3 bg-error/10 border border-error/30 text-error text-sm">
           {error}
         </div>
       )}
 
       {/* Personal info form */}
       {section === 'info' && (
-        <form onSubmit={handleSaveInfo} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 dark:bg-brand-surface dark:border-brand-muted/20">
+        <form onSubmit={handleSaveInfo} className="bg-canvas border border-hairline rounded-lg p-6 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">
               Nome completo
             </label>
             <input
@@ -197,12 +197,12 @@ export default function ProfilePage() {
               value={form.name}
               onChange={updateField('name')}
               required
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
+              className="w-full px-3.5 py-2.5 bg-canvas border border-hairline rounded-lg text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">
               E-mail
             </label>
             <input
@@ -210,13 +210,13 @@ export default function ProfilePage() {
               value={form.email}
               onChange={updateField('email')}
               required
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
+              className="w-full px-3.5 py-2.5 bg-canvas border border-hairline rounded-lg text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus transition-colors"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
+              <label className="block text-sm font-medium text-ink-muted mb-1.5">
                 Telefone
               </label>
               <input
@@ -224,11 +224,11 @@ export default function ProfilePage() {
                 value={form.phone}
                 onChange={updateField('phone')}
                 placeholder="+5511987654321"
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
+                className="w-full px-3.5 py-2.5 bg-canvas border border-hairline rounded-lg text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus transition-colors"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
+              <label className="block text-sm font-medium text-ink-muted mb-1.5">
                 CPF
               </label>
               <input
@@ -238,7 +238,7 @@ export default function ProfilePage() {
                 onChange={updateCpf}
                 placeholder="12345678901"
                 maxLength={11}
-                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
+                className="w-full px-3.5 py-2.5 bg-canvas border border-hairline rounded-lg text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus transition-colors"
               />
             </div>
           </div>
@@ -247,7 +247,7 @@ export default function ProfilePage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-2.5 rounded-full bg-primary text-on-primary text-sm font-semibold hover:bg-primary-hover active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-focus focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
             >
               {saving ? 'Salvando...' : 'Salvar alterações'}
             </button>
@@ -257,9 +257,9 @@ export default function ProfilePage() {
 
       {/* Password form */}
       {section === 'password' && (
-        <form onSubmit={handleSavePassword} className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-5 dark:bg-brand-surface dark:border-brand-muted/20">
+        <form onSubmit={handleSavePassword} className="bg-canvas border border-hairline rounded-lg p-6 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">
               Nova senha
             </label>
             <input
@@ -268,12 +268,12 @@ export default function ProfilePage() {
               onChange={updatePassword('password')}
               required
               placeholder="Mínimo 6 caracteres"
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
+              className="w-full px-3.5 py-2.5 bg-canvas border border-hairline rounded-lg text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus transition-colors"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5 dark:text-brand-fg">
+            <label className="block text-sm font-medium text-ink-muted mb-1.5">
               Confirmar nova senha
             </label>
             <input
@@ -282,7 +282,7 @@ export default function ProfilePage() {
               onChange={updatePassword('confirm')}
               required
               placeholder="••••••••"
-              className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:border-transparent transition-shadow dark:bg-brand-surface dark:border-brand-muted/30 dark:text-brand-fg dark:placeholder-brand-muted"
+              className="w-full px-3.5 py-2.5 bg-canvas border border-hairline rounded-lg text-sm text-ink placeholder-ink-subtle focus:outline-none focus:ring-2 focus:ring-primary-focus focus:border-primary-focus transition-colors"
             />
           </div>
 
@@ -290,7 +290,7 @@ export default function ProfilePage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 bg-brand-primary text-white text-sm font-semibold rounded-lg hover:bg-brand-primary/90 focus:outline-none focus:ring-2 focus:ring-brand-primary focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+              className="px-6 py-2.5 rounded-full bg-primary text-on-primary text-sm font-semibold hover:bg-primary-hover active:scale-95 focus:outline-none focus:ring-2 focus:ring-primary-focus focus:ring-offset-2 disabled:opacity-60 disabled:cursor-not-allowed transition"
             >
               {saving ? 'Alterando...' : 'Alterar senha'}
             </button>

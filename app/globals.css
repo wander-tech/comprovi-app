@@ -1,40 +1,102 @@
 @import "tailwindcss";
 @config "../tailwind.config.js";
 
+/*
+ * Color values below are the app's own brand palette (blue primary, slate
+ * neutrals, navy dark surfaces) rather than the Apple HIG extraction this
+ * token structure originally borrowed from. The token names/structure
+ * (canvas/ink/surface/hairline, the type scale, the radius grammar) stay as
+ * they were — only the underlying colors changed. success/warning/error are
+ * left on Apple's HIG system colors since the brand palette doesn't define
+ * its own semantic colors.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-  --brand-bg: #ffffff;
-  --brand-surface: #f8fafc;
-  --brand-primary: #3b82f6;
-  --brand-muted: #64748b;
-  --brand-fg: #171717;
+  --font-apple-sans:
+    -apple-system, BlinkMacSystemFont, "SF Pro Text", var(--font-inter),
+    system-ui, sans-serif;
+
+  --canvas: #ffffff;
+  --surface-1: #f8fafc;
+  --surface-2: #e2e8f0;
+  --ink: #171717;
+  --ink-muted: #64748b;
+  --ink-subtle: #94a3b8;
+  --hairline: #e2e8f0;
+  --hairline-strong: #cbd5e1;
+  --primary: #3b82f6;
+  --on-primary: #ffffff;
+  --primary-hover: #60a5fa;
+  --primary-pressed: #2563eb;
+  --primary-focus: #60a5fa;
+  --success: #34c759; /* extension: Apple systemGreen */
+  --warning: #ff9500; /* extension: Apple systemOrange */
+  --error: #ff3b30; /* extension: Apple systemRed */
+
+  /* aliases kept for the Next.js default background/foreground convention */
+  --background: var(--canvas);
+  --foreground: var(--ink);
 }
 
-[data-theme='dark'] {
-  --background: #0a0f1e;
-  --foreground: #e2e8f0;
-  --brand-bg: #0a0f1e;
-  --brand-surface: #1b2a41;
-  --brand-primary: #3b82f6;
-  --brand-muted: #94a3b8;
-  --brand-fg: #e2e8f0;
+[data-theme="dark"] {
+  --canvas: #22314a;
+  --surface-1: #0a0f1e;
+  --surface-2: #10162c;
+  --ink: #e2e8f0;
+  --ink-muted: #94a3b8;
+  --ink-subtle: #64748b;
+  --hairline: #2a3b56;
+  --hairline-strong: #37496a;
+  --primary: #3b82f6;
+  --on-primary: #ffffff;
+  --primary-hover: #60a5fa;
+  --primary-pressed: #2563eb;
+  --primary-focus: #60a5fa;
+  --success: #30d158; /* extension: Apple dark systemGreen */
+  --warning: #ff9f0a; /* extension: Apple dark systemOrange */
+  --error: #ff453a; /* extension: Apple dark systemRed */
+
+  --background: var(--canvas);
+  --foreground: var(--ink);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-brand-bg: var(--brand-bg);
-  --color-brand-surface: var(--brand-surface);
-  --color-brand-primary: var(--brand-primary);
-  --color-brand-muted: var(--brand-muted);
-  --color-brand-fg: var(--brand-fg);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-canvas: var(--canvas);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-pressed: var(--primary-pressed);
+  --color-primary-focus: var(--primary-focus);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+
+  --font-sans: var(--font-apple-sans);
+
+  /* Apple's radius grammar: pill for actions (rounded-full, untouched Tailwind default),
+     18px for cards/utility grids, smaller steps for compact chrome. Not a flat scale. */
+  --radius-xs: 5px;
+  --radius-sm: 8px;
+  --radius-md: 11px;
+  --radius-lg: 18px;
+  --radius-xl: 18px;
+  --radius-2xl: 20px;
+  --radius-3xl: 22px;
+  --radius-4xl: 24px;
+  --radius: 11px;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  letter-spacing: -0.01em;
 }

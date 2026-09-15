@@ -128,12 +128,12 @@ export default function DatePicker({
         aria-haspopup="dialog"
         aria-expanded={open}
       >
-        <span className={value ? '' : 'text-gray-400 dark:text-brand-muted'}>
+        <span className={value ? '' : 'text-ink-subtle'}>
           {value ? formatDisplay(value) : placeholder}
         </span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          className="w-4 h-4 shrink-0 text-gray-400 dark:text-brand-muted"
+          className="w-4 h-4 shrink-0 text-ink-subtle"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -148,26 +148,26 @@ export default function DatePicker({
         <div
           ref={panelRef}
           style={panelStyle}
-          className="overflow-y-auto bg-white rounded-lg border border-gray-200 shadow-lg p-3 dark:bg-brand-surface dark:border-brand-muted/30"
+          className="overflow-y-auto bg-canvas border border-hairline shadow-lg rounded-xl p-3"
         >
           <div className="flex items-center justify-between mb-2">
             <button
               type="button"
               onClick={() => changeMonth(-1)}
-              className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-brand-muted dark:hover:bg-brand-bg dark:hover:text-brand-fg"
+              className="p-1.5 rounded-full text-ink-muted hover:bg-surface-1 hover:text-ink transition-colors"
               aria-label="Mês anterior"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
               </svg>
             </button>
-            <span className="text-sm font-semibold text-gray-900 dark:text-brand-fg">
+            <span className="text-sm font-semibold text-ink">
               {MONTH_LABELS[viewDate.getMonth()]} {viewDate.getFullYear()}
             </span>
             <button
               type="button"
               onClick={() => changeMonth(1)}
-              className="p-1.5 rounded-md text-gray-500 hover:bg-gray-100 hover:text-gray-900 transition-colors dark:text-brand-muted dark:hover:bg-brand-bg dark:hover:text-brand-fg"
+              className="p-1.5 rounded-full text-ink-muted hover:bg-surface-1 hover:text-ink transition-colors"
               aria-label="Próximo mês"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -178,7 +178,7 @@ export default function DatePicker({
 
           <div className="grid grid-cols-7 gap-y-1 text-center">
             {WEEKDAY_LABELS.map((label, i) => (
-              <span key={i} className="text-[11px] font-medium text-gray-400 dark:text-brand-muted">
+              <span key={i} className="text-[11px] font-medium text-ink-subtle">
                 {label}
               </span>
             ))}
@@ -194,14 +194,14 @@ export default function DatePicker({
                   type="button"
                   disabled={isDisabled}
                   onClick={() => selectDate(date)}
-                  className={`w-full aspect-square rounded-md text-xs flex items-center justify-center transition-colors ${isSelected
-                    ? 'bg-brand-primary text-white font-semibold'
+                  className={`w-full aspect-square rounded-full text-xs flex items-center justify-center transition-colors ${isSelected
+                    ? 'bg-primary text-on-primary font-semibold'
                     : isDisabled
-                      ? 'text-gray-300 cursor-not-allowed dark:text-brand-muted/30'
+                      ? 'text-ink-subtle cursor-not-allowed'
                       : isCurrentMonth
-                        ? 'text-gray-700 hover:bg-brand-primary/10 hover:text-brand-primary dark:text-brand-fg dark:hover:bg-brand-primary/20'
-                        : 'text-gray-300 hover:bg-gray-50 dark:text-brand-muted/40 dark:hover:bg-brand-bg'
-                    } ${isToday && !isSelected ? 'ring-1 ring-inset ring-brand-primary/50' : ''}`}
+                        ? 'text-ink-muted hover:bg-primary/10 hover:text-primary'
+                        : 'text-ink-subtle hover:bg-surface-1'
+                    } ${isToday && !isSelected ? 'ring-1 ring-inset ring-primary/50' : ''}`}
                 >
                   {date.getDate()}
                 </button>
@@ -209,12 +209,12 @@ export default function DatePicker({
             })}
           </div>
 
-          <div className="flex items-center justify-between mt-3 pt-2 border-t border-gray-100 dark:border-brand-muted/20">
+          <div className="flex items-center justify-between mt-3 pt-2 border-t border-hairline">
             <button
               type="button"
               onClick={() => selectDate(today)}
               disabled={isTodayDisabled}
-              className="text-xs font-medium text-brand-primary hover:underline disabled:text-gray-300 disabled:no-underline disabled:cursor-not-allowed dark:disabled:text-brand-muted/30"
+              className="text-xs font-medium text-primary hover:underline disabled:text-ink-subtle disabled:no-underline disabled:cursor-not-allowed"
             >
               Hoje
             </button>
@@ -225,7 +225,7 @@ export default function DatePicker({
                   onChange('');
                   setOpen(false);
                 }}
-                className="text-xs font-medium text-gray-400 hover:text-gray-600 dark:text-brand-muted dark:hover:text-brand-fg"
+                className="text-xs font-medium text-ink-subtle hover:text-ink"
               >
                 Limpar
               </button>
