@@ -87,6 +87,10 @@ function buildSubcategories(expenses: DashboardExpense[]) {
     .map(([name, value]) => ({ name, value }));
 }
 
+function buildRecent(expenses: DashboardExpense[], count = 3) {
+  return [...expenses].sort((a, b) => b.date.localeCompare(a.date)).slice(0, count);
+}
+
 // ─── tooltip components ───────────────────────────────────────────────────────
 
 function BarTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
@@ -404,6 +408,7 @@ export default function DashboardPage() {
   const categoryCount = useMemo(() => new Set(allExpenses.map((e) => e.category.name)).size, [allExpenses]);
 
   const monthlyData = useMemo(() => buildMonthly(allExpenses), [allExpenses]);
+  const recentExpenses = useMemo(() => buildRecent(allExpenses), [allExpenses]);
 
   const categoryData = useMemo(() => {
     const cats = buildCategories(allExpenses);
@@ -552,6 +557,25 @@ export default function DashboardPage() {
                   </BarChart>
                 </ResponsiveContainer>
               )}
+
+              <div className="mt-4 pt-4 border-t border-hairline">
+                <h3 className="text-xs font-semibold text-ink-subtle uppercase tracking-wide mb-2">Últimos Lançamentos</h3>
+                {recentExpenses.length === 0 ? (
+                  <p className="text-sm text-ink-subtle">Nenhum lançamento no período</p>
+                ) : (
+                  <ul className="divide-y divide-hairline">
+                    {recentExpenses.map((e) => (
+                      <li key={e.idExpense} className="flex items-center justify-between gap-3 py-2 text-sm">
+                        <div className="min-w-0">
+                          <p className="text-ink font-medium truncate">{e.description}</p>
+                          <p className="text-ink-subtle text-xs">{fmtDate(e.date)} · {e.category.name}</p>
+                        </div>
+                        <span className="font-semibold text-error whitespace-nowrap">{fmt(e.amount)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
             </div>
 
             {/* Category donut + breakdown */}
@@ -563,29 +587,32 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
-                  <ResponsiveContainer width="100%" height={250}>
-                    <PieChart>
-                      <Pie
-                        data={categoryData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={55}
-                        outerRadius={85}
-                        paddingAngle={2}
-                        dataKey="value"
-                      >
-                        {categoryData.map((_, i) => (
-                          <Cell key={i} fill={COLORS[i % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip content={<PieTooltip />} />
-                      <Legend
-                        iconType="circle"
-                        iconSize={8}
-                        formatter={(v) => <span className="text-xs text-ink-muted">{v}</span>}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
+                  <div className="h-[310px] sm:h-[250px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart margin={{ top: 0, right: 0, bottom: 8, left: 0 }}>
+                        <Pie
+                          data={categoryData}
+                          cx="50%"
+                          cy="50%"
+                          innerRadius={55}
+                          outerRadius={85}
+                          paddingAngle={2}
+                          dataKey="value"
+                        >
+                          {categoryData.map((_, i) => (
+                            <Cell key={i} fill={COLORS[i % COLORS.length]} />
+                          ))}
+                        </Pie>
+                        <Tooltip content={<PieTooltip />} />
+                        <Legend
+                          iconType="circle"
+                          iconSize={8}
+                          wrapperStyle={{ paddingTop: 16, lineHeight: '1.8em' }}
+                          formatter={(v) => <span className="text-xs text-ink-muted">{v}</span>}
+                        />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
                   <div className="space-y-2 pt-1 border-t border-hairline">
                     {categoryData.map(({ name, value, pct }, i) => (
                       <CategoryBar key={name} name={name} value={value} pct={pct} color={COLORS[i % COLORS.length]} />
@@ -595,8 +622,6 @@ export default function DashboardPage() {
               )}
             </div>
           </div>
-
-
 
           {/* ── Expenses table ── */}
           <div>
