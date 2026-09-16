@@ -15,6 +15,8 @@ import {
   Legend,
   LabelList,
 } from 'recharts';
+import { format, parse, parseISO, startOfMonth, endOfMonth } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 import SearchableSelect from '@/components/SearchableSelect';
 import DatePicker from '@/components/DatePicker';
 import ExpenseModals, { type ExpenseModalsHandle } from '@/components/ExpenseModals';
@@ -32,31 +34,31 @@ const COLORS = [
 
 const PAGE_SIZE = 10;
 
+const HIDE_VALUES_KEY = 'comprovi-dashboard-hide-values';
+
 // ─── helpers ─────────────────────────────────────────────────────────────────
 
 function fmt(value: number) {
   return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
 }
 
+function blurClass(hidden?: boolean) {
+  return hidden ? 'blur-sm select-none' : '';
+}
+
 function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString('pt-BR');
+  return format(parseISO(iso), 'dd/MM/yyyy');
 }
 
 function monthLabel(yearMonth: string) {
-  const [y, m] = yearMonth.split('-');
-  return new Date(Number(y), Number(m) - 1, 1).toLocaleDateString('pt-BR', {
-    month: 'short',
-    year: '2-digit',
-  });
+  return format(parse(yearMonth, 'yyyy-MM', new Date()), "MMM'.' 'de' yy", { locale: ptBR });
 }
 
 function getDefaultDates() {
   const now = new Date();
-  const start = new Date(now.getFullYear(), now.getMonth(), 1);
-  const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   return {
-    startDate: start.toISOString().slice(0, 10),
-    endDate: end.toISOString().slice(0, 10),
+    startDate: format(startOfMonth(now), 'yyyy-MM-dd'),
+    endDate: format(endOfMonth(now), 'yyyy-MM-dd'),
   };
 }
 
@@ -79,13 +81,7 @@ function buildCategories(expenses: DashboardExpense[]) {
     .map(([name, value]) => ({ name, value }));
 }
 
-function buildSubcategories(expenses: DashboardExpense[]) {
-  const map = new Map<string, number>();
-  for (const e of expenses) map.set(e.subcategory.name, (map.get(e.subcategory.name) ?? 0) + e.amount);
-  return Array.from(map.entries())
-    .sort(([, a], [, b]) => b - a)
-    .map(([name, value]) => ({ name, value }));
-}
+
 
 function buildRecent(expenses: DashboardExpense[], count = 3) {
   return [...expenses].sort((a, b) => b.date.localeCompare(a.date)).slice(0, count);
@@ -93,22 +89,22 @@ function buildRecent(expenses: DashboardExpense[], count = 3) {
 
 // ─── tooltip components ───────────────────────────────────────────────────────
 
-function BarTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ value: number }>; label?: string }) {
+function BarTooltip({ active, payload, label, hidden }: { active?: boolean; payload?: Array<{ value: number }>; label?: string; hidden?: boolean }) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-canvas border border-hairline shadow-lg rounded-lg px-3 py-2 text-sm">
       {label && <p className="font-medium text-ink-muted mb-1">{label}</p>}
-      <p className="text-primary font-semibold">{fmt(payload[0].value)}</p>
+      <p className={`text-primary font-semibold ${blurClass(hidden)}`}>{fmt(payload[0].value)}</p>
     </div>
   );
 }
 
-function PieTooltip({ active, payload }: { active?: boolean; payload?: Array<{ name: string; value: number; payload: { pct: number } }> }) {
+function PieTooltip({ active, payload, hidden }: { active?: boolean; payload?: Array<{ name: string; value: number; payload: { pct: number } }>; hidden?: boolean }) {
   if (!active || !payload?.length) return null;
   return (
     <div className="bg-canvas border border-hairline shadow-lg rounded-lg px-3 py-2 text-sm">
       <p className="font-medium text-ink-muted">{payload[0].name}</p>
-      <p className="text-primary font-semibold">{fmt(payload[0].value)}</p>
+      <p className={`text-primary font-semibold ${blurClass(hidden)}`}>{fmt(payload[0].value)}</p>
       <p className="text-ink-subtle text-xs">{payload[0].payload.pct.toFixed(1)}% do total</p>
     </div>
   );
@@ -121,22 +117,24 @@ function MetricCard({
   value,
   sub,
   color = 'text-ink',
+  hidden,
 }: {
   label: string;
   value: string;
   sub?: string;
   color?: string;
+  hidden?: boolean;
 }) {
   return (
     <div className="bg-canvas border border-hairline rounded-lg p-5">
       <p className="text-xs font-semibold text-ink-subtle uppercase tracking-wide mb-1">{label}</p>
-      <p className={`text-xl sm:text-2xl font-semibold ${color} leading-tight break-words`}>{value}</p>
+      <p className={`text-xl sm:text-2xl font-semibold ${color} leading-tight break-words ${blurClass(hidden)}`}>{value}</p>
       {sub && <p className="text-xs text-ink-subtle mt-1">{sub}</p>}
     </div>
   );
 }
 
-function CategoryBar({ name, value, pct, color }: { name: string; value: number; pct: number; color: string }) {
+function CategoryBar({ name, value, pct, color, hidden }: { name: string; value: number; pct: number; color: string; hidden?: boolean }) {
   return (
     <div className="space-y-1">
       <div className="flex items-center justify-between text-xs">
@@ -146,7 +144,7 @@ function CategoryBar({ name, value, pct, color }: { name: string; value: number;
         </div>
         <div className="flex items-center gap-2 shrink-0 ml-2">
           <span className="text-ink-subtle">{pct.toFixed(1)}%</span>
-          <span className="font-semibold text-ink w-24 text-right">{fmt(value)}</span>
+          <span className={`font-semibold text-ink w-24 text-right ${blurClass(hidden)}`}>{fmt(value)}</span>
         </div>
       </div>
       <div className="h-1.5 bg-surface-1 rounded-full overflow-hidden">
@@ -156,13 +154,32 @@ function CategoryBar({ name, value, pct, color }: { name: string; value: number;
   );
 }
 
+function EyeIcon({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+      <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    </svg>
+  );
+}
+
+function EyeOffIcon({ className }: { className?: string }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M3.98 8.223A10.477 10.477 0 001.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.45 10.45 0 0112 4.5c4.756 0 8.773 3.162 10.065 7.498a10.523 10.523 0 01-4.293 5.774M6.228 6.228L3 3m3.228 3.228l3.65 3.65m7.894 7.894L21 21m-3.228-3.228l-3.65-3.65m0 0a3 3 0 10-4.243-4.243m4.242 4.242L9.88 9.88" />
+    </svg>
+  );
+}
+
 
 function ExpensesTable({
   expenses,
   spreadsheets,
+  hideValues,
 }: {
   expenses: DashboardExpense[];
   spreadsheets: DashboardSpreadsheet[];
+  hideValues: boolean;
 }) {
   const [search, setSearch] = useState('');
   const [filterSheet, setFilterSheet] = useState('');
@@ -312,7 +329,7 @@ function ExpensesTable({
                   {spreadsheets.length > 1 && (
                     <td className="px-5 py-3.5 text-ink-muted">{expenseMap.get(e.idExpense) ?? '—'}</td>
                   )}
-                  <td className="px-5 py-3.5 text-right font-semibold text-error whitespace-nowrap">{fmt(e.amount)}</td>
+                  <td className={`px-5 py-3.5 text-right font-semibold text-error whitespace-nowrap ${blurClass(hideValues)}`}>{fmt(e.amount)}</td>
                 </tr>
               ))
             )}
@@ -375,7 +392,28 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  const [valuesHidden, setValuesHidden] = useState(false);
   const modalsRef = useRef<ExpenseModalsHandle>(null);
+
+  useEffect(() => {
+    try {
+      setValuesHidden(localStorage.getItem(HIDE_VALUES_KEY) === 'true');
+    } catch {
+      // localStorage unavailable
+    }
+  }, []);
+
+  function toggleValuesHidden() {
+    setValuesHidden((prev) => {
+      const next = !prev;
+      try {
+        localStorage.setItem(HIDE_VALUES_KEY, String(next));
+      } catch {
+        // localStorage unavailable
+      }
+      return next;
+    });
+  }
 
   const load = useCallback(async (start: string, end: string) => {
     setLoading(true);
@@ -418,21 +456,21 @@ export default function DashboardPage() {
 
   const hasData = spreadsheets.length > 0 && allExpenses.length > 0;
 
-  const expandedSheet = useMemo(
-    () => spreadsheets.find((s) => s.idSpreadsheet === expandedId) ?? null,
-    [spreadsheets, expandedId],
-  );
-
-  function toggleExpand(id: number) {
-    setExpandedId((prev) => (prev === id ? null : id));
-  }
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 space-y-6">
       {/* ── Header + filter ── */}
       <div className="flex flex-col sm:flex-row sm:items-end gap-4 justify-between">
-        <div>
+        <div className="flex items-center gap-2">
           <h1 className="text-2xl font-semibold text-ink">Dashboard</h1>
+          <button
+            type="button"
+            onClick={toggleValuesHidden}
+            aria-label={valuesHidden ? 'Mostrar valores' : 'Ocultar valores'}
+            title={valuesHidden ? 'Mostrar valores' : 'Ocultar valores'}
+            className="flex items-center justify-center w-9 h-9 rounded-full text-ink-muted hover:text-ink hover:bg-surface-1 transition-colors"
+          >
+            {valuesHidden ? <EyeOffIcon className="w-5 h-5" /> : <EyeIcon className="w-5 h-5" />}
+          </button>
         </div>
         <div className="flex flex-col lg:flex-row lg:items-end gap-4">
           <form onSubmit={applyFilter} className="flex flex-wrap items-end gap-4">
@@ -499,6 +537,7 @@ export default function DashboardPage() {
               value={fmt(totalExpenses)}
               sub={`${fmtDate(startDate)} – ${fmtDate(endDate)}`}
               color="text-error"
+              hidden={valuesHidden}
             />
             <MetricCard
               label="Lançamentos"
@@ -514,16 +553,19 @@ export default function DashboardPage() {
               label="Maior Despesa"
               value={fmt(maxExpense)}
               color="text-error"
+              hidden={valuesHidden}
             />
             <MetricCard
               label="Menor Despesa"
               value={fmt(minExpense)}
               color="text-success"
+              hidden={valuesHidden}
             />
             <MetricCard
               label="Ticket Médio"
               value={fmt(avgExpense)}
               sub="por lançamento"
+              hidden={valuesHidden}
             />
           </div>
 
@@ -542,7 +584,7 @@ export default function DashboardPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="var(--hairline)" />
                     <XAxis dataKey="month" tick={{ fontSize: 12, fill: 'var(--ink-subtle)' }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fontSize: 11, fill: 'var(--ink-subtle)' }} axisLine={false} tickLine={false} tickFormatter={(v) => `R$${(v / 1000).toFixed(0)}k`} width={52} />
-                    <Tooltip content={<BarTooltip />} />
+                    <Tooltip content={<BarTooltip hidden={valuesHidden} />} />
                     <Bar dataKey="total" fill="var(--primary)" radius={[6, 6, 0, 0]} name="Despesas">
                       <LabelList
                         dataKey="total"
@@ -570,7 +612,7 @@ export default function DashboardPage() {
                           <p className="text-ink font-medium truncate">{e.description}</p>
                           <p className="text-ink-subtle text-xs">{fmtDate(e.date)} · {e.category.name}</p>
                         </div>
-                        <span className="font-semibold text-error whitespace-nowrap">{fmt(e.amount)}</span>
+                        <span className={`font-semibold text-error whitespace-nowrap ${blurClass(valuesHidden)}`}>{fmt(e.amount)}</span>
                       </li>
                     ))}
                   </ul>
@@ -603,7 +645,7 @@ export default function DashboardPage() {
                             <Cell key={i} fill={COLORS[i % COLORS.length]} />
                           ))}
                         </Pie>
-                        <Tooltip content={<PieTooltip />} />
+                        <Tooltip content={<PieTooltip hidden={valuesHidden} />} />
                         <Legend
                           iconType="circle"
                           iconSize={8}
@@ -615,7 +657,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="space-y-2 pt-1 border-t border-hairline">
                     {categoryData.map(({ name, value, pct }, i) => (
-                      <CategoryBar key={name} name={name} value={value} pct={pct} color={COLORS[i % COLORS.length]} />
+                      <CategoryBar key={name} name={name} value={value} pct={pct} color={COLORS[i % COLORS.length]} hidden={valuesHidden} />
                     ))}
                   </div>
                 </div>
@@ -626,7 +668,7 @@ export default function DashboardPage() {
           {/* ── Expenses table ── */}
           <div>
             <h2 className="text-sm font-semibold text-ink mb-3">Lançamentos</h2>
-            <ExpensesTable expenses={allExpenses} spreadsheets={spreadsheets} />
+            <ExpensesTable expenses={allExpenses} spreadsheets={spreadsheets} hideValues={valuesHidden} />
           </div>
         </>
       )}
