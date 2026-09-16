@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { addDays, addMonths, format, getDay, isValid, parse, startOfMonth, subDays } from 'date-fns';
 import { useFloatingPosition } from './useFloatingPosition';
 
 interface DatePickerProps {
@@ -26,25 +27,19 @@ const TRIGGER_BASE =
 
 const PANEL_WIDTH = 320;
 
-function pad(n: number) {
-  return String(n).padStart(2, '0');
-}
-
 function toISO(date: Date) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+  return format(date, 'yyyy-MM-dd');
 }
 
 function fromISO(value: string): Date | null {
-  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
-  if (!match) return null;
-  const [, y, m, d] = match;
-  return new Date(Number(y), Number(m) - 1, Number(d));
+  if (!value) return null;
+  const date = parse(value, 'yyyy-MM-dd', new Date());
+  return isValid(date) ? date : null;
 }
 
 function formatDisplay(value: string) {
   const date = fromISO(value);
-  if (!date) return '';
-  return `${pad(date.getDate())}/${pad(date.getMonth() + 1)}/${date.getFullYear()}`;
+  return date ? format(date, 'dd/MM/yyyy') : '';
 }
 
 export default function DatePicker({
@@ -98,7 +93,7 @@ export default function DatePicker({
   }
 
   function changeMonth(delta: number) {
-    setViewDate((d) => new Date(d.getFullYear(), d.getMonth() + delta, 1));
+    setViewDate((d) => startOfMonth(addMonths(d, delta)));
   }
 
   function selectDate(date: Date) {
@@ -109,11 +104,9 @@ export default function DatePicker({
   const isTodayDisabled = Boolean((min && todayISO < min) || (max && todayISO > max));
 
   const cells = useMemo(() => {
-    const year = viewDate.getFullYear();
-    const month = viewDate.getMonth();
-    const firstWeekday = new Date(year, month, 1).getDay();
-    const start = new Date(year, month, 1 - firstWeekday);
-    return Array.from({ length: 42 }, (_, i) => new Date(start.getFullYear(), start.getMonth(), start.getDate() + i));
+    const monthStart = startOfMonth(viewDate);
+    const start = subDays(monthStart, getDay(monthStart));
+    return Array.from({ length: 42 }, (_, i) => addDays(start, i));
   }, [viewDate]);
 
   return (

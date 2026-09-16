@@ -1,3 +1,5 @@
+import { addDays } from "date-fns";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export interface AuthResponse {
@@ -93,7 +95,7 @@ export async function refreshAccessToken(
 
 function setCookie(name: string, value: string, days: number): void {
   if (typeof document === "undefined") return;
-  const expires = new Date(Date.now() + days * 864e5).toUTCString();
+  const expires = addDays(new Date(), days).toUTCString();
   document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/; SameSite=Lax`;
 }
 

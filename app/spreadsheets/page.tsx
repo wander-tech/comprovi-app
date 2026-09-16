@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
+import { format, parseISO } from 'date-fns';
 import SearchableSelect from '@/components/SearchableSelect';
 import SharingManager from '@/components/SharingManager';
 import {
@@ -147,7 +148,7 @@ export default function SpreadsheetsPage() {
   }
 
   function formatDate(iso: string) {
-    return new Date(iso).toLocaleDateString('pt-BR');
+    return format(parseISO(iso), 'dd/MM/yyyy');
   }
 
   const inputClass =

@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { format, parseISO } from 'date-fns';
 import {
   getMyInvitations,
   acceptInvitation,
@@ -105,7 +106,7 @@ export default function InvitationsPage() {
   }
 
   function formatDate(iso: string) {
-    return new Date(iso).toLocaleDateString('pt-BR');
+    return format(parseISO(iso), 'dd/MM/yyyy');
   }
 
   const pending = invitations.filter((i) => i.status === 'pending');

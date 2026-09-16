@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback } from 'react';
+import { format, parseISO } from 'date-fns';
 import { getUsers, createUser, updateUser, deleteUser, type User, type UpdateUserPayload } from '@/lib/users';
 
 const EMPTY_CREATE_FORM = { name: '', email: '', password: '', confirmPassword: '', phone: '', cpf: '' };
@@ -178,7 +179,7 @@ export default function AdminUsersPage() {
   }
 
   function formatDate(iso: string) {
-    return new Date(iso).toLocaleDateString('pt-BR');
+    return format(parseISO(iso), 'dd/MM/yyyy');
   }
 
   function getInitials(name: string) {
